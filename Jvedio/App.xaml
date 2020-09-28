@@ -1,0 +1,34 @@
+<Application x:Class="Jvedio.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Jvedio" 
+             StartupUri="WindowStartUp.xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    
+    
+    <Application.Resources>
+        <ResourceDictionary >
+
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary Source="XAML/ContextMenuStyle.xaml"/>
+                <ResourceDictionary Source="XAML/RadioButtonStyle.xaml"/>
+                <ResourceDictionary Source="XAML/RadioButtonFlatStyle.xaml"/>
+
+                <ResourceDictionary Source="XAML/ListBoxStyle.xaml"/>
+                <ResourceDictionary Source="XAML/ProgressBarStyle.xaml"/>
+                <ResourceDictionary Source="XAML/ScrollViewStyle.xaml"/>
+                <ResourceDictionary Source="XAML/ButtonStyle.xaml"/>
+                <ResourceDictionary Source="XAML/ComboBoxStyle.xaml"/>
+                <ResourceDictionary Source="XAML/CheckBoxStyle.xaml"/>
+                <ResourceDictionary Source="XAML/BasicStyle.xaml"/>
+                <ResourceDictionary Source="XAML/Jvedio_BaseWindowStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+
+
+
+
+        </ResourceDictionary>
+    </Application.Resources>
+
+
+
+</Application>

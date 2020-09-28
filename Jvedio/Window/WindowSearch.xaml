@@ -1,0 +1,211 @@
+﻿<local:Jvedio_BaseWindow x:Class="Jvedio.WindowSearch"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:Jvedio.Properties"
+        xmlns:local="clr-namespace:Jvedio"
+        mc:Ignorable="d"
+        Title="高级检索" Height="300" Width="800"
+        MinHeight="350"
+        MinWidth="800"
+                         
+        Closing="Window_Closing"
+        
+        >
+
+    <Window.Resources>
+
+        <local:StringToUriStringConverterOther x:Key="StringToUriStringConverterOther" />
+        <local:StringToCheckedConverter x:Key="StringToCheckedConverter" />
+        
+
+        <Style x:Key="SearchCandidateTextBlock" TargetType="{x:Type TextBlock}">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="10 0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundSearch}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource BackgroundMain}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="BaseTextBlock" TargetType="TextBlock">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="2 0 2 0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundSearch}"/>
+        </Style>
+
+
+        <Style x:Key="SearchTextGrid" TargetType="{x:Type Border}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource ForegroundSearch}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}" Value="False">
+                    <Setter Property="Background" Value="Transparent"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Ellipse" TargetType="{x:Type Ellipse}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="True">
+                    <Setter Property="Fill" Value="{DynamicResource ForegroundSearch}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="False">
+                    <Setter Property="Fill" Value="{DynamicResource ForegroundSearch}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+
+        <Style x:Key="Ellipse2" TargetType="{x:Type Ellipse}">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="True">
+                    <Setter Property="Fill" Value="#AD744C"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="False">
+                    <Setter Property="Fill" Value="#DD744C"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="Line" TargetType="{x:Type Line}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="True">
+                    <Setter Property="Stroke" Value="{DynamicResource ForegroundSearch}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Canvas}, Mode=FindAncestor}}" Value="False">
+                    <Setter Property="Stroke" Value="{DynamicResource ForegroundSearch}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SearchTextBox" TargetType="{x:Type TextBox}">
+
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource ForegroundSearch}"/>
+                    <Setter Property="FontStyle" Value="Normal"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource ForegroundGlobal}"/>
+                    <Setter Property="FontStyle" Value="Italic"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Border Background="{DynamicResource BackgroundMain}"  BorderBrush="Gray" BorderThickness="0">
+            <StackPanel>
+
+                <!--搜索-->
+
+                <Grid x:Name="AllSearchGrid"   Height="40" Width="auto"  Margin="10 10 10 0" VerticalAlignment="Top" >
+
+                    <Border Style="{StaticResource SearchTextGrid}"   CornerRadius="20"  Background="{DynamicResource BackgroundSearch}" BorderThickness="2" />
+                    <Canvas Height="25" Width="25"    HorizontalAlignment="Left" Margin="10 0 0 0" >
+                        <Ellipse Style="{StaticResource Ellipse}" Width="16" Height="16"  Canvas.Left="3" Canvas.Top="3" />
+                        <Ellipse Style="{StaticResource Ellipse}" Width="10" Height="10" Fill="{DynamicResource BackgroundSearch}" Canvas.Left="6" Canvas.Top="6" />
+                        <Line Style="{StaticResource Line}" X1="16" Y1="16" X2="22" Y2="22" StrokeThickness="2.5"  />
+                    </Canvas>
+
+                    <TextBox ToolTip="搜索" PreviewKeyUp="SearchTextBox_PreviewKeyUp" x:Name="SearchTextBox"   Style="{StaticResource SearchTextBox}" Text="{Binding Search_Content, Mode=TwoWay, Source={x:Static p:Settings.Default}}"   CaretBrush="{DynamicResource ForegroundSearch}"   FontSize="16"  HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="40 0 40 0" Background="Transparent" BorderThickness="0"  >
+                        <TextBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Command="ApplicationCommands.Copy" />
+                                <MenuItem Command="ApplicationCommands.Cut" />
+                                <MenuItem Command="ApplicationCommands.Paste" />
+                                <MenuItem Command="ApplicationCommands.SelectAll" />
+                                <MenuItem Command="ApplicationCommands.Undo" />
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+
+
+                    <Popup Focusable="True"  VerticalOffset="10"  HorizontalOffset="-35"   Opacity="0.85"   x:Name="AllSearchPopup" Width="155" Visibility="Visible" PlacementTarget="{Binding ElementName=AllSearchTextBox}" AllowsTransparency="True" Placement="Bottom" IsOpen="False" StaysOpen="True" >
+                        <Border  Panel.ZIndex="3" Width="150" Height="auto" Background="{DynamicResource BackgroundMenu}"    CornerRadius="5" Canvas.Top="40">
+                            <ScrollViewer   Margin="5 5 5 5" Width="140" Height="200"  Canvas.Top="40" Panel.ZIndex="4" Background="Transparent"     x:Name="scrollViewer"      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                                <ItemsControl   ItemsSource="{Binding AllSearchCandidate}" ScrollViewer.VerticalScrollBarVisibility="Disabled"  >
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel   Orientation="Vertical" >
+
+                                            </StackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel>
+                                                <TextBlock Width="120" Padding="0 2"   Text="{Binding }"    Style="{StaticResource SearchCandidateTextBlock }"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+
+
+
+                </Grid>
+                <StackPanel Orientation="Horizontal" Margin="20 10">
+                    <TextBlock Style="{StaticResource BaseTextBlock}" Text="搜索范围"/>
+
+
+
+                    <RadioButton Click="RadioButton_Click_1" IsChecked="{Binding Path=Search_Type,ConverterParameter=识别码,Converter={StaticResource StringToCheckedConverter},Mode=OneWay, Source={x:Static p:Settings.Default}}" Content="识别码" Style="{StaticResource FlatRadioButton}"/>
+                    <RadioButton Click="RadioButton_Click_1"    IsChecked="{Binding Path=Search_Type,ConverterParameter=名称,Converter={StaticResource StringToCheckedConverter},Mode=OneWay, Source={x:Static p:Settings.Default}}"  Content="名称"  Style="{StaticResource FlatRadioButton}"/>
+                    <RadioButton Click="RadioButton_Click_1"  IsChecked="{Binding Path=Search_Type,ConverterParameter=演员,Converter={StaticResource StringToCheckedConverter},Mode=OneWay, Source={x:Static p:Settings.Default}}"  Content="演员"  Style="{StaticResource FlatRadioButton}"/>
+
+
+
+
+                </StackPanel>
+
+
+                <StackPanel Orientation="Horizontal" Margin="20 5">
+                    <TextBlock Style="{StaticResource BaseTextBlock}" Text="匹配模式"/>
+                    <CheckBox x:Name="AllWordCheckBox" IsChecked="{Binding Search_MatchAllWord, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="全词匹配" Height="40" VerticalContentAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="20 5">
+                    <TextBlock Style="{StaticResource BaseTextBlock}" Text="搜索选项"/>
+
+
+                    <RadioButton Click="RadioButton_Click" FontSize="20" Style="{StaticResource FlatRadioButton}" Content="普通" IsChecked="{Binding Search_Pattern, ConverterParameter=普通, Converter={StaticResource StringToCheckedConverter}, Mode=OneWay, Source={x:Static p:Settings.Default}}"/>
+                    <RadioButton Click="RadioButton_Click"   FontSize="20"  Style="{StaticResource FlatRadioButton}"  Content="正则表达式" IsChecked="{Binding Search_Pattern, ConverterParameter=正则表达式, Converter={StaticResource StringToCheckedConverter}, Mode=OneWay, Source={x:Static p:Settings.Default}}"/>
+                    <RadioButton Click="RadioButton_Click"   FontSize="20"  Style="{StaticResource FlatRadioButton}"  Content="SQL语句" IsChecked="{Binding Search_Pattern, ConverterParameter=SQL语句, Converter={StaticResource StringToCheckedConverter}, Mode=OneWay, Source={x:Static p:Settings.Default}}"/>
+                </StackPanel>
+
+
+            </StackPanel>
+
+
+        </Border>
+
+        <Button Style="{StaticResource ButtonStyleFill}" Content="组合检索" Height="40" Width="80" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="10 70" Click="Button_Click_1"/>
+
+
+        <Grid  Background="{DynamicResource BackgroundTitle}"  Height="50" VerticalAlignment="Bottom">
+
+            <TextBlock  x:Name="SearchResult" Text="结果：" Style="{StaticResource BaseTextBlock}" Margin="10" Width="auto"/>
+
+            <Button  Content="计数" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="120 5" Click="Button_Click" ></Button>
+            <Button  Content="检索" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="5" Click="Search" ></Button>
+        </Grid>
+
+    </Grid>
+</local:Jvedio_BaseWindow>

@@ -1,0 +1,57 @@
+﻿<Window x:Class="Jvedio.DialogInput"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Jvedio"
+        mc:Ignorable="d"
+        Title="DialogInput" Height="500" Width="500"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ContentRendered="Window_ContentRendered"
+                ShowInTaskbar="False"
+        >
+
+    <Window.Resources>
+        <Style x:Key="ButtonTrigger" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="#8234F1"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="#8558DB"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+
+    </Window.Resources>
+    <Grid >
+        <Border Background="Black" Opacity="0.6"></Border>
+        <Grid  Height="180" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Border CornerRadius="10" Background="{DynamicResource BackgroundMain}" Margin="5" BorderBrush="{DynamicResource ForegroundSearch}" BorderThickness="2">
+        </Border>
+
+        <TextBlock x:Name="TitleTextBlock" FontSize="20" Foreground="{DynamicResource ForegroundGlobal}" TextAlignment="Center" HorizontalAlignment="Left" Text="请输入内容" Margin="20" Height="auto" Width="auto" VerticalAlignment="Top"></TextBlock>
+        <TextBox PreviewKeyUp="ContentTextBox_PreviewKeyUp" x:Name="ContentTextBox" FontSize="25" Foreground="{DynamicResource ForegroundSearch}" Background="{DynamicResource BackgroundTitle}" BorderThickness="0" Text="内容" Margin="20 70 10 0" Height="auto" Width="360" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBox>
+
+        <Button Style="{StaticResource ButtonTrigger}" FontSize="20"  Background="Transparent" Margin="0 0 100 20" BorderThickness="0" Content="取 消" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Button_Click_1"/>
+        <Button Style="{StaticResource ButtonTrigger}" FontSize="20"  Background="Transparent" Margin="0 0 30 20" BorderThickness="0" Content="确 定" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Button_Click"/>
+
+    </Grid>
+    </Grid>
+</Window>

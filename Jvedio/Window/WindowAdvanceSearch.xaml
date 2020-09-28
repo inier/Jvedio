@@ -1,0 +1,223 @@
+﻿<local:Jvedio_BaseWindow x:Class="Jvedio.WindowAdvanceSearch"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:p="clr-namespace:Jvedio.Properties"
+        xmlns:local="clr-namespace:Jvedio"
+        mc:Ignorable="d"
+        Title="组合检索" Height="500" Width="800"
+        MinHeight="450"
+        MinWidth="800"
+        
+        >
+
+    <Window.Resources>
+        <local:StringToUriStringConverterOther x:Key="StringToUriStringConverterOther" />
+        
+        
+        <Style x:Key="BaseTextBlock" TargetType="TextBlock">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="微软雅黑"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="2 0 2 0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundSearch}"/>
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Border Background="{DynamicResource BackgroundMain}"  BorderBrush="Gray" BorderThickness="0"></Border>
+        <ScrollViewer Margin="10 10 10 60" >
+            <StackPanel  x:Name="FilterStackPanel" Background="{DynamicResource BackgroundMain}"   Height="auto">
+                
+                <TextBlock Text="视频类型：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                        <CheckBox Content="步兵" Margin="10 0"/>
+                        <CheckBox Content="骑兵"  Margin="10 0"/>
+                        <CheckBox Content="欧美" Margin="10 0" />
+                    </WrapPanel>
+
+                <!--<WrapPanel Orientation="Horizontal">
+                    <TextBlock Text="筛选：" Style="{StaticResource BaseTextBlock}"/>
+                    <CheckBox Content="含字幕" Margin="10 0"/>
+                    <CheckBox Content="含预览图"  Margin="10 0"/>
+                </WrapPanel>-->
+                
+                <TextBlock Text="发行年份：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                    <ItemsControl ItemsSource="{Binding Year}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3" >
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox" Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </WrapPanel>
+
+                <TextBlock Text="视频时长：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                    <ItemsControl ItemsSource="{Binding Runtime}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+                <TextBlock Text="文件大小：" Style="{StaticResource BaseTextBlock}" ToolTip="（GB）"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                   
+                    <ItemsControl ItemsSource="{Binding FileSize}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox  Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+                <TextBlock Text="影片评分：" Style="{StaticResource BaseTextBlock}" ToolTip="（0-100）"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                    
+                    <ItemsControl ItemsSource="{Binding Rating}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+
+                <TextBlock Text="影片类别：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                   
+                    <ItemsControl ItemsSource="{Binding Genre}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+                <TextBlock Text="出演人员：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                   
+                    <ItemsControl ItemsSource="{Binding Actor}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+                <TextBlock Text="影片标签：" Style="{StaticResource BaseTextBlock}"/>
+                <WrapPanel Orientation="Horizontal" Margin="50 5">
+                   
+                    <ItemsControl ItemsSource="{Binding Label}" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="5 5 5 5" Background="Transparent">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal">
+                                </WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="3">
+                                    <WrapPanel>
+                                        <CheckBox Name="CheckBox"  Content="{Binding }"  Margin="10 0"/>
+                                    </WrapPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </WrapPanel>
+
+
+
+
+            </StackPanel>
+        </ScrollViewer>
+
+        
+        
+        <Grid  Background="{DynamicResource BackgroundTitle}"  Height="50" VerticalAlignment="Bottom">
+            <Button Command="{Binding ResetCommand}" HorizontalAlignment="Left"  Content="重置" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="5" ></Button>
+            <Button  Content="检索" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="5" Click="GenerateCommand"></Button>
+        </Grid>
+
+    </Grid>
+</local:Jvedio_BaseWindow>
