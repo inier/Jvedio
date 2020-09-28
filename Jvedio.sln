@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jvedio", "Jvedio\Jvedio.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "关于项目", "关于项目", "{5E071E27-3F24-46D1-9C5C-22585015CAA1}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
 EndProject
