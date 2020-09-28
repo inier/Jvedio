@@ -5,3 +5,5 @@ git commit -m "C"
 git remote add origin https://gitee.com/hitchao/JvedioUpdate
 git pull --rebase origin master
 git push -u origin master -f
+
+Ç°Íù²¿Êð£ºhttps://gitee.com/hitchao/JvedioUpdate/pages
