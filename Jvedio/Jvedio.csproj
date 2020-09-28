@@ -389,6 +389,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Data\x64\SQLite.Interop.dll" />
+    <Content Include="Data\x86\SQLite.Interop.dll" />
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
@@ -715,6 +717,8 @@
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
   <PropertyGroup>
     <PreBuildEvent>XCOPY "$(ProjectDir)Data\Data" "$(TargetDir)\Data" /E /Y /i
+XCOPY "$(ProjectDir)Data\x86" "$(TargetDir)\x86" /E /Y /i
+XCOPY "$(ProjectDir)Data\x64" "$(TargetDir)\x64" /E /Y /i
 XCOPY "$(ProjectDir)Data\MediaInfo.dll" "$(TargetDir)" /E /Y /i
 XCOPY "$(ProjectDir)Data\MediaInfoNET.dll" "$(TargetDir)" /E /Y /i
 XCOPY "$(ProjectDir)Data\BusActress.sqlite" "$(TargetDir)" /E /Y /i
