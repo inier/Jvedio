@@ -49,6 +49,11 @@ namespace Jvedio
             else
                 BasePicPath = AppDomain.CurrentDomain.BaseDirectory + "Pic\\";
 
+
+            //格式化网址
+            FormatUrl();
+
+
             RootUrl = new rootUrl
             {
                 Bus = Properties.Settings.Default.Bus,
@@ -110,6 +115,26 @@ namespace Jvedio
 
 
 
+        }
+
+
+        public static void FormatUrl()
+        {
+            Properties.Settings.Default.Bus = _FormatUrl(Properties.Settings.Default.Bus);
+            Properties.Settings.Default.DB = _FormatUrl(Properties.Settings.Default.DB);
+            Properties.Settings.Default.Library = _FormatUrl(Properties.Settings.Default.Library);
+            Properties.Settings.Default.Jav321 = _FormatUrl(Properties.Settings.Default.Jav321);
+            Properties.Settings.Default.Fc2Club = _FormatUrl(Properties.Settings.Default.Fc2Club);
+            Properties.Settings.Default.DMM = _FormatUrl(Properties.Settings.Default.DMM);
+        }
+
+        private static string _FormatUrl(string url)
+        {
+            url = url.ToLower();
+            if (string.IsNullOrEmpty(url)) return "";
+            if(url.IndexOf("http") < 0) url = "https://" + url;
+            if (!url.EndsWith("/"))  url += "/";
+            return url;
         }
 
 

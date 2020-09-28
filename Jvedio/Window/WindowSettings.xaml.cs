@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -587,6 +588,11 @@ namespace Jvedio
             }
 
             if (vieModel_Settings.DataBases.Count == 1) DatabaseComboBox.Visibility = Visibility.Hidden;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://www.kancloud.cn/hitchao/jvedio/1921271");
         }
     }
     public class SkinStringToCheckedConverter : IValueConverter

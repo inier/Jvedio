@@ -344,7 +344,7 @@
 
 
 
-                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
+                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
 
                         <StackPanel Orientation="Vertical" Margin="5 20 0 5" Visibility="Collapsed">
                             <CheckBox Checked="ListenCheckBox_Checked" x:Name="ListenCheckBox" IsChecked="{Binding ListenAllDir, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="监听所有文件改动并更新数据库（不包括C盘）" Height="40"/>
@@ -414,7 +414,9 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+
+                        <TextBlock Style="{StaticResource BaseTextBlock}" Text="请输入网址 ↓"/>
                         <Grid  Margin="10 0">
                             <CheckBox IsChecked="{Binding EnableBus, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 5" />
                             <Label HorizontalAlignment="Left" Margin="70 5" Content="Bus" Height="40" Width="80"  Style="{StaticResource BaseLabel2}"/>
@@ -424,7 +426,7 @@
                         </Grid>
                         <Grid    Margin="10 0">
                             <CheckBox IsChecked="{Binding EnableBusEu, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 10" />
-                            <Label HorizontalAlignment="Left" Margin="70 5"  Content="Bus欧美" Height="40" Width="90"  Style="{StaticResource BaseLabel2}"/>
+                            <Label HorizontalAlignment="Left" Margin="70 5"  Content="Bus 欧美" Height="40" Width="90"  Style="{StaticResource BaseLabel2}"/>
                             <TextBox  Margin="170 5 150 5" Width="auto"   Style="{StaticResource BaseTextBox}"  Text="{Binding BusEurope, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  />
                             <Button HorizontalAlignment="Right" Margin="40 5" Click="Test" Height="40" Width="80" Content="测试"  Style="{StaticResource ButtonStyle}"/>
                             <Image Margin="0 5" HorizontalAlignment="Right"  Width="32" Height="32" />
@@ -438,7 +440,9 @@
                                 <Button HorizontalAlignment="Right" Margin="40 5"  Click="Test"  Height="40" Width="80" Content="测试"  Style="{StaticResource ButtonStyle}"/>
                                 <Image  Margin="0 5" HorizontalAlignment="Right"   Width="32" Height="32" />
                             </Grid>
-                            <Grid >
+                            <Grid  >
+                                
+                                
                                 <Grid.Style>
                                     <Style  TargetType="{x:Type Grid}">
                                         <Style.Triggers>
@@ -451,6 +455,8 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
+
+                                <Button Style="{StaticResource ButtonStyleFill}" Content="？" HorizontalAlignment="Left" Width="20" Height="20" Cursor="Hand" Margin="20 5" Click="Button_Click_2"/>
                                 <Label Margin="50 5" Content="Cookie" Style="{StaticResource BaseLabel2}" HorizontalAlignment="Left"/>
                                 <TextBox  Margin="170 5 5 5" Width="auto"    Text="{Binding DBCookie, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Style="{StaticResource BaseTextBox}"  HorizontalAlignment="Stretch"  />
                             </Grid>
