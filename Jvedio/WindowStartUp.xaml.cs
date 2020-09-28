@@ -208,9 +208,9 @@ namespace Jvedio
 
         public void CheckFile()
         {
-            if(!File.Exists(@"x64\SQLite.Interop.dll") || !File.Exists(@"x86\SQLite.Interop.dll"))
+            if (!File.Exists(@"x64\SQLite.Interop.dll") || !File.Exists(@"x86\SQLite.Interop.dll"))
             {
-                MessageBox.Show("缺失 SQLite.Interop.dll","Jvedio");
+                MessageBox.Show("缺失 SQLite.Interop.dll", "Jvedio");
                 this.Close();
             }
 
