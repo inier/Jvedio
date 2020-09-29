@@ -67,6 +67,7 @@ namespace Jvedio
                     List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), ct);
                     DataBase cdb = new DataBase();
                     Scan.DistinctMovieAndInsert(filepaths, ct);
+                    cdb.CloseDB();
                 }, cts.Token);
 
             }
@@ -226,6 +227,8 @@ namespace Jvedio
         }
         private void InitDataBase()
         {
+            LockDataBase = new List<string>();
+
             if (!File.Exists(InfoDataBasePath))
             {
                 DataBase cdb = new DataBase("Info");
@@ -280,6 +283,8 @@ namespace Jvedio
                 if (!cdb.IsTableExist("baidu")) cdb.CreateTable(StaticVariable.SQLITETABLE_BAIDUTRANSLATE);
                 cdb.CloseDB();
             }
+
+            
         }
 
 

@@ -19,7 +19,7 @@ using static Jvedio.StaticVariable;
 namespace Jvedio
 {
 
-    //数据库全部异步
+    //数据库全部异步，加锁判断，有时间再改
 
     public class DataBase
     {
@@ -27,24 +27,34 @@ namespace Jvedio
         public static string Path { get; set; }
         private SQLiteCommand cmd;
         private SQLiteConnection cn;
+        public string dbName;
+        public object LockObject; 
+
+
         public DataBase(string DatabaseName = "", bool absolutPath = false)
         {
+            LockObject = new object();
+            this.dbName = DatabaseName;
+            if (!LockDataBase.Contains(DatabaseName))
+            {
+                LockDataBase.Add(DatabaseName);
+            }
+            else
+            {
+                //IsLock = true;//如果列表包含该数据库，说明数据库并未关闭
+            }
+                
+
+
             if (DatabaseName == "") { Path = Properties.Settings.Default.DataBasePath; }
             else {
                 if (absolutPath)
-                {
                     Path = DatabaseName;
-                }
                 else
-                {
                     Path = AppDomain.CurrentDomain.BaseDirectory + DatabaseName + ".sqlite";
-                }
-                
-            
             }
 
             cn = new SQLiteConnection("data source=" + Path);
-            //读取
             cn.Open();
             cmd = new SQLiteCommand();
             cmd.Connection = cn;
@@ -53,6 +63,7 @@ namespace Jvedio
 
         public void CloseDB()
         {
+            if (LockDataBase.Contains(dbName)) { LockDataBase.Remove(dbName); }
             cn.Close();
         }
 
@@ -62,6 +73,7 @@ namespace Jvedio
         /// </summary>
         public void Vaccum()
         {
+            //if (IsLock) return;
             cmd.CommandText = "vacuum;";
             cmd.ExecuteNonQuery();
         }
@@ -73,6 +85,7 @@ namespace Jvedio
         /// <param name="tablename"></param>
         public void DeleteTable(string tablename)
         {
+            //if (IsLock) return;
             cmd.CommandText = $"DROP TABLE IF EXISTS {tablename}";
             cmd.ExecuteNonQuery();
         }
@@ -86,6 +99,7 @@ namespace Jvedio
         /// <returns></returns>
         public int GetMaxCountByTable(string table)
         {
+            //if (IsLock) return 0;
             int result = 0;
             cmd.CommandText = $"SELECT MAX(_ROWID_) FROM '{table}' LIMIT 1;";
             SQLiteDataReader sr = cmd.ExecuteReader();
@@ -126,6 +140,7 @@ namespace Jvedio
 
         public List<string> SelectLabelByVedioType(VedioType vediotype)
         {
+            //if (IsLock) return new List<string>();
             if (vediotype == VedioType.所有)
                 cmd.CommandText = "SELECT label FROM movie where vediotype>=0";
             else
@@ -167,6 +182,7 @@ namespace Jvedio
 
         public List<Actress> SelectActorByVedioType(VedioType vediotype)
         {
+            //if (IsLock) return new List<Actress>();
             if (vediotype == 0)
                 cmd.CommandText = "SELECT actor FROM movie where vediotype>=0";
             else
@@ -221,9 +237,11 @@ namespace Jvedio
         /// <returns></returns>
         public async Task< List<Genre>> SelectGenreByVedioType(VedioType vediotype)
         {
-            return await Task.Run(() => { 
+            return await Task.Run(() => {
 
-            if (vediotype == VedioType.所有)
+                //if (IsLock) return new List<Genre>();
+
+                if (vediotype == VedioType.所有)
                 cmd.CommandText = "SELECT genre FROM movie where vediotype>=0";
             else
                 cmd.CommandText = "SELECT genre FROM movie where vediotype=" + (int)vediotype;
@@ -356,6 +374,7 @@ namespace Jvedio
         /// <returns></returns>
         public List<Movie> SelectMoviesBySql(string sqltext)
         {
+            //if (IsLock) return new List<Movie>();
             List<Movie> result = new List<Movie>();
             if (string.IsNullOrEmpty(sqltext)) return result;
             else cmd.CommandText = sqltext;
@@ -388,6 +407,7 @@ namespace Jvedio
             return await Task.Run(() =>
             {
                 List<Movie> result = new List<Movie>();
+                //if (IsLock) return result;
                 movieid = movieid.Replace("'", "").Replace("%", "");
 
                 if (string.IsNullOrEmpty(movieid))
@@ -423,6 +443,7 @@ namespace Jvedio
         {
             return await Task.Run(() => {
                 Movie result = new Movie();
+                //if (IsLock) return result;
                 cmd.CommandText = $"SELECT * FROM movie where id='{movieid}'";
                 SQLiteDataReader sr = cmd.ExecuteReader();
                 try
@@ -449,6 +470,7 @@ namespace Jvedio
         public DetailMovie SelectDetailMovieById(string movieid)
         {
             DetailMovie result = new DetailMovie();
+            //if (IsLock) return result;
             if (!string.IsNullOrEmpty(movieid))
             {
                 //加载信息
@@ -516,6 +538,7 @@ namespace Jvedio
 
         public Actress SelectInfoFromActress(Actress actress)
         {
+            //if (IsLock) return actress;
             if (actress.name == "") { return actress; }
             cmd.CommandText = $"select * from actress where name='{actress.name}'";
             SQLiteDataReader sr = cmd.ExecuteReader();
@@ -567,6 +590,7 @@ namespace Jvedio
         /// <returns></returns>
         public string SelectInfoByID(string info, string table,string id)
         {
+            //if (IsLock) return "";
             string result = "";
             string sqltext = $"select {info} from {table} where id ='{id}'";
             cmd.CommandText = sqltext;
@@ -595,6 +619,7 @@ namespace Jvedio
         //删除
         public void DelInfoByType(string table, string type, string value)
         {
+            //if (IsLock) return ;
             cmd.CommandText = $"delete from {table} where {type} = '{value}'"; ;
             cmd.ExecuteNonQuery();
         }
@@ -613,6 +638,7 @@ namespace Jvedio
         /// <param name="savetype"></param>
         public void UpdateMovieByID(string id, string content, object value, string savetype = "Int")
         {
+            //if (IsLock) return;
             string sqltext;
             if (savetype == "Int") { sqltext = $"UPDATE movie SET {content} = {value} WHERE id = '{id}'"; }
             else { sqltext = $"UPDATE movie SET {content} = '{value}' WHERE id = '{id}'"; }
