@@ -629,7 +629,7 @@ namespace Jvedio
         public void UpdateInfoFromNet(Dictionary<string, string> info, WebSite webSite)
         {
             if (info == null) { return; }
-            if (info["id"] == null) { return; }
+            if (info.ContainsKey("id") && info["id"] == null) { return; }
             string sqltext;
             if (webSite == WebSite.FC2Club)
             {
