@@ -21,6 +21,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Jvedio.StaticVariable;
+using static Jvedio.StaticClass;
 
 namespace Jvedio
 {
@@ -2905,22 +2906,7 @@ namespace Jvedio
             new PopupWindow(this, $"总计导入{num}个文件").Show();
         }
 
-        public bool IsFile(string path)
-        {
-            try
-            {
-                FileAttributes attr = File.GetAttributes(path);
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                    return false;
-                else
-                    return true;
-            }
-            catch 
-            {
-                return true;
-            }
 
-        }
 
         private void Grid_DragOver(object sender, DragEventArgs e)
         {

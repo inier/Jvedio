@@ -12,6 +12,8 @@
         MinHeight="450"
         MinWidth="800"
     
+    AllowDrop="True"
+    
     ContentRendered="Jvedio_BaseWindow_ContentRendered"
     
     
@@ -344,7 +346,7 @@
 
 
 
-                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
+                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
 
                         <StackPanel Orientation="Vertical" Margin="5 20 0 5" Visibility="Collapsed">
                             <CheckBox Checked="ListenCheckBox_Checked" x:Name="ListenCheckBox" IsChecked="{Binding ListenAllDir, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="监听所有文件改动并更新数据库（不包括C盘）" Height="40"/>
@@ -362,7 +364,7 @@
                             </Border>
 
                             <StackPanel Orientation="Vertical" >
-                                <ListBox VerticalAlignment="Top" HorizontalAlignment="Stretch" ItemsSource="{Binding ScanPath}" x:Name="PathListBox" Margin="30 5" Width="auto" Height="150"    >
+                                <ListBox AllowDrop="True"  Drop="PathListBox_Drop"  DragOver="PathListBox_DragOver" VerticalAlignment="Top" HorizontalAlignment="Stretch" ItemsSource="{Binding ScanPath}" x:Name="PathListBox" Margin="30 5" Width="auto" Height="150"    >
 
 
 
@@ -414,7 +416,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
 
                         <TextBlock Style="{StaticResource BaseTextBlock}" Text="请输入网址 ↓"/>
                         <Grid  Margin="10 0">

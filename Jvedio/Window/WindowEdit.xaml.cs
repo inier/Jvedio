@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
+using static Jvedio.StaticClass;
 
 namespace Jvedio
 {
@@ -232,7 +232,38 @@ namespace Jvedio
             }
         }
 
+        private void ChoseMovieBorder_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
 
+        private void ChoseMovieBorder_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (IsFile(dragdropFile))
+                {
+                    if (Scan.IsProperMovie(dragdropFile))
+                    {
+                        if (!string.IsNullOrEmpty(vieModel.DetailMovie.id))
+                        {
+                            vieModel.DetailMovie.filepath = dragdropFile;
+                            vieModel.SaveModel();
+                            new PopupWindow(this, "修改已保存").Show();
+                            vieModel.Query(vieModel.id);
+                        }
+                        else
+                        {
+                            vieModel.Refresh(dragdropFile);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public class BitToGBConverter : IValueConverter

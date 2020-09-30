@@ -203,8 +203,29 @@
 
                         <Grid Style="{StaticResource InfoGrid}" >
                             <Label  Content="文件位置"  Style="{StaticResource BaseLabel2}"/>
-                            <TextBox  GotFocus="TextBox_GotFocus"  Text="{Binding DetailMovie.filepath}" Style="{StaticResource BaseTextBox}" Margin="120 2 100 2"/>
-                            <Button HorizontalAlignment="Right" Width="80" Height="20" Content="选择视频" Click="ChoseMovie" Style="{StaticResource ButtonStyleFill}" />
+                            <TextBox  GotFocus="TextBox_GotFocus"  Text="{Binding DetailMovie.filepath}" Style="{StaticResource BaseTextBox}" Margin="120 2 180 2"/>
+                            <Button Margin="100 0" HorizontalAlignment="Right" Width="70" Height="20" Content="选择视频" Click="ChoseMovie" Style="{StaticResource ButtonStyleFill}" />
+
+                            <Border AllowDrop="True" x:Name="ChoseMovieBorder" DragOver="ChoseMovieBorder_DragOver" Drop="ChoseMovieBorder_Drop"   BorderThickness="2"  Margin="5" Width="90" HorizontalAlignment="Right">
+                                <Border.BorderBrush>
+                                    <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="{DynamicResource ForegroundSearch}">
+                                                    <GeometryDrawing.Geometry>
+                                                        <GeometryGroup>
+                                                            <RectangleGeometry Rect="0,0,50,50" />
+                                                            <RectangleGeometry Rect="50,50,50,50" />
+                                                        </GeometryGroup>
+                                                    </GeometryDrawing.Geometry>
+                                                </GeometryDrawing>
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Border.BorderBrush>
+                                <TextBlock Text="拖入文件至此" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ForegroundGlobal}"/>
+
+                            </Border>
                         </Grid>
 
 

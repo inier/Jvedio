@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
+using static Jvedio.StaticClass;
 
 
 namespace Jvedio
@@ -885,6 +886,153 @@ namespace Jvedio
             LoadingStackPanel.Visibility = Visibility.Hidden;
             new PopupWindow(this, "已取消！").Show();
             Running = false;
+        }
+
+        private void PathListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void PathListBox_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (!IsFile(dragdropFile))
+                {
+                    bool PathConflict = false;
+                    foreach (var path in vieModel.ScanPath)
+                    {
+                        if (dragdropFile.IndexOf(path) >= 0 | path.IndexOf(dragdropFile) >= 0)
+                        {
+                            PathConflict = true;
+                            break;
+                        }
+                    }
+                    if (!PathConflict) { vieModel.ScanPath.Add(dragdropFile); } 
+                }
+            }
+        }
+
+        private void AccessPathTextBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void AccessPathTextBox_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (IsFile(dragdropFile))
+                {
+                    if(new FileInfo(dragdropFile).Extension == ".mdb")
+                    {
+                        AccessPathTextBox.Text = dragdropFile;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void NFOPathListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void NFOPathListBox_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (!IsFile(dragdropFile))
+                {
+                    bool PathConflict = false;
+                    foreach (var path in vieModel.NFOScanPath)
+                    {
+                        if (dragdropFile.IndexOf(path) >= 0 | path.IndexOf(dragdropFile) >= 0)
+                        {
+                            PathConflict = true;
+                            break;
+                        }
+                    }
+                    if (!PathConflict) { vieModel.NFOScanPath.Add(dragdropFile); }
+                }
+            }
+        }
+
+        private void SingleNFOBorder_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void SingleNFOBorder_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (IsFile(dragdropFile))
+                {
+                    if (new FileInfo(dragdropFile).Extension == ".nfo")
+                    {
+                        NFOPathTextBox.Text = dragdropFile;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void EuropePathListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void EuropePathListBox_Drop(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (!IsFile(dragdropFile))
+                {
+                    bool PathConflict = false;
+                    foreach (var path in vieModel.ScanEuPath)
+                    {
+                        if (dragdropFile.IndexOf(path) >= 0 | path.IndexOf(dragdropFile) >= 0)
+                        {
+                            PathConflict = true;
+                            break;
+                        }
+                    }
+                    if (!PathConflict) { vieModel.ScanEuPath.Add(dragdropFile); }
+                }
+            }
+        }
+
+        private void UNCPathBorder_Drop(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void UNCPathBorder_DragOver(object sender, DragEventArgs e)
+        {
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            foreach (var dragdropFile in dragdropFiles)
+            {
+                if (!IsFile(dragdropFile))
+                {
+                    UNCPathTextBox.Text = dragdropFile;
+                    break;
+                }
+            }
         }
     }
 

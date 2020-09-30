@@ -22,6 +22,23 @@ namespace Jvedio
     public static class StaticClass
     {
 
+        public static bool IsFile(string path)
+        {
+            try
+            {
+                FileAttributes attr = File.GetAttributes(path);
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                    return false;
+                else
+                    return true;
+            }
+            catch
+            {
+                return true;
+            }
+
+        }
+
         public static void SavePathToConfig(string name,List<string> paths)
         {
             string path = string.Join("*", paths);

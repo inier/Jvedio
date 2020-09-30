@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static Jvedio.StaticVariable;
+using static Jvedio.StaticClass;
 
 namespace Jvedio
 {
@@ -593,6 +594,29 @@ namespace Jvedio
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             Process.Start("https://www.kancloud.cn/hitchao/jvedio/1921271");
+        }
+
+        private void PathListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void PathListBox_Drop(object sender, DragEventArgs e)
+        {
+            if (vieModel_Settings.ScanPath == null) { vieModel_Settings.ScanPath = new ObservableCollection<string>(); }
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (var item in dragdropFiles)
+            {
+                if (!IsFile(item))
+                {
+                    if (!vieModel_Settings.ScanPath.Contains(item)) { vieModel_Settings.ScanPath.Add(item); }
+                }
+
+            }
+            //保存
+            Jvedio.StaticClass.SavePathToConfig(vieModel_Settings.DataBase, vieModel_Settings.ScanPath.ToList());
+
         }
     }
     public class SkinStringToCheckedConverter : IValueConverter

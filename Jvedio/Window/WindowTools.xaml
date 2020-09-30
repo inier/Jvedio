@@ -100,14 +100,14 @@
                     <Grid>
 
 
-                        <Grid Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 0 40"     x:Name="MainGrid">
+                        <Grid AllowDrop="True" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0 0 0 40"     x:Name="MainGrid">
 
                             <!--基本扫描-->
-                            <Grid Visibility="Visible">
+                            <Grid Visibility="Hidden">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock Text="视频扫描" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
+                                    <TextBlock Text="视频扫描（拖入或选择文件夹）" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
                                     <StackPanel Orientation="Vertical"  Margin="40 0">
-                                        <ListBox  ItemsSource="{Binding ScanPath}" x:Name="PathListBox"  Height="200" Background="Transparent" >
+                                        <ListBox AllowDrop="True" DragOver="PathListBox_DragOver" Drop="PathListBox_Drop"  ItemsSource="{Binding ScanPath}" x:Name="PathListBox"  Height="200" Background="Transparent" >
                                             <ListBox.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel Orientation="Vertical"/>
@@ -152,11 +152,33 @@
                             <Grid Visibility="Hidden">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="Access数据导入" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
-                                    <Grid  VerticalAlignment="Top">
+                                    <Grid  VerticalAlignment="Top" >
                                       
-                                        <TextBox x:Name="AccessPathTextBox"  Text="" Margin="20 5 130 5"  Width="auto" HorizontalAlignment="Stretch" BorderThickness="0" Background="{DynamicResource BackgroundSide}" Padding="5"/>
-                                        <Button  Content="选择文件" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="5" Click="ShowAccessPath"></Button>
+                                        <TextBox  x:Name="AccessPathTextBox"  Text="" Margin="20 5 130 5"  Width="auto" HorizontalAlignment="Stretch" BorderThickness="0" Background="{DynamicResource BackgroundSide}" Padding="5"/>
+                                        <Border AllowDrop="True" DragOver="AccessPathTextBox_DragOver" Drop="AccessPathTextBox_Drop" BorderThickness="2"  Margin="5" Width="100" HorizontalAlignment="Right">
+                                            <Border.BorderBrush>
+                                                <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <GeometryDrawing Brush="{DynamicResource ForegroundSearch}">
+                                                                <GeometryDrawing.Geometry>
+                                                                    <GeometryGroup>
+                                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                                    </GeometryGroup>
+                                                                </GeometryDrawing.Geometry>
+                                                            </GeometryDrawing>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+                                            </Border.BorderBrush>
+
+                                            <TextBlock Text="拖入文件至此" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ForegroundGlobal}"/>
+                                        </Border>
+
+
                                     </Grid>
+                                    <Button HorizontalAlignment="Left"  Content="选择文件" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="20 5" Click="ShowAccessPath"></Button>
 
                                 </StackPanel>
 
@@ -180,7 +202,7 @@
                                     </StackPanel>
                                     <StackPanel   Style="{StaticResource NFOSPShow1}"   Orientation="Vertical"  Margin="40 5">
 
-                                        <ListBox  ItemsSource="{Binding NFOScanPath}" x:Name="NFOPathListBox"  Height="150" Background="Transparent" >
+                                        <ListBox AllowDrop="True" DragOver="NFOPathListBox_DragOver" Drop="NFOPathListBox_Drop"  ItemsSource="{Binding NFOScanPath}" x:Name="NFOPathListBox"  Height="150" Background="Transparent" >
                                             <ListBox.ItemsPanel >
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel Orientation="Vertical" />
@@ -216,8 +238,29 @@
 
                                        
                                         <TextBox HorizontalAlignment="Stretch" Height="30" x:Name="NFOPathTextBox"  Text="" Margin="10 5 120 5"  Width="auto" VerticalAlignment="Center" TextAlignment="Left" BorderThickness="0" Background="{DynamicResource BackgroundSide}" Padding="5"/>
-                                        <Button  Content="选择文件" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Margin="5" Click="ShowNFOPath"></Button>
+                                        <Border x:Name="SingleNFOBorder" AllowDrop="True" DragOver="SingleNFOBorder_DragOver" Drop="SingleNFOBorder_Drop" BorderThickness="2"  Margin="5" Width="100" HorizontalAlignment="Right">
+                                            <Border.BorderBrush>
+                                                <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <GeometryDrawing Brush="{DynamicResource ForegroundSearch}">
+                                                                <GeometryDrawing.Geometry>
+                                                                    <GeometryGroup>
+                                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                                    </GeometryGroup>
+                                                                </GeometryDrawing.Geometry>
+                                                            </GeometryDrawing>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+                                            </Border.BorderBrush>
+
+                                            <TextBlock Text="拖入文件至此" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ForegroundGlobal}"/>
+                                        </Border>
                                     </Grid>
+
+                                    <Button HorizontalAlignment="Left" Margin="50 5"  Content="选择文件" Height="30" Width="100"  Style="{StaticResource ButtonStyleFill}" Click="ShowNFOPath"></Button>
                                 </StackPanel>
                             </Grid>
 
@@ -227,7 +270,7 @@
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="欧美扫描" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
                                     <StackPanel Orientation="Vertical"  Margin="40 0">
-                                        <ListBox  ItemsSource="{Binding ScanEuPath}" x:Name="EuropePathListBox"  Height="200" Background="Transparent" >
+                                        <ListBox AllowDrop="True" DragOver="EuropePathListBox_DragOver" Drop="EuropePathListBox_Drop"  ItemsSource="{Binding ScanEuPath}" x:Name="EuropePathListBox"  Height="200" Background="Transparent" >
                                             <ListBox.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel Orientation="Vertical"/>
@@ -288,11 +331,38 @@
 
 
                             <!--网络磁盘扫描-->
-                            <Grid Visibility="Hidden">
+                            <Grid Visibility="Visible">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="网络地址：" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
-                                    <TextBox x:Name="UNCPathTextBox"   Text="" Margin="50 0" FontSize="25" BorderThickness="0" Background="{DynamicResource BackgroundSide}" Padding="5" ToolTip="\\用户名\\文件夹" />
-                                    <StackPanel Orientation="Horizontal" Margin="40 0">
+
+                                    <Grid>
+                                        <TextBox x:Name="UNCPathTextBox"   Text="" Margin="50 0 150 0" FontSize="25" BorderThickness="0" Background="{DynamicResource BackgroundSide}" Padding="5" ToolTip="\\用户名\\文件夹" />
+                                        <Border x:Name="UNCPathBorder" AllowDrop="True" Drop="UNCPathBorder_Drop" DragOver="UNCPathBorder_DragOver"  BorderThickness="2"  Margin="5" Width="100" HorizontalAlignment="Right">
+                                            <Border.BorderBrush>
+                                                <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                                    <DrawingBrush.Drawing>
+                                                        <DrawingGroup>
+                                                            <GeometryDrawing Brush="{DynamicResource ForegroundSearch}">
+                                                                <GeometryDrawing.Geometry>
+                                                                    <GeometryGroup>
+                                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                                    </GeometryGroup>
+                                                                </GeometryDrawing.Geometry>
+                                                            </GeometryDrawing>
+                                                        </DrawingGroup>
+                                                    </DrawingBrush.Drawing>
+                                                </DrawingBrush>
+                                            </Border.BorderBrush>
+                                            <TextBlock Text="拖入文件夹至此" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource ForegroundGlobal}"/>
+
+                                        </Border>
+                                    </Grid>
+
+
+
+
+                                        <StackPanel Orientation="Horizontal" Margin="40 0">
                                         <TextBlock Text="视频类型：" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
 
                                         <RadioButton x:Name="ScanTypeRadioButton" GroupName="ScanTypeGroup"  FontSize="15" IsChecked="True" Foreground="{DynamicResource ForegroundSearch}" Content="常规" Style="{StaticResource FlatRadioButton}"/>
