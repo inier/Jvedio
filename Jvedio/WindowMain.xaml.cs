@@ -1875,7 +1875,9 @@ namespace Jvedio
                 foreach (Movie movie in vieModel.SelectedMovie)
                 {
                     if (!File.Exists(movie.filepath)) continue;
-                    bool result = await ScreenShot(movie);
+                    bool result = false;
+                    try { result = await ScreenShot(movie); }catch(Exception ex) { Logger.LogF(ex); }
+                   
                     if (result) successNum++;
                 }
                 new PopupWindow(this, $"成功截图 {successNum} / {vieModel.SelectedMovie.Count} 个影片").Show();
@@ -1892,6 +1894,9 @@ namespace Jvedio
         {
             return Task.Run(() =>
             {
+                if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return false;
+
+
                 //获得影片长度数组
                 string ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
                 if (!Directory.Exists(ScreenShotPath)) Directory.CreateDirectory(ScreenShotPath);
@@ -1912,7 +1917,7 @@ namespace Jvedio
                         p.StartInfo.CreateNoWindow = true;//不显示程序窗口
                         p.Start();//启动程序
 
-                        string str = $"ffmpeg -ss {cutoffArray[i]} -i \"{movie.filepath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.ToString().PadLeft(2, '0')}.jpg";
+                        string str = $"{Properties.Settings.Default.FFMPEG_Path} -ss {cutoffArray[i]} -i \"{movie.filepath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.ToString().PadLeft(2, '0')}.jpg";
                         Console.WriteLine(str);
                         p.StandardInput.WriteLine(str + "&exit");
                         p.StandardInput.WriteLine("exit");//结束执行，很重要的
@@ -2809,40 +2814,40 @@ namespace Jvedio
 
         public void StartDownLoadActor(List<Actress> actresses)
         {
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "BusActress.sqlite"))
-            {
-                return;
-            }
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "BusActress.sqlite"))return;
 
             downLoadActress = new DownLoadActress(actresses);
-            downLoadActress.BeginDownLoad();
-
-            downLoadActress.InfoUpdate += (s, ev) =>
+            downLoadActress?.BeginDownLoad();
+            try
             {
-                ActressUpdateEventArgs actressUpdateEventArgs = ev as ActressUpdateEventArgs;
-                for (int i = 0; i < vieModel.ActorList.Count; i++)
+                downLoadActress.InfoUpdate += (s, ev) =>
                 {
-                    if (vieModel.ActorList[i].name == actressUpdateEventArgs.Actress.name)
+                    ActressUpdateEventArgs actressUpdateEventArgs = ev as ActressUpdateEventArgs;
+                    for (int i = 0; i < vieModel.ActorList.Count; i++)
                     {
-                        try
+                        if (vieModel.ActorList[i].name == actressUpdateEventArgs.Actress.name)
                         {
-                            Dispatcher.Invoke((Action)delegate ()
+                            try
                             {
-                                vieModel.ActorList[i] = actressUpdateEventArgs.Actress;
-                                ProgressBar.Value = actressUpdateEventArgs.progressBarUpdate.value / actressUpdateEventArgs.progressBarUpdate.maximum * 100; ProgressBar.Visibility = Visibility.Visible;
-                                if (ProgressBar.Value == ProgressBar.Maximum) downLoadActress.State = DownLoadState.Completed;
-                                if (ProgressBar.Value == ProgressBar.Maximum | actressUpdateEventArgs.state == DownLoadState.Fail | actressUpdateEventArgs.state == DownLoadState.Completed) { ProgressBar.Visibility = Visibility.Hidden; }
-                            });
+                                Dispatcher.Invoke((Action)delegate ()
+                                {
+                                    vieModel.ActorList[i] = actressUpdateEventArgs.Actress;
+                                    ProgressBar.Value = actressUpdateEventArgs.progressBarUpdate.value / actressUpdateEventArgs.progressBarUpdate.maximum * 100; ProgressBar.Visibility = Visibility.Visible;
+                                    if (ProgressBar.Value == ProgressBar.Maximum) downLoadActress.State = DownLoadState.Completed;
+                                    if (ProgressBar.Value == ProgressBar.Maximum | actressUpdateEventArgs.state == DownLoadState.Fail | actressUpdateEventArgs.state == DownLoadState.Completed) { ProgressBar.Visibility = Visibility.Hidden; }
+                                });
+                            }
+                            catch (TaskCanceledException ex) { Logger.LogE(ex); }
+                            break;
                         }
-                        catch (TaskCanceledException ex) { Logger.LogE(ex); }
-                        break;
                     }
-                }
-
-
-            };
-
+                };
         }
+            catch(Exception e) { Console.WriteLine(e.Message); }
+
+
+
+}
 
 
         DownLoadActress downLoadActress;

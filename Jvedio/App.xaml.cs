@@ -21,8 +21,8 @@ namespace Jvedio
         public EventWaitHandle ProgramStarted { get; set; }
 
         protected override void OnStartup(StartupEventArgs e)
-        
         {
+
             bool createNew;
             ProgramStarted = new EventWaitHandle(false, EventResetMode.AutoReset, "Jvedio", out createNew);
             if (!createNew)

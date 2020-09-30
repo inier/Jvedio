@@ -86,6 +86,14 @@ namespace Jvedio
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
+            //更新配置文件
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
+
 
             //判断文件是否存在
             CheckFile();
@@ -93,10 +101,6 @@ namespace Jvedio
 
             //修复设置错误
             CheckSettings();
-
-
-
-
 
 
             //Properties.Settings.Default.Reset();
