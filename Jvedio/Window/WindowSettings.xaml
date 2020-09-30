@@ -471,7 +471,7 @@
                             <Image  Margin="0 5" HorizontalAlignment="Right"  Width="32" Height="32"  />
                         </Grid>
 
-                        <Grid   Margin="10 0" >
+                        <Grid   Margin="10 0" Visibility="Collapsed" >
                             <CheckBox IsChecked="{Binding EnableFC2, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 10" />
                             <Label   HorizontalAlignment="Left" Margin="70 5"  Content="FC2" Height="40" Width="80"  Style="{StaticResource BaseLabel2}"/>
                             <TextBox IsReadOnly="True"   Margin="170 5 150 5" Width="auto"     Style="{StaticResource BaseTextBox}"   Text="默认"  />

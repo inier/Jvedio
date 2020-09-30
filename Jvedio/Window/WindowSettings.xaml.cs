@@ -475,6 +475,7 @@ namespace Jvedio
             else
                 App.Current.Windows[0].Opacity = 1;
             StaticVariable.InitVariable();
+            Scan.InitSearchPattern();
             new PopupWindow(this, "保存成功").Show();
         }
 

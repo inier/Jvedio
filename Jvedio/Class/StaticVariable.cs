@@ -67,12 +67,13 @@ namespace Jvedio
                 DB = Properties.Settings.Default.DB
             };
 
+            //fc2 关站了
             EnableUrl = new enableUrl
             {
                 Bus = Properties.Settings.Default.EnableBus,
                 BusEu = Properties.Settings.Default.EnableBusEu,
                 Library = Properties.Settings.Default.EnableLibrary,
-                FC2Club = Properties.Settings.Default.EnableFC2,
+                FC2Club = false,
                 Jav321 = Properties.Settings.Default.Enable321,
                 DMM = Properties.Settings.Default.EnableDMM,
                 DB = Properties.Settings.Default.EnableDB
