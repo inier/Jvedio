@@ -19,7 +19,11 @@ using static Jvedio.StaticVariable;
 namespace Jvedio
 {
 
-    //数据库全部异步，加锁判断，有时间再改
+    //数据库全部异步，加锁判断
+
+    /// <summary>
+    /// 该类使用静态类，一次只能访问一个数据库文件的一个表
+    /// </summary>
 
     public class DataBase
     {

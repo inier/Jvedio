@@ -888,25 +888,33 @@ namespace Jvedio.ViewModel
         public void GetMoviebyActressAndVetioType(Actress actress)
         {
             cdb = new DataBase();
-            List<Movie> models;
+            List<Movie> movies;
             if (actress.id == "")
             {
-                if (VedioType == 0) { models = cdb.SelectMoviesBySql($"SELECT * from movie where actor like '%{actress.name}%'"); }
-                else { models = cdb.SelectMoviesBySql($"SELECT * from movie where actor like '%{actress.name}%' and vediotype={(int)VedioType}"); }
+                if (VedioType == 0) { movies = cdb.SelectMoviesBySql($"SELECT * from movie where actor like '%{actress.name}%'"); }
+                else { movies = cdb.SelectMoviesBySql($"SELECT * from movie where actor like '%{actress.name}%' and vediotype={(int)VedioType}"); }
             }
             else
             {
-                if (VedioType == 0) { models = cdb.SelectMoviesBySql($"SELECT * from movie where actorid like '%{actress.id}%'"); }
-                else { models = cdb.SelectMoviesBySql($"SELECT * from movie where actorid like '%{actress.id}%' and vediotype={(int)VedioType}"); }
+                if (VedioType == 0) { movies = cdb.SelectMoviesBySql($"SELECT * from movie where actorid like '%{actress.id}%'"); }
+                else { movies = cdb.SelectMoviesBySql($"SELECT * from movie where actorid like '%{actress.id}%' and vediotype={(int)VedioType}"); }
             }
             cdb.CloseDB();
 
             MovieList = new ObservableCollection<Movie>();
-            models?.ForEach(arg =>
+            if (movies != null || movies.Count>0)
             {
-                if (arg.actor.Split(new char[] { ' ', '/' }).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);
-            });
-            Sort();
+                movies.ForEach(arg =>
+                {
+                    try {if (arg.actor.Split(new char[] { ' ', '/' }).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);  }catch(Exception e)
+                    {
+                        Logger.LogE(e);
+                    }  
+                });
+                Sort();
+            }
+
+
            
         }
 
