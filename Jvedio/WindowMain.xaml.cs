@@ -1936,11 +1936,11 @@ namespace Jvedio
 
         public Task<bool> ScreenShot(Movie movie)
         {
+            try
+            {
             return Task.Run(() =>
             {
                 if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return false;
-
-
                 //获得影片长度数组
                 string ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
                 if (!Directory.Exists(ScreenShotPath)) Directory.CreateDirectory(ScreenShotPath);
@@ -1975,15 +1975,11 @@ namespace Jvedio
                 {
                     return false;
                 }
-
-
-
-
-
-
-
-
-            });
+            }).TimeoutAfter(TimeSpan.FromSeconds(Properties.Settings.Default.ScreenShot_TimeOut));
+            }catch(TimeoutException ex)
+            {
+                return Task.Run(()=> { return false; });
+            }
         }
 
 

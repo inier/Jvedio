@@ -27,7 +27,7 @@ namespace Jvedio
 
         public static string[] GetCutOffArray(string path)
         {
-            if (Properties.Settings.Default.ScreenShotNum <= 0 || Properties.Settings.Default.ScreenShotNum > 20) Properties.Settings.Default.ScreenShotNum = 10;
+            if (Properties.Settings.Default.ScreenShotNum <= 0 || Properties.Settings.Default.ScreenShotNum > 30) Properties.Settings.Default.ScreenShotNum = 10;
             string[] result = new string[Properties.Settings.Default.ScreenShotNum+2];
             string Duration = GetVedioDuration(path);
             uint Second = DurationToSecond(Duration);

@@ -416,7 +416,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
 
                         <StackPanel Orientation="Horizontal" Margin="10">
                             <TextBlock Text="强制关闭连接" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
@@ -682,16 +682,44 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Hidden" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Visible" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TextBlock Text="ffmpeg.exe 路径" Style="{StaticResource TextBlockTitle}" Margin="20 20"/>
                         <WrapPanel Orientation="Horizontal" Margin="20 5">
                             <TextBox HorizontalAlignment="Left"  Style="{StaticResource BaseTextBox}"  Text="{Binding FFMPEG_Path, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="400" TextAlignment="Left"  Height="auto" Margin="5 2"/>
                             <Button Style="{StaticResource ButtonStyleFill}" Content="选择文件夹" Height="25" Width="100" Click="SetFFMPEGPath" Margin="5 2"/>
                         </WrapPanel>
-                        <WrapPanel Orientation="Horizontal" Margin="20 5">
-                            <TextBlock ToolTip="[1-20]" Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="影片截图数目"/>
+                        <WrapPanel Orientation="Horizontal" Margin="20 10">
+                            <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="影片数目"/>
+                            <Slider x:Name="ScreenshotNumSlider" Value="{Binding ScreenShotNum,Source={x:Static p:Settings.Default},Mode=TwoWay}" Minimum="5" Maximum="30" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
 
-                            <TextBox ToolTip="[1-20]" TextChanged="ScreenShotNumTextBox_TextChanged" Style="{StaticResource BaseTextBox}" CaretBrush="{DynamicResource ForegroundSearch}" BorderThickness="0" Text="{Binding ScreenShotNum, Mode=TwoWay, Source={x:Static p:Settings.Default}}" HorizontalAlignment="Left" Margin="5 2" Height="30" Width="50" TextAlignment="Center"   />
+
+                            <TextBlock Height="auto"   Style="{StaticResource BaseTextBlock}" TextAlignment="Center" VerticalAlignment="Center"  Text="{Binding Path=Value, Mode=OneWay, ElementName=ScreenshotNumSlider}" HorizontalAlignment="Left" Margin="5 2" Width="50"   />
+
+
+
+
+                        </WrapPanel>
+                        <WrapPanel Orientation="Horizontal" Margin="20 10">
+                            <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="线程数量"/>
+                            <Slider x:Name="ThreadNumSlider" Value="{Binding ScreenShot_ThreadNum,Source={x:Static p:Settings.Default},Mode=TwoWay}" Minimum="1" Maximum="10" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
+
+
+                            <TextBlock Height="auto"   Style="{StaticResource BaseTextBlock}" TextAlignment="Center" VerticalAlignment="Center"  Text="{Binding Path=Value, Mode=OneWay, ElementName=ThreadNumSlider}" HorizontalAlignment="Left" Margin="5 2" Width="50"   />
+                       
+                        
+                        
+                        
+                        </WrapPanel>
+                        <WrapPanel Orientation="Horizontal" Margin="20 10">
+                            <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="截图超时"/>
+                            <Slider x:Name="ScreenShotTimeoutSlider" Value="{Binding ScreenShot_TimeOut,Source={x:Static p:Settings.Default},Mode=TwoWay}" Minimum="2" Maximum="60" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
+
+
+                            <TextBlock Height="auto"   Style="{StaticResource BaseTextBlock}" TextAlignment="Center" VerticalAlignment="Center"  Text="{Binding Path=Value, Mode=OneWay, ElementName=ScreenShotTimeoutSlider}" HorizontalAlignment="Left" Margin="5 2" Width="50"   />
+
+
+
+
                         </WrapPanel>
 
                     </StackPanel>

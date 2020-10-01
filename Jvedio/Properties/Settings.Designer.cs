@@ -1690,5 +1690,29 @@ namespace Jvedio.Properties {
                 this["Timeout_stream"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ScreenShot_ThreadNum {
+            get {
+                return ((int)(this["ScreenShot_ThreadNum"]));
+            }
+            set {
+                this["ScreenShot_ThreadNum"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int ScreenShot_TimeOut {
+            get {
+                return ((int)(this["ScreenShot_TimeOut"]));
+            }
+            set {
+                this["ScreenShot_TimeOut"] = value;
+            }
+        }
     }
 }

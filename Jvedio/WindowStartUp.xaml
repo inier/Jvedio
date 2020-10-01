@@ -161,7 +161,7 @@
             </StackPanel>
         </StackPanel>
 
-        <Border x:Name="SelectDbBorder" Visibility="Visible" CornerRadius="8" Background="{DynamicResource BackgroundMain}" BorderBrush="Gray" BorderThickness="0"  >
+        <Border x:Name="SelectDbBorder" Visibility="Hidden" CornerRadius="8" Background="{DynamicResource BackgroundMain}" BorderBrush="Gray" BorderThickness="0"  >
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100*"/>
