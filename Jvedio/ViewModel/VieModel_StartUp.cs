@@ -49,6 +49,7 @@ namespace Jvedio.ViewModel
 
 
             if (!DataBases.Contains("info")) DataBases.Add("info");
+            if (!DataBases.Contains("新建视频库")) DataBases.Add("新建视频库");
 
 
         }

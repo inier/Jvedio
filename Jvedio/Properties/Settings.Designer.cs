@@ -1630,5 +1630,65 @@ namespace Jvedio.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Timeout_forcestop {
+            get {
+                return ((int)(this["Timeout_forcestop"]));
+            }
+            set {
+                this["Timeout_forcestop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Timeout_tcp {
+            get {
+                return ((int)(this["Timeout_tcp"]));
+            }
+            set {
+                this["Timeout_tcp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Timeout_http {
+            get {
+                return ((int)(this["Timeout_http"]));
+            }
+            set {
+                this["Timeout_http"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Timeout_download {
+            get {
+                return ((int)(this["Timeout_download"]));
+            }
+            set {
+                this["Timeout_download"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Timeout_stream {
+            get {
+                return ((int)(this["Timeout_stream"]));
+            }
+            set {
+                this["Timeout_stream"] = value;
+            }
+        }
     }
 }

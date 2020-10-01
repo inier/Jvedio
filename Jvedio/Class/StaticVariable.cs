@@ -44,6 +44,11 @@ namespace Jvedio
 
         public static string DataBaseConfigPath = "DataBase\\Config.ini";
 
+        //禁止的文件名
+        public static readonly char[] BANFILECHAR =  {'\\','#','%', '&', '*', '|', ':', '"', '<', '>', '?', '/','.' }; //https://docs.microsoft.com/zh-cn/previous-versions/s6feh8zw(v=vs.110)?redirectedfrom=MSDN
+        //保留名称
+
+
         public static void InitVariable()
         {
             if (Directory.Exists(Properties.Settings.Default.BasePicPath))

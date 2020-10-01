@@ -49,10 +49,24 @@ namespace Jvedio
             TextBox TextBox = stackPanel.Children[1] as TextBox;
 
             string name = TextBox.Text.ToLower();
-            if (name== "info")
-                Properties.Settings.Default.DataBasePath=AppDomain.CurrentDomain.BaseDirectory +  "info.sqlite";
+            if (name == "info")
+                Properties.Settings.Default.DataBasePath = AppDomain.CurrentDomain.BaseDirectory + "info.sqlite";
+            else if (name == "新建视频库")
+            {
+                //重命名
+                TextBox.IsEnabled = true;
+                TextBox.IsReadOnly = false;
+                TextBox.Text = "我的视频";
+                TextBox.Focus();
+                TextBox.SelectAll();
+                TextBox.Cursor = Cursors.IBeam;
+                return;
+            }
             else
                 Properties.Settings.Default.DataBasePath = AppDomain.CurrentDomain.BaseDirectory + $"\\DataBase\\{name}.sqlite";
+
+
+            if (!File.Exists(Properties.Settings.Default.DataBasePath)) return;
 
             SelectDbBorder.Visibility = Visibility.Hidden;
 
@@ -128,6 +142,7 @@ namespace Jvedio
             Identify.InitFanhaoList();
             Scan.InitSearchPattern();
             StaticVariable.InitVariable();
+            Net.Init();
 
             //创建图片文件夹
             if (!Directory.Exists(StaticVariable.BasePicPath + "ScreenShot\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "ScreenShot\\"); }
@@ -135,31 +150,12 @@ namespace Jvedio
             if (!Directory.Exists(StaticVariable.BasePicPath + "BigPic\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "BigPic\\"); }
             if (!Directory.Exists(StaticVariable.BasePicPath + "ExtraPic\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "ExtraPic\\"); }
             if (!Directory.Exists(StaticVariable.BasePicPath + "Actresses\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "Actresses\\"); }
-
-
-
-
-
-
-
-            //输入密码
-            //DialogInput dialogInput = new DialogInput(this,"请输入密码", "123");
-            //if (dialogInput .ShowDialog()== false) { this.Close(); } else
-            //{
-            //    string password = dialogInput.Text;
-            //    if (password != "123")
-            //    {
-            //        this.Close();
-            //    }
-            //}
-
-
-
             
 
+
+            //默认打开某个数据库
             if (Properties.Settings.Default.OpenDataBaseDefault)
             {
-
                 if (Properties.Settings.Default.ScanGivenPath)
                 {
 
@@ -332,44 +328,7 @@ namespace Jvedio
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            NewDBGrid.Visibility = Visibility.Visible;
 
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            NewDBGrid.Visibility = Visibility.Hidden;
-        }
-
-        public void HideGrid(object sender, MouseButtonEventArgs e)
-        {
-            NewDBGrid.Visibility = Visibility.Hidden;
-        }
-
-
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            string name = nameTextBox.Text.ToLower();
-
-
-            if (vieModel_StartUp.DataBases.Contains(name))
-            {
-                new Msgbox(this, "已存在").ShowDialog();
-                return;
-            }
-
-            DataBase cdb = new DataBase("DataBase\\" +  name);
-            cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-            cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
-            cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
-            cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
-            cdb.CloseDB();
-            vieModel_StartUp.DataBases.Add(name);
-            NewDBGrid.Visibility = Visibility.Hidden;
-
-        }
 
         private void MoveWindow(object sender, MouseEventArgs e)
         {
@@ -395,7 +354,7 @@ namespace Jvedio
                 foreach(var item in names)
                 {
                     string name = item.Split('\\').Last().Split('.').First().ToLower();
-                    if (name == "info") continue;
+                    if (name == "info" || name == "新建视频库") return;
 
                     if (!IsProPerSqlite(item)) continue;
 
@@ -434,19 +393,20 @@ namespace Jvedio
 
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            optionImage = sender as Image;
+            optionImage = (sender as Border).Child as Image;
             OptionPopup.IsOpen = true;
         }
 
         private void DelSqlite(object sender, RoutedEventArgs e)
         {
             string name = "";
-            StackPanel sp = optionImage.Parent as StackPanel;
+            Border border = optionImage.Parent as Border;
+            StackPanel sp = border.Parent as StackPanel;
             StackPanel stackPanel = sp.Children.OfType<StackPanel>().First();
             TextBox TextBox = stackPanel.Children[1] as TextBox;
             name = TextBox.Text.ToLower();
 
-            if (name == "info") return;
+            if (name == "info" || name == "新建视频库") return;
 
 
             if (new Msgbox(this, $"是否确认删除{name}?").ShowDialog() == true)
@@ -470,10 +430,14 @@ namespace Jvedio
             }
         }
 
+        public string beforeRename="";
+
         private void RenameSqlite(object sender, RoutedEventArgs e)
         {
             string name = "";
-            StackPanel sp = optionImage.Parent as StackPanel;
+
+            Border border = optionImage.Parent as Border;
+            StackPanel sp = border.Parent as StackPanel;
             StackPanel stackPanel = sp.Children.OfType<StackPanel>().First();
             TextBox TextBox = stackPanel.Children[1] as TextBox;
             name = TextBox.Text.ToLower();
@@ -481,8 +445,128 @@ namespace Jvedio
             if (name == "info") return;
 
             //重命名
+            OptionPopup.IsOpen = false;
+            TextBox.IsEnabled = true;
+            TextBox.IsReadOnly = false;
+            TextBox.Focus();
+            TextBox.SelectAll();
+            TextBox.Cursor = Cursors.IBeam;
+            beforeRename = TextBox.Text;
+        }
 
 
+        private void Rename(TextBox textBox)
+        {
+            Console.WriteLine("Rename");
+            string name = textBox.Text.ToLower();
+            if (name == beforeRename) {
+
+                textBox.IsEnabled = false;
+                textBox.IsReadOnly = true;
+                textBox.Cursor = Cursors.Hand;
+                beforeRename = "";
+                return; 
+            }
+
+
+            if (beforeRename == "")
+            {
+                if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrEmpty(name) && !vieModel_StartUp.DataBases.Contains(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) ==-1 )
+                {
+                //新建
+                DataBase cdb = new DataBase("DataBase\\" + name);
+                cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
+                cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
+                cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
+                cdb.CloseDB();
+                if (vieModel_StartUp.DataBases.Contains("新建视频库")) vieModel_StartUp.DataBases.Remove("新建视频库");
+
+                textBox.IsEnabled = false;
+                textBox.IsReadOnly = true;
+                textBox.Cursor = Cursors.Hand;
+                
+                vieModel_StartUp.DataBases.Add(name);
+                vieModel_StartUp.DataBases.Add("新建视频库");
+                }
+                else
+                {
+                    textBox.Text = "新建视频库";
+                }
+            }
+
+            else
+            {
+                //重命名
+                if (vieModel_StartUp.DataBases.Contains(name))
+                {
+                    textBox.Text = beforeRename; //重复的
+                }
+                else
+                {
+                    //重命名
+                    if (name.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) == -1)
+                    {
+                        try
+                        {
+                            File.Move(AppDomain.CurrentDomain.BaseDirectory + $"DataBase\\{beforeRename}.sqlite",
+                                AppDomain.CurrentDomain.BaseDirectory + $"DataBase\\{name}.sqlite");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Logger.LogE(ex);
+                        }
+                    }
+                    else
+                    {
+                        textBox.Text = beforeRename;
+                    }
+
+
+                }
+                beforeRename = "";
+            }
+
+            textBox.IsEnabled = false;
+            textBox.IsReadOnly = true;
+            textBox.Cursor = Cursors.Hand;
+           
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("TextBox_LostFocus");
+            TextBox textBox = sender as TextBox;
+            Rename(textBox);
+        }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (e.Key == Key.Enter)
+            {
+                LoadButton.Focus();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                textBox.IsEnabled = false;
+                textBox.IsReadOnly = true;
+                textBox.Cursor = Cursors.Hand;
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Border border = optionImage.Parent as Border;
+            StackPanel sp = border.Parent as StackPanel;
+            StackPanel stackPanel = sp.Children.OfType<StackPanel>().First();
+            TextBox TextBox = stackPanel.Children[1] as TextBox;
+            string name = TextBox.Text.ToLower();
+            Properties.Settings.Default.OpenDataBaseDefault = true;
+            Properties.Settings.Default.DataBasePath = AppDomain.CurrentDomain.BaseDirectory + $"\\DataBase\\{name}.sqlite";
+            OptionPopup.IsOpen = false;
+            LoadDataBase(stackPanel, new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, MouseButton.Left));
         }
     }
 }

@@ -25,6 +25,16 @@ namespace Jvedio
         public static int READWRITETIMEOUT = 3000;
 
 
+        public static void Init()
+        {
+            TCPTIMEOUT = Properties.Settings.Default.Timeout_tcp;
+            HTTPTIMEOUT = Properties.Settings.Default.Timeout_forcestop;
+            REQUESTTIMEOUT = Properties.Settings.Default.Timeout_http * 1000;
+            FILE_REQUESTTIMEOUT = Properties.Settings.Default.Timeout_download * 1000;
+            READWRITETIMEOUT = Properties.Settings.Default.Timeout_stream * 1000;
+        }
+
+
 
         public enum HttpMode
         {

@@ -346,7 +346,7 @@
 
 
 
-                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
+                    <StackPanel x:Name="ScanPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto" CanVerticallyScroll="True">
 
                         <StackPanel Orientation="Vertical" Margin="5 20 0 5" Visibility="Collapsed">
                             <CheckBox Checked="ListenCheckBox_Checked" x:Name="ListenCheckBox" IsChecked="{Binding ListenAllDir, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="监听所有文件改动并更新数据库（不包括C盘）" Height="40"/>
@@ -416,7 +416,39 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="强制关闭连接" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="HttpTimeoutSlider" Value="{Binding Timeout_forcestop, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="2" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElementName=HttpTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="Http 超时" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="RequestTimeoutSlider" Value="{Binding Timeout_http, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="2" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElementName=RequestTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="Tcp 超时" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="TcpTimeoutSlider" Value="{Binding Timeout_tcp, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="2" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElementName=TcpTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="图片下载超时" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="DownloadTimeoutSlider" Value="{Binding Timeout_download, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="5" Maximum="20" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElementName=DownloadTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="流读取超时" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="StreamTimeoutSlider" Value="{Binding Timeout_stream, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="3" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElementName=StreamTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+
 
                         <TextBlock Style="{StaticResource BaseTextBlock}" Text="请输入网址 ↓"/>
                         <Grid  Margin="10 0">

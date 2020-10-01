@@ -22,6 +22,36 @@
     <Window.Resources>
         <local:StringToUriStringConverterMain x:Key="StringToUriStringConverterMain"/>
 
+
+        <Style x:Key="OptionBorderStyle" TargetType="Border">
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Children[1].Children[1].Text,RelativeSource={RelativeSource AncestorType={x:Type StackPanel},Mode=FindAncestor}}" Value="新建视频库">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+
+        </Style>
+
+
+        <!--更改图片-->
+        <Style x:Key="ImageStyle" TargetType="Image">
+            <Setter Property="Source" Value="pack://application:,,,/Resources/Image/StartUp/库.png"/>
+            <Setter Property="Width" Value="30"/>
+
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=Children[1].Text,RelativeSource={RelativeSource AncestorType={x:Type StackPanel},Mode=FindAncestor}}" Value="新建视频库">
+                    <Setter Property="Source" Value="pack://application:,,,/Resources/Image/StartUp/新建.png"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+
+        </Style>
+        
+        
+        
+
         <Style x:Key="SetButton" TargetType="{x:Type Button}">
 
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -131,16 +161,16 @@
             </StackPanel>
         </StackPanel>
 
-        <Border x:Name="SelectDbBorder" Visibility="Visible" CornerRadius="8" Background="{DynamicResource BackgroundMain}" BorderBrush="Gray" BorderThickness="0" MouseMove="MoveWindow" >
+        <Border x:Name="SelectDbBorder" Visibility="Visible" CornerRadius="8" Background="{DynamicResource BackgroundMain}" BorderBrush="Gray" BorderThickness="0"  >
             <Grid>
                 <Grid.RowDefinitions>
-                <RowDefinition Height="100*"/>
-                <RowDefinition Height="900*"/>
-            </Grid.RowDefinitions>
+                    <RowDefinition Height="100*"/>
+                    <RowDefinition Height="900*"/>
+                </Grid.RowDefinitions>
 
-                <Border CornerRadius="8 8 0 0" Grid.Row="0" Background="{DynamicResource BackgroundTitle}">
+                <Border CornerRadius="8 8 0 0" Grid.Row="0" Background="{DynamicResource BackgroundTitle}" MouseMove="MoveWindow">
                     <Grid >
-                        <TextBlock   Text="选择视频库" Style="{StaticResource BaseTextBlock}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"/>
+                        <TextBlock    Text="选择视频库" Style="{StaticResource BaseTextBlock}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center"/>
                         <Border Height="30" Width="30" Margin="10 0" HorizontalAlignment="Right"  VerticalAlignment="Center" PreviewMouseLeftButtonUp="Border_PreviewMouseLeftButtonUp"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
                             <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                         </Border>
@@ -168,7 +198,7 @@
                                 <Button Style="{StaticResource SetButton}"    Content="删除" Click="DelSqlite"  />
                                 <Button  Style="{StaticResource SetButton}"   Content="重命名"   Click="RenameSqlite"   />
                                 <Button  Style="{StaticResource SetButton}"   Content="设置密码" IsEnabled="False"    />
-                                <Button  Style="{StaticResource SetButton}"   Content="设为默认打开"  />
+                                <Button  Style="{StaticResource SetButton}"   Content="设为默认打开" Click="Button_Click"  />
                             </StackPanel>
                         </Border>
                     </Popup>
@@ -177,9 +207,9 @@
 
 
                     <ScrollViewer Grid.Row="0"   Margin="5 5 5 5"    Panel.ZIndex="4" Background="Transparent"   x:Name="scrollViewer"      >
-                        
-                        
-                        
+
+
+
                         <ItemsControl   ItemsSource="{Binding DataBases}" >
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -194,11 +224,13 @@
                                     <WrapPanel>
 
                                         <Border Width="200" Panel.ZIndex="5"  Margin="5" CornerRadius="5" Style="{StaticResource DBBorder}" Cursor="Arrow" >
-                                            <StackPanel Orientation="Vertical"  Margin="10 5">
-                                                <Image Source="pack://application:,,,/Resources/Image/StartUp/选项.png" Width="15" Margin="4" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
-                                                <StackPanel Orientation="Horizontal" Margin="10 5 20 5" MouseLeftButtonUp="LoadDataBase" Cursor="Hand">
-                                                    <Image Margin="10" Source="pack://application:,,,/Resources/Image/StartUp/库.png" Width="30" />
-                                                    <TextBox IsEnabled="False" IsReadOnly="True" Text="{Binding .,Mode=TwoWay}" Margin="5" Grid.Row="1" Style="{StaticResource BaseTextBox}" VerticalAlignment="Center" FontSize="20" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+                                            <StackPanel Orientation="Vertical"  Margin="5 5">
+                                                <Border Style="{StaticResource OptionBorderStyle}"  Height="20" Background="Transparent" Width="auto" Margin="4 0" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonUp="Image_MouseLeftButtonUp">
+                                                    <Image Source="pack://application:,,,/Resources/Image/StartUp/选项.png" Width="15" Margin="2"  />
+                                                </Border>
+                                                <StackPanel Orientation="Horizontal" Margin="5 2 20 2" MouseLeftButtonUp="LoadDataBase" Cursor="Hand">
+                                                    <Image Style="{StaticResource ImageStyle}" Margin="10 2"  />
+                                                    <TextBox Width="180" KeyUp="TextBox_KeyUp" LostFocus="TextBox_LostFocus" IsEnabled="False" IsReadOnly="True" Text="{Binding .,Mode=TwoWay}" Margin="5" Grid.Row="1" Style="{StaticResource BaseTextBox}" VerticalAlignment="Center" FontSize="20" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
                                                 </StackPanel>
                                             </StackPanel>
                                         </Border>
@@ -211,9 +243,7 @@
                     <Grid  Grid.Row="1">
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
-                            <Button Style="{StaticResource ButtonStyleFill}" Content="新建" Width="130" Height="30" Margin="20 5" Click="Button_Click" />
-                            <Button Style="{StaticResource ButtonStyleFill}" Content="导入" Width="130" Height="30" Margin="20 5" Click="Button_Click_4" />
+                            <Button x:Name="LoadButton"  Style="{StaticResource ButtonStyleFill}" Content="导入" Width="130" Height="30" Margin="20 5" Click="Button_Click_4" />
 
                         </StackPanel>
 
@@ -227,42 +257,10 @@
 
 
                 </Grid>
-                
 
-        </Grid>
+
+            </Grid>
         </Border>
-
-
-        <!--新建数据库-->
-
-        <Grid x:Name="NewDBGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="auto" Width="500" Visibility="Hidden" >
-            <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5"  />
-
-            <Border Height="30" Width="30" HorizontalAlignment="Right"  VerticalAlignment="Top" PreviewMouseLeftButtonUp="HideGrid"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
-                <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
-            </Border>
-
-            <StackPanel Orientation="Vertical" Margin="0 50 0 20">
-
-                <StackPanel Orientation="Horizontal" Margin="20 10" HorizontalAlignment="Center">
-                    <TextBlock Text="名称*" Style="{StaticResource BaseTextBlock}" Margin="50 2"  VerticalAlignment="Center"/>
-                    <TextBox x:Name="nameTextBox" IsReadOnly="False" Width="200" Style="{StaticResource BaseTextBox}"/>
-                </StackPanel>
-
-
-
-                <StackPanel Orientation="Horizontal" Margin="20 10" HorizontalAlignment="Center">
-                    <Button Content="确认" Style="{StaticResource ButtonStyleFill}"  Height="30" Width="100" Margin="20 10" Click="Button_Click_3"/>
-                    <Button Content="取消" Style="{StaticResource ButtonStyleFill}"  Height="30" Width="100" Margin="20 10" Click="Button_Click_1"/>
-                </StackPanel>
-
-
-
-            </StackPanel>
-
-        </Grid>
-
-
 
 
 
