@@ -45,12 +45,10 @@ namespace Jvedio
         public async void LoadDataBase(object sender, MouseButtonEventArgs e)
         {
             //加载数据库
-            Border border = sender as Border;
-            StackPanel stackPanel = border.Child as StackPanel;
+            StackPanel stackPanel = sender as StackPanel;
+            TextBox TextBox = stackPanel.Children[1] as TextBox;
 
-            TextBlock textBlock = stackPanel.Children[1] as TextBlock;
-
-            string name = textBlock.Text.ToLower();
+            string name = TextBox.Text.ToLower();
             if (name== "info")
                 Properties.Settings.Default.DataBasePath=AppDomain.CurrentDomain.BaseDirectory +  "info.sqlite";
             else
@@ -350,15 +348,10 @@ namespace Jvedio
             NewDBGrid.Visibility = Visibility.Hidden;
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             string name = nameTextBox.Text.ToLower();
-            string password = passwordTextBox.Text;
 
 
             if (vieModel_StartUp.DataBases.Contains(name))
@@ -367,21 +360,14 @@ namespace Jvedio
                 return;
             }
 
-
-
-
             DataBase cdb = new DataBase("DataBase\\" +  name);
             cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
             cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
             cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
             cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
             cdb.CloseDB();
-
             vieModel_StartUp.DataBases.Add(name);
-
             NewDBGrid.Visibility = Visibility.Hidden;
-
-            new PopupWindow(this, $"成功创建 {name}.sqlite").Show();
 
         }
 
@@ -391,40 +377,6 @@ namespace Jvedio
             if (e.LeftButton == MouseButtonState.Pressed )
             {
                 this.DragMove();
-            }
-        }
-
-        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            string name = "";
-            Border border = sender as Border;
-            Grid grid= border.Parent as Grid;
-            Border border1 = grid.Children[1] as Border;
-            StackPanel stackPanel = border1.Child as StackPanel;
-            TextBlock textBlock = stackPanel.Children[1] as TextBlock;
-            name = textBlock.Text.ToLower();
-
-            if (name == "info") return;
-
-
-            if (new Msgbox(this, $"是否确认删除{name}?").ShowDialog() == true)
-            {
-                string dirpath = DateTime.Now.ToString("yyyyMMddHHss");
-                Directory.CreateDirectory($"BackUp\\{dirpath}" );
-                if (File.Exists($"DataBase\\{name}.sqlite"))
-                {
-                    //备份
-                    File.Copy($"DataBase\\{name}.sqlite", $"BackUp\\{dirpath}\\{name}.sqlite", true);
-                    //删除
-
-                    File.Delete($"DataBase\\{name}.sqlite");
-
-                    vieModel_StartUp.DataBases.Remove(name);
-
-                }
-
-
-
             }
         }
 
@@ -471,6 +423,66 @@ namespace Jvedio
 
 
             }
+        }
+
+        private void Border_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
+
+        Image optionImage;
+
+        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            optionImage = sender as Image;
+            OptionPopup.IsOpen = true;
+        }
+
+        private void DelSqlite(object sender, RoutedEventArgs e)
+        {
+            string name = "";
+            StackPanel sp = optionImage.Parent as StackPanel;
+            StackPanel stackPanel = sp.Children.OfType<StackPanel>().First();
+            TextBox TextBox = stackPanel.Children[1] as TextBox;
+            name = TextBox.Text.ToLower();
+
+            if (name == "info") return;
+
+
+            if (new Msgbox(this, $"是否确认删除{name}?").ShowDialog() == true)
+            {
+                string dirpath = DateTime.Now.ToString("yyyyMMddHHss");
+                Directory.CreateDirectory($"BackUp\\{dirpath}");
+                if (File.Exists($"DataBase\\{name}.sqlite"))
+                {
+                    //备份
+                    File.Copy($"DataBase\\{name}.sqlite", $"BackUp\\{dirpath}\\{name}.sqlite", true);
+                    //删除
+
+                    File.Delete($"DataBase\\{name}.sqlite");
+
+                    vieModel_StartUp.DataBases.Remove(name);
+
+                }
+
+
+
+            }
+        }
+
+        private void RenameSqlite(object sender, RoutedEventArgs e)
+        {
+            string name = "";
+            StackPanel sp = optionImage.Parent as StackPanel;
+            StackPanel stackPanel = sp.Children.OfType<StackPanel>().First();
+            TextBox TextBox = stackPanel.Children[1] as TextBox;
+            name = TextBox.Text.ToLower();
+
+            if (name == "info") return;
+
+            //重命名
+
+
         }
     }
 }

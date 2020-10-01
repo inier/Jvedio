@@ -394,6 +394,9 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <Resource Include="Resources\Image\StartUp\库.png" />
+    <Resource Include="Resources\Image\StartUp\新建.png" />
+    <Resource Include="Resources\Image\StartUp\选项.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
