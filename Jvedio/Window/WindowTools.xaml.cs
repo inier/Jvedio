@@ -320,7 +320,7 @@ namespace Jvedio
                     {
                         await Task.Run(() =>
                     {
-                        DataBase cdb = new DataBase("Info");
+                        DataBase cdb = new DataBase();
                         cdb.InsertFromAccess(AccessPath);
                         cdb.CloseDB();
                     });
