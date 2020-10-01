@@ -48,6 +48,10 @@ namespace Jvedio
         public Point MosueDownPoint;
 
 
+        public CancellationTokenSource RefreshScanCTS;
+        public CancellationToken RefreshScanCT;
+
+
         public Settings WindowSet = null;
         public VieModel_Main vieModel;
         public WindowSearch windowSearch = null;
@@ -1283,6 +1287,48 @@ namespace Jvedio
         public void ShowDownloadMenu(object sender, MouseButtonEventArgs e)
         {
             DownloadPopup.IsOpen = true;
+        }
+
+
+
+
+
+
+        public async void RefreshScanPath(object sender, MouseButtonEventArgs e)
+        {
+            if (DownLoader?.State == DownLoadState.DownLoading)
+            {
+                new PopupWindow(this, "停止当前下载后再试").Show();
+                return;
+            }
+                
+            //刷新文件夹
+
+            if (vieModel.IsScanning) {
+                vieModel.IsScanning = false;
+                RefreshScanCTS?.Cancel();
+            }
+            else
+            {
+                vieModel.IsScanning = true;
+                RefreshScanCTS = new CancellationTokenSource();
+                RefreshScanCTS.Token.Register(() => Console.WriteLine("取消任务"));
+                RefreshScanCT = RefreshScanCTS.Token;
+                await Task.Run(() =>
+                {
+                    List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), RefreshScanCT);
+                    DataBase cdb = new DataBase();
+                    Scan.DistinctMovieAndInsert(filepaths, RefreshScanCT);
+                    cdb.CloseDB();
+                    vieModel.IsScanning = false;
+
+                    this.Dispatcher.BeginInvoke(new Action(() => { vieModel.Reset(); }), System.Windows.Threading.DispatcherPriority.Render);
+
+                    
+                }, RefreshScanCTS.Token);
+
+            }
+
         }
 
 

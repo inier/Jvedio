@@ -891,6 +891,49 @@
                                 <Image Source="Resources/Picture/download.png" Height="24" HorizontalAlignment="Left" Margin="3 0"></Image>
                             </Grid>
 
+                            <Grid x:Name="ScanFileGrid"   Width="auto" HorizontalAlignment="Left"  MouseLeftButtonUp="RefreshScanPath" Cursor="Hand" Height="30" Margin="5 0" ToolTip="刷新文件夹">
+                                <Border CornerRadius="5"  >
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="Background" Value="{DynamicResource BackgroundTab}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsScanning}" Value="True">
+                                                    <Setter Property="Background" Value="LightYellow"/>
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard  >
+                                                            <Storyboard>
+                                                                <DoubleAnimation   From="1" To="0.5" Duration="0:0:0.5" Storyboard.TargetProperty="Opacity" RepeatBehavior="Forever" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard  >
+                                                            <Storyboard>
+                                                                <DoubleAnimation   From="0" To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                                           </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                                <Image  Height="24" HorizontalAlignment="Left" Margin="3 0">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property='Source' Value="Resources/Picture/刷新文件夹.png"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsScanning}" Value="True">
+                                                    <Setter Property="Source" Value="Resources/Picture/停止.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                    
+                                    
+                                </Image>
+                            </Grid>
+
                             <Popup  VerticalOffset="10" HorizontalOffset="-20" x:Name="DownloadPopup" Placement="Bottom" PopupAnimation="Fade"  PlacementTarget="{Binding ElementName=DownloadGrid}" AllowsTransparency="True" StaysOpen="False" IsOpen="False">
                                 <Border Background="{DynamicResource BackgroundMenu}"   Margin="2" >
                                     <Border.Effect>

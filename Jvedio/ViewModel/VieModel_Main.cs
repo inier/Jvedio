@@ -302,6 +302,17 @@ namespace Jvedio.ViewModel
 
 
         #region "Variable"
+        public bool _IsScanning = false;
+        public bool IsScanning
+        {
+            get { return _IsScanning; }
+            set
+            {
+                _IsScanning = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         public bool _EnableEditActress = false;
 

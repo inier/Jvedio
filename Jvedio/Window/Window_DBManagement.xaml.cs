@@ -134,10 +134,19 @@ namespace Jvedio
                     File.Copy($"DataBase\\{name}.sqlite", $"BackUp\\{dirpath}\\{name}.sqlite", true);
                     //删除
 
-                    File.Delete($"DataBase\\{name}.sqlite");
+                    try
+                    {
+                        File.Delete($"DataBase\\{name}.sqlite");
 
-                    vieModel_DBManagement.DataBases.Remove(name);
-                    RefreshMain();
+                        vieModel_DBManagement.DataBases.Remove(name);
+                        RefreshMain();
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.LogF(ex);
+                        MessageBox.Show(ex.Message);
+                    }
+
 
                 }
 

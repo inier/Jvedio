@@ -796,10 +796,10 @@
                                     <Label Content="缩略图" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
                                     <WrapPanel Orientation="Horizontal" Margin="25 0">
                                         <Label Content="高度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider10"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=SmallImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider10"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=SmallImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider10,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                         <Label Content="宽度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider11"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=SmallImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider11"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=SmallImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider11,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                     </WrapPanel>
 
@@ -807,20 +807,20 @@
                                     <WrapPanel Orientation="Horizontal" Margin="25 0">
 
                                         <Label Content="高度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider12"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=BigImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider12"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=BigImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider12,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                         <Label Content="宽度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider13"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=BigImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider13"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=BigImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider13,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                     </WrapPanel>
                                     <Label Content="预览图" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
                                     <WrapPanel Orientation="Horizontal" Margin="25 0">
 
                                         <Label Content="高度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider14"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=ExtraImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider14"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=ExtraImage_Height,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider14,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                         <Label Content="宽度" Style="{StaticResource BaseLabel2}" Margin="20 5 10 5" FontSize="18" Height="auto" HorizontalAlignment="Left" />
-                                        <Slider  x:Name="Slider15"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=ExtraImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="20" LargeChange="40" TickFrequency="20" Cursor="Hand" TickPlacement="None"  />
+                                        <Slider  x:Name="Slider15"    IsSnapToTickEnabled="True" Width="100" VerticalAlignment="Center" Margin="20 5" Value="{Binding Path=ExtraImage_Width,Mode=TwoWay, Source={x:Static p:Settings.Default}}" Maximum="500" Minimum="100" SmallChange="5" LargeChange="20" TickFrequency="5" Cursor="Hand" TickPlacement="None"  />
                                         <Label Content="{Binding ElementName=Slider15,Path=Value}" Style="{StaticResource BaseLabel2}" Height="auto" />
                                     </WrapPanel>
                                 </StackPanel>
