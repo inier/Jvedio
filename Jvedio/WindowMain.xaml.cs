@@ -211,8 +211,6 @@ namespace Jvedio
 
         void CheckUpdate()
         {
-            LoadingStackPanel.Visibility = Visibility.Visible;
-
             Task.Run(async () =>
             {
                 string content = ""; int statusCode;
@@ -227,20 +225,19 @@ namespace Jvedio
                     //检查更新
                     this.Dispatcher.Invoke((Action)delegate ()
                     {
-                        LoadingStackPanel.Visibility = Visibility.Hidden;
                         string remote = content.Split('\n')[0];
+                        string updateContent = content.Replace(remote + "\n","");
                         string local = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
                         using (StreamWriter sw = new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "OldVersion"))
                         {
                             sw.WriteLine(local + "\n");
-                            sw.WriteLine("内容：");
+                            sw.WriteLine(updateContent);
                         }
 
-
-                        //string local = "3.9.9.9";
                         LocalVersionTextBlock.Text = $"当前版本：{local}";
                         RemoteVersionTextBlock.Text = $"最新版本：{remote}";
+                        UpdateContentTextBox.Text = updateContent;
 
                         if (local.CompareTo(remote) < 0) UpdateGrid.Visibility = Visibility.Visible;
                     });
@@ -866,6 +863,7 @@ namespace Jvedio
 
         private void ShowUpdate(object sender, MouseButtonEventArgs e)
         {
+            CheckUpdate();
             UpdateGrid.Visibility = Visibility.Visible;
         }
 
@@ -2987,17 +2985,17 @@ namespace Jvedio
             Loadslide();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            CheckUpdate();
-        }
-
         private void OpenUpdate(object sender, RoutedEventArgs e)
         {
             if (new Msgbox(this, "是否关闭程序开始更新？").ShowDialog() == true)
             {
-                Process.Start(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe");
-                this.Close();
+                try
+                {
+                    Process.Start(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe");
+                    this.Close();
+                }
+                catch { MessageBox.Show("找不到 JvedioUpdate.exe"); }
+                
             }
         }
 
@@ -3271,6 +3269,11 @@ namespace Jvedio
 
 
             }
+        }
+
+        private void GotoDownloadUrl(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://hitchao.gitee.io/jvediowebpage/download.html");
         }
     }
 

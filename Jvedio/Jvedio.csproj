@@ -394,6 +394,7 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <Resource Include="Resources\Picture\升级.png" />
     <Resource Include="Resources\Picture\停止.png" />
     <Resource Include="Resources\Picture\刷新文件夹.png" />
     <Resource Include="Resources\Image\StartUp\库.png" />

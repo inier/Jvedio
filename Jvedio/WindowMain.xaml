@@ -702,12 +702,16 @@
                                 <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=skin,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   Visibility="Visible" />
                             </Border>
 
-                            <Border ToolTip="选项" ContextMenuService.IsEnabled="False" x:Name="SettingsBorder" Width="27" Height="27"  Margin="5 0"  CornerRadius="3" Style="{StaticResource BorderStyle}"  MouseLeftButtonUp="ShowSettingsPopup">
+                            <Border  ToolTip="选项" ContextMenuService.IsEnabled="False" x:Name="SettingsBorder" Width="27" Height="27"  Margin="5 0"  CornerRadius="3" Style="{StaticResource BorderStyle}"  MouseLeftButtonUp="ShowSettingsPopup">
                                 <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=setting,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20" Margin="4,4,3.2,0" VerticalAlignment="Top"   />
 
                                 <Border.ContextMenu >
-                                    <ContextMenu  StaysOpen="False" x:Name="SettingsContextMenu" VerticalOffset="10" HorizontalOffset="-30" Placement="Bottom" >
-                                        <MenuItem   Header="设置" Click="OpenSet_MouseDown"  />
+                                    <ContextMenu  StaysOpen="False" x:Name="SettingsContextMenu" VerticalOffset="10" HorizontalOffset="-30" Placement="Bottom"  Margin="2" >
+                                        <ContextMenu.Effect>
+                                                    <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+                                            </ContextMenu.Effect>
+
+                                                <MenuItem   Header="设置" Click="OpenSet_MouseDown"  />
                                         <MenuItem   Header="工具"  Click="OpenTools"    />
                                         <MenuItem   Header="库管理"  Click="OpenDataBase"    />
                                         <MenuItem   Header="关于" >
@@ -1974,36 +1978,53 @@
 
             <!--升级-->
 
-            <Grid x:Name="UpdateGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="360" Width="500" Visibility="Hidden" >
-                <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5" Opacity="0.9"/>
+            <Grid Visibility="Hidden" x:Name="UpdateGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="360" Width="500"  >
+                <Border Background="{DynamicResource BackgroundMain}" CornerRadius="5" Opacity="1" Margin="2">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+                    </Border.Effect>
+                </Border>
                 <Border Height="30" Width="30" HorizontalAlignment="Right"  VerticalAlignment="Top" PreviewMouseLeftButtonUp="HideGrid"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
                     <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                 </Border>
-                <StackPanel Orientation="Vertical" Margin="0 50">
-                    <TextBlock FontSize="20"  Text="Jvedio 升级" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
-                    <TextBlock x:Name="LocalVersionTextBlock"  FontSize="15"  Text="当前版本：" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
-                    <TextBlock  x:Name="RemoteVersionTextBlock"   FontSize="15"  Text="最新版本：" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
-                    <StackPanel Visibility="Hidden" x:Name="LoadingStackPanel" Margin="0 10" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <StackPanel.Triggers>
-                            <EventTrigger RoutedEvent="Rectangle.Loaded">
-                                <BeginStoryboard>
-                                    <Storyboard Name="waitingAnimation" RepeatBehavior="Forever">
-                                        <DoubleAnimation Storyboard.TargetName="Dot1" BeginTime="0:0:0.1" Storyboard.TargetProperty="Opacity" From=".1" To="1" AutoReverse="True" Duration="0:0:0.4"/>
-                                        <DoubleAnimation Storyboard.TargetName="Dot2" BeginTime="0:0:0.2" Storyboard.TargetProperty="Opacity" From=".1" To="1" AutoReverse="True" Duration="0:0:0.4"/>
-                                        <DoubleAnimation Storyboard.TargetName="Dot3" BeginTime="0:0:0.3" Storyboard.TargetProperty="Opacity" From=".1" To="1" AutoReverse="True" Duration="0:0:0.4"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </StackPanel.Triggers>
-                        <Ellipse Name="Dot1" Fill="{DynamicResource ForegroundSearch}" Opacity=".1" Width="8" Height="8"/>
-                        <Ellipse Name="Dot2" Fill="{DynamicResource ForegroundSearch}" Opacity=".1" Width="8" Height="8" Margin="2,0,0,0"/>
-                        <Ellipse Name="Dot3" Fill="{DynamicResource ForegroundSearch}" Opacity=".1" Width="8" Height="8" Margin="2,0,0,0"/>
+                <Grid  Margin="0 30">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="700*"/>
+                        <ColumnDefinition Width="300*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Vertical">
+
+                        <StackPanel Orientation="Horizontal" Margin="20 5">
+                            <Image Source="/Resources/Picture/升级.png"/>
+                            <TextBlock FontSize="20"  Text="检查更新" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="50 0">
+                            <TextBlock x:Name="LocalVersionTextBlock" HorizontalAlignment="Left"  FontSize="14"  Text="当前版本：" TextAlignment="Center" Foreground="{DynamicResource ForegroundGlobal}" Margin="10" />
+                            <TextBlock  x:Name="RemoteVersionTextBlock"   FontSize="16"  Text="最新版本：" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" />
+
+                        </StackPanel>
+
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="50 20" Height="150">
+                            <TextBlock  HorizontalAlignment="Left"  FontSize="18"  Text="更新日志" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
+                            <TextBox x:Name="UpdateContentTextBox" TextAlignment="Left" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderThickness="0" Height="100"    FontSize="18" Width="auto"  Text="" Foreground="{DynamicResource ForegroundGlobal}" Margin="10"   />
+
+                        </StackPanel>
+
+
+
+
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Style="{StaticResource ButtonStyleFill}" Content="检查更新" Width="100" Height="40" FontSize="15" Click="Button_Click_1"/>
-                        <Button Style="{StaticResource ButtonStyleFill}" Content="前往下载" Width="100" Height="40" FontSize="15" Click="OpenUpdate" />
+
+
+
+                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0 20">
+                        <Button  Margin="0 10"  Style="{StaticResource ButtonStyleFill}" Content="开始更新" Width="120" Height="30" FontSize="15" Click="OpenUpdate" />
+                        <Button Margin="0 10" Background="{DynamicResource BackgroundSide}" Style="{StaticResource ButtonStyleFill}" Content="官网下载" Width="120" Height="30" FontSize="15" Click="GotoDownloadUrl" />
                     </StackPanel>
-                </StackPanel>
+                </Grid>
 
             </Grid>
 
