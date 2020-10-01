@@ -486,7 +486,7 @@ namespace Jvedio
 
                     //    if (!cts.IsCancellationRequested) new PopupWindow(this, "成功！").Show();
                     //}
-                    //finally
+                    //finally 
                     //{
                     //    cts.Dispose();
                     //    Running = false;
