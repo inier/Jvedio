@@ -999,6 +999,8 @@ namespace Jvedio.ViewModel
             cdb = new DataBase();
             List<Movie> models = null ;
 
+            if (!cdb.IsTableExist("movie")) { cdb.CloseDB(); return; }
+
             try {
             if(Properties.Settings.Default.AllSearchType== "识别码")
                 models = await cdb.SelectMoviesById(searchContent);
@@ -1032,7 +1034,8 @@ namespace Jvedio.ViewModel
         {
                 TextType = "所有视频";
                 List<Movie> models = null;
-               cdb = new DataBase(); 
+               cdb = new DataBase();
+                if (!cdb.IsTableExist("movie")) { cdb.CloseDB(); return; }
                 models =  await cdb.SelectMoviesById("");
                 cdb.CloseDB();
                 if(models.Count==0) MovieCount = $"本页有 0 个，总计 0 个";

@@ -566,7 +566,7 @@ namespace Jvedio
                 if (result[Properties.Settings.Default.Bus]) { BusStatus.Fill = Brushes.Green; }
                 if (result[Properties.Settings.Default.DB]) { DBStatus.Fill = Brushes.Green; }
                 if (result[Properties.Settings.Default.Library]) { LibraryStatus.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.Fc2Club]) { FC2Status.Fill = Brushes.Green; }
+                //if (result[Properties.Settings.Default.Fc2Club]) { FC2Status.Fill = Brushes.Green; }
                 if (result[Properties.Settings.Default.BusEurope]) { BusEuropeStatus.Fill = Brushes.Green; }
                 if (result[Properties.Settings.Default.Jav321]) { Jav321Status.Fill = Brushes.Green; }
                 if (result[Properties.Settings.Default.DMM]) { DMMStatus.Fill = Brushes.Green; }
@@ -580,10 +580,13 @@ namespace Jvedio
             {
                 if (enableList[i])
                 {
-                    if (!result[urlList[i]])
-                        IsAllConnect = false;
-                    else
-                        IsOneConnect = true;
+                    if (result.ContainsKey(urlList[i]))
+                    {
+                        if (!result[urlList[i]])
+                            IsAllConnect = false;
+                        else
+                            IsOneConnect = true;
+                    }
                 }
             }
 
@@ -3044,11 +3047,11 @@ namespace Jvedio
             SetSkin();
 
             //监听文件改动
-            if (Properties.Settings.Default.ListenAllDir)
-            {
-                try { AddListen(); }
-                catch (Exception ex) { Logger.LogE(ex); }
-            }
+            //if (Properties.Settings.Default.ListenAllDir)
+            //{
+            //    try { AddListen(); }
+            //    catch (Exception ex) { Logger.LogE(ex); }
+            //}
 
             //显示公告
             ShowNotice();

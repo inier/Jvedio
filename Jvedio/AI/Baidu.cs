@@ -117,7 +117,7 @@ namespace Jvedio
             if (dict.ContainsKey("result"))
             {
                 Dictionary<string, object> result = dict["result"] as Dictionary<string, object>;
-                 if((bool)result?.ContainsKey("face_num")) facenum =uint.Parse( result["face_num"].ToString());
+                try { if ((bool)result?.ContainsKey("face_num")) facenum = uint.Parse(result["face_num"].ToString());  }catch { }
                  if (facenum > 0)
                 {
 

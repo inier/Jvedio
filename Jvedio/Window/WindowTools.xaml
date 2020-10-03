@@ -194,7 +194,7 @@
 
 
                                     <TextBlock Text="NFO数据导入" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
-                                    <CheckBox x:Name="NFOCopyPicture" Content="移动并覆盖图片" Margin="40 0"></CheckBox>
+                                    <CheckBox x:Name="NFOCopyPicture" Content="复制并覆盖图片" Margin="40 0"></CheckBox>
                                     <RadioButton Style="{StaticResource RadioButtonStyle}" IsChecked="True" VerticalContentAlignment="Center"  x:Name="NfoRB1" GroupName="NfoRadioButton" Content="扫描文件夹" FontSize="20" Foreground="{DynamicResource ForegroundGlobal}" Margin="40 5"/>
                                     <StackPanel Style="{StaticResource NFOSPShow1}"     Orientation="Horizontal" Margin="10 0" Visibility="Collapsed">
                                         <Button Margin="30 0"  Content="添加" Height="30" Width="60"  Style="{StaticResource ButtonStyleFill}" Click="AddSingleNFOPath"></Button>

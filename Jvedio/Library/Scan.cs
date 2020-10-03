@@ -198,7 +198,7 @@ namespace Jvedio
                 }
                 MatchesName = MatchesName.ToLower();
                 string characters = "abcdefghijklmn";
-                for (int i = 0; i < FilePathList.Count; i++) { result &= MatchesName.IndexOf(characters[i]) >= 0; }
+                for (int i = 0; i < Math.Min( FilePathList.Count,characters.Length); i++) {  result &= MatchesName.IndexOf(characters[i]) >= 0;  }
             }
 
 
@@ -477,7 +477,15 @@ namespace Jvedio
 
             //从 主数据库中 复制信息
             if (Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First().ToLower() != "info")
-                CopyDatabaseInfo(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First().ToLower());
+            {
+                try
+                {
+                    //待修复 的 bug
+                    CopyDatabaseInfo(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First().ToLower());
+                }
+                catch { }
+            }
+                
 
 
 

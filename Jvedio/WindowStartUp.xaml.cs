@@ -32,7 +32,7 @@ namespace Jvedio
             vieModel_StartUp.ListDatabase();
             this.DataContext = vieModel_StartUp;
 
-             cts = new CancellationTokenSource();
+            cts = new CancellationTokenSource();
             cts.Token.Register(() =>  Console.WriteLine("取消任务"));
             ct = cts.Token;
         }
@@ -95,7 +95,7 @@ namespace Jvedio
             this.Close();
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private  void Window_Loaded(object sender, RoutedEventArgs e)
         {
 
             //更新配置文件
@@ -153,24 +153,10 @@ namespace Jvedio
             
 
 
-            //默认打开某个数据库
+            
             if (Properties.Settings.Default.OpenDataBaseDefault)
             {
-                if (Properties.Settings.Default.ScanGivenPath)
-                {
-
-                    await Task.Run(() =>
-                    {
-                        this.Dispatcher.BeginInvoke(new Action(() => { statusText.Text = $"扫描指定文件夹"; }), System.Windows.Threading.DispatcherPriority.Render);
-                        List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), ct);
-                        DataBase cdb = new DataBase();
-                        Scan.DistinctMovieAndInsert(filepaths, ct);
-                    }, cts.Token);
-
-                }
-
-
-
+                OpenDefaultDatabase();//默认打开某个数据库
                 //启动主窗口
                 Main main = new Main();
                 statusText.Text = "初始化影片";
@@ -186,6 +172,22 @@ namespace Jvedio
             }
 
 
+        }
+
+        public async void OpenDefaultDatabase()
+        {
+            if (Properties.Settings.Default.ScanGivenPath)
+            {
+
+                await Task.Run(() =>
+                {
+                    this.Dispatcher.BeginInvoke(new Action(() => { statusText.Text = $"扫描指定文件夹"; }), System.Windows.Threading.DispatcherPriority.Render);
+                    List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), ct);
+                    DataBase cdb = new DataBase();
+                    Scan.DistinctMovieAndInsert(filepaths, ct);
+                }, cts.Token);
+
+            }
         }
 
         public void CheckSettings()
