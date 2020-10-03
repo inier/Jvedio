@@ -630,9 +630,10 @@
                         <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=like,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="25 0"    />
                         <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding FavoritesCommand}" Content="我的喜爱"  Click="ShowMovieGrid"  />
                     </Grid>
-                    <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding UncensoredCommand}" Content="步兵" Click="ShowMovieGrid"  />
+                    <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding UncensoredCommand}" Content="步兵" Click="ShowMovieGrid" Checked="RadioButton_Checked"  />
                     <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding CensoredCommand}" Content="骑兵" Click="ShowMovieGrid"  />
                     <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding EuropeCommand}" Content="欧美" Click="ShowMovieGrid"  />
+                    <RadioButton Style="{StaticResource RadioButtonStyleSide}"  Content="+" Click="ShowMovieGrid"  />
                     <TextBlock  Text="" Height="40"  />
                     <Grid>
                         <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=genre,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="25 0"    />
@@ -938,6 +939,15 @@
                                 </Image>
                             </Grid>
 
+
+                            <Grid   Width="auto" HorizontalAlignment="Left"  MouseLeftButtonUp="RandomDisplay" Cursor="Hand" Height="30" Margin="5 0" ToolTip="随机展示">
+                                <Border CornerRadius="5" Background="{DynamicResource BackgroundTab}" >
+                                </Border>
+                                <Image  Height="24" Width="24" HorizontalAlignment="Left" Margin="3 0" Source="Resources/Picture/随机.png">
+                                </Image>
+                            </Grid>
+
+                            
                             <Popup  VerticalOffset="10" HorizontalOffset="-20" x:Name="DownloadPopup" Placement="Bottom" PopupAnimation="Fade"  PlacementTarget="{Binding ElementName=DownloadGrid}" AllowsTransparency="True" StaysOpen="False" IsOpen="False">
                                 <Border Background="{DynamicResource BackgroundMenu}"   Margin="2" >
                                     <Border.Effect>

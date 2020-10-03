@@ -3271,6 +3271,16 @@ namespace Jvedio
         {
             Process.Start("https://hitchao.gitee.io/jvediowebpage/download.html");
         }
+
+        private void RandomDisplay(object sender, MouseButtonEventArgs e)
+        {
+            vieModel.RandomDisplay();
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class DownLoadProgress
