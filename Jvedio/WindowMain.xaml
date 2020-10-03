@@ -1846,37 +1846,36 @@
             <!--鸣谢-->
 
             <Grid x:Name="ThanksGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="auto" Width="500" Visibility="Hidden" >
-                <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5" Opacity="0.9"  />
+                <Border Background="{DynamicResource BackgroundMain}" CornerRadius="5"   >
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+                    </Border.Effect>
+                </Border>
 
                 <Border Height="30" Width="30" HorizontalAlignment="Right"  VerticalAlignment="Top" PreviewMouseLeftButtonUp="HideGrid"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
                     <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                 </Border>
-                <StackPanel Orientation="Horizontal">
-                    <Image Margin="10 5" HorizontalAlignment="Left" Height="30" VerticalAlignment="Top" Source="/Resources/Picture/Jvedio.png"/>
-                    <Image Margin="5 12" HorizontalAlignment="Left" Height="20"  VerticalAlignment="Top"  Source="Resources/Picture/Title.png"/>
-                </StackPanel>
-
-                <StackPanel Orientation="Vertical">
 
 
-
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-
-
-                        <TextBlock x:Name="ThankTextBlock" FontSize="20"  Text="鸣谢" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"/>
-
+                <StackPanel Orientation="Vertical" Margin="20">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image VerticalAlignment="Center" Margin="10 5" HorizontalAlignment="Left" Height="35"  Source="/Resources/Picture/Jvedio.png"/>
+                        <Image Margin="5 12" HorizontalAlignment="Left" Height="35"  VerticalAlignment="Top"  Source="Resources/Picture/Title.png"/>
                     </StackPanel>
+
+
+                        <TextBlock x:Name="ThankTextBlock" FontSize="20" FontWeight="Bold"  Text="鸣谢" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10 30"/>
+
 
                     <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
 
-                        <TextBlock  Text="UI 设计：青萍之末" Style="{StaticResource BaseTextBlock}"></TextBlock>
-                        
-                        
-                        
-                        <TextBlock  Text="调试：sheldon, SHAWN, dddsG, EEE, jion 等网友" Style="{StaticResource BaseTextBlock}"></TextBlock>
-                        <TextBlock  Text="感谢 小猪培根 等人的赞助支持！" Style="{StaticResource BaseTextBlock}"></TextBlock>
-                        <TextBlock  Text="感谢 众多网友对 Jvedio 的赞助与支持！" Style="{StaticResource BaseTextBlock}"></TextBlock>
-                        <TextBlock  Text="预祝 Jvedio 发展越来越好" Style="{StaticResource BaseTextBlock}"></TextBlock>
+                        <TextBlock TextAlignment="Left"  Text="UI   设计：青萍之末, Engine" Style="{StaticResource BaseTextBlock}"></TextBlock>
+                        <TextBlock TextAlignment="Left"   Text="调       试：sheldon, SHAWN, dddsG, EEE, jion 等网友" Style="{StaticResource BaseTextBlock}"></TextBlock>
+                        <TextBlock TextAlignment="Left"   Text="赞助支持：小猪培根 等人" Style="{StaticResource BaseTextBlock}"></TextBlock>
+                        <TextBlock FontSize="16"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="2 10"><Hyperlink NavigateUri="https://docs.qq.com/sheet/DRnpwemNjdEFlQ2xa?tab=BB08J2" Click="OpenUrl" ><Run Text="查看完整名单"/></Hyperlink></TextBlock>
+
+                        <TextBlock FontWeight="Bold"  Text="感谢 众多网友对 Jvedio 的赞助与支持！" Style="{StaticResource BaseTextBlock}"></TextBlock>
+                        <TextBlock  FontWeight="Bold"   Text="预祝 Jvedio 发展越来越好！" Style="{StaticResource BaseTextBlock}"></TextBlock>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -1885,23 +1884,47 @@
             <!--关于-->
 
             <Grid x:Name="AboutGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="auto" Width="500" Visibility="Hidden" >
-                <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5" Opacity="0.9" />
+                <Border Background="{DynamicResource BackgroundMain}" CornerRadius="5" Margin="2"  >
+                    <Border.Effect>
+                            <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
+                        </Border.Effect>
+                    </Border>
 
                 <Border Height="30" Width="30" HorizontalAlignment="Right"  VerticalAlignment="Top" PreviewMouseLeftButtonUp="HideGrid"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
                     <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                 </Border>
 
                 <StackPanel Orientation="Vertical" Margin="0 50 0 20">
-                    <Image HorizontalAlignment="Center" Height="80" VerticalAlignment="Center" Source="/Resources/Picture/Jvedio.png"/>
-                    <Image Margin="0 10 0 10" HorizontalAlignment="Center" Height="40"  VerticalAlignment="Center"  Source="Resources/Picture/Title.png"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Image Height="50" HorizontalAlignment="Center"  VerticalAlignment="Center" Source="/Resources/Picture/Jvedio.png"/>
+                        <Image Margin="0 10 0 10" HorizontalAlignment="Center" Height="40"  VerticalAlignment="Center"  Source="Resources/Picture/Title.png"/>
+                    </StackPanel>
+
+                    <TextBlock  FontSize="20" FontWeight="Bold"  Text="本地视频与图片的管理" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"/>
+
+                    <TextBox IsReadOnly="True" Background="Transparent" BorderThickness="0"  FontSize="15"  TextWrapping="Wrap" TextAlignment="Left"  Text="        Jvedio 是本地视频管理软件，支持扫描本地视频并导入软件，建立视频库， 提取出视频的 唯一识别码，自动分类视频，从网上下载信息以及图片， 添加标签管理视频，使用人工智能识别演员，支持翻译信息， 基于 FFmpeg 截取视频图片，Window 桌面端流畅美观的应用软件"  Foreground="{DynamicResource ForegroundSearch}" Margin="40 10"/>
+
+
                     <TextBlock x:Name="VersionTextBlock" FontSize="20"  Text="版本：" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"/>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-                        <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"><Hyperlink NavigateUri="https://gitee.com/hitchao/Jvedio" Click="OpenUrl" ><Run Text="Gitee"/></Hyperlink></TextBlock>
-                        <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"><Hyperlink NavigateUri="https://github.com/hitchao/Jvedio" Click="OpenUrl" ><Run Text="GitHub"/></Hyperlink></TextBlock>
-                        <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10"><Hyperlink NavigateUri="https://hitchao.gitee.io/jvediowebpage/" Click="OpenUrl"  ><Run Text="官方网址"/></Hyperlink></TextBlock>
-                    </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="20 0">
+                            <Image Source="Resources/Ico/gitee.ico" Width="25" />
+                            <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="2 10"><Hyperlink NavigateUri="https://gitee.com/hitchao/Jvedio" Click="OpenUrl" ><Run Text="Gitee"/></Hyperlink></TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="20 0">
+                            <Image Source="Resources/Ico/github.png" Width="25" />
+                            <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="2 10"><Hyperlink NavigateUri="https://github.com/hitchao/Jvedio" Click="OpenUrl" ><Run Text="Github"/></Hyperlink></TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="20 0">
+                            <Image Source="Resources/Jvedio.ico" Width="25" />
+                            <TextBlock FontSize="20"    TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="2 10"><Hyperlink NavigateUri="https://hitchao.gitee.io/jvediowebpage/" Click="OpenUrl" ><Run Text="官方网址"/></Hyperlink></TextBlock>
+                        </StackPanel>
+
+                       </StackPanel>
                 </StackPanel>
 
             </Grid>
