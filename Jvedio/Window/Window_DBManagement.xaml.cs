@@ -379,10 +379,10 @@ namespace Jvedio
                 {
                     //Vaccum
                     DataBase cdb = new DataBase();
-                    cdb.Vaccum();
+                    cdb.Vacuum();
                     cdb.CloseDB();
                     cdb = new DataBase(path);
-                    cdb.Vaccum();
+                    cdb.Vacuum();
                     cdb.CloseDB();
                 }
                 new PopupWindow(this, "成功！").Show();

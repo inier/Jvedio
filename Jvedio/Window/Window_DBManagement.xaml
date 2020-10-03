@@ -200,7 +200,7 @@
 
                             <CheckBox  Content="重置信息数据库" Height="30" Width="150"   Margin="5"  HorizontalAlignment="Left"></CheckBox>
                             <CheckBox  Content="删除不存在影片" Height="30" Width="150"   Margin="5"  HorizontalAlignment="Left"></CheckBox>
-                            <CheckBox  Content="Vaccum" Height="30" Width="150"   Margin="5"  HorizontalAlignment="Left"></CheckBox>
+                            <CheckBox  Content="Vacuum" Height="30" Width="150"   Margin="5"  HorizontalAlignment="Left"></CheckBox>
                         </WrapPanel>
 
 

@@ -75,7 +75,7 @@ namespace Jvedio
         /// <summary>
         /// VACCUM
         /// </summary>
-        public void Vaccum()
+        public void Vacuum()
         {
             //if (IsLock) return;
             cmd.CommandText = "vacuum;";
