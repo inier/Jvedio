@@ -2,12 +2,11 @@
 <h1 align="center">Jvedio</h1>
 
 
----
 
 
-<div style="text-align: center;">
-
-![Picture](https://hitchao.gitee.io/jvediowebpage/imgs/images/logo.png)
+<p align="center">
+<img alt="Logo Banner" src="https://hitchao.gitee.io/jvediowebpage/imgs/images/logo.png"/>
+</p>
 
 
 <h3 align="center">本地视频与图片的管理</h3>
