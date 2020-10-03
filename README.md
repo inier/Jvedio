@@ -1,15 +1,16 @@
-﻿<center><font face="Times New Roman" size=10>Jvedio</font></center>
+﻿
+<h1 align="center">Jvedio</h1>
 
 
 ---
+
 
 <div style="text-align: center;">
 
 ![Picture](https://hitchao.gitee.io/jvediowebpage/imgs/images/logo.png)
 
-<font face="Times New Roman" size=5>本地视频与图片的管理</font>
 
-</div>
+<h3 align="center">本地视频与图片的管理</h3>
 
 
 
