@@ -133,7 +133,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(TargetPath)" "$(SolutionDir)ToGitee\public" /E /Y /i</PostBuildEvent>
   </PropertyGroup>
 </Project>

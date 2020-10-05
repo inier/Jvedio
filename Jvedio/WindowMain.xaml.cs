@@ -31,6 +31,8 @@ namespace Jvedio
     public partial class Main : Window
     {
         public const string UpdateUrl = "http://hitchao.gitee.io/jvedioupdate/Version";
+        public const string UpdateExeVersionUrl = "http://hitchao.gitee.io/jvedioupdate/update";
+        public const string UpdateExeUrl = "http://hitchao.gitee.io/jvedioupdate/JvedioUpdate.exe";
         public const string NoticeUrl = "https://hitchao.gitee.io/jvediowebpage/notice";
 
         public DispatcherTimer CheckurlTimer = new DispatcherTimer();
@@ -2984,12 +2986,44 @@ namespace Jvedio
             Loadslide();
         }
 
-        private void OpenUpdate(object sender, RoutedEventArgs e)
+        private async void OpenUpdate(object sender, RoutedEventArgs e)
         {
             if (new Msgbox(this, "是否关闭程序开始更新？").ShowDialog() == true)
             {
                 try
                 {
+                    //检查升级程序是否是最新的
+                    string content = ""; int statusCode;bool IsToDownLoadUpdate = false;
+                    try { (content, statusCode) = await Net.Http(UpdateExeVersionUrl, Proxy: null); }
+                    catch (TimeoutException ex) { Logger.LogN($"URL={UpdateUrl},Message-{ex.Message}"); }
+                    if (content != "")
+                    {
+                        //跟本地的 md5 对比
+                        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe")) { IsToDownLoadUpdate = true; }
+                        else
+                        {
+                            string md5 = GetFileMD5(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe");
+                            if (md5 != content) { IsToDownLoadUpdate = true; }
+                        }
+                    }
+                    if (IsToDownLoadUpdate)
+                    {
+                        (byte[] filebyte,string cookie) = Net.DownLoadFile(UpdateExeUrl);
+                        try
+                        {
+                            using (var fs = new FileStream(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe", FileMode.Create, FileAccess.Write))
+                            {
+                                fs.Write(filebyte, 0, filebyte.Length);
+                            }
+                        }
+                        catch { }
+                    }
+
+
+
+
+
+
                     Process.Start(AppDomain.CurrentDomain.BaseDirectory + "JvedioUpdate.exe");
                     this.Close();
                 }

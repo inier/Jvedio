@@ -633,7 +633,7 @@
                     <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding UncensoredCommand}" Content="步兵" Click="ShowMovieGrid" Checked="RadioButton_Checked"  />
                     <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding CensoredCommand}" Content="骑兵" Click="ShowMovieGrid"  />
                     <RadioButton Style="{StaticResource RadioButtonStyleSide}" Command="{Binding EuropeCommand}" Content="欧美" Click="ShowMovieGrid"  />
-                    <RadioButton Style="{StaticResource RadioButtonStyleSide}"  Content="+" Click="ShowMovieGrid"  />
+                    <RadioButton Style="{StaticResource RadioButtonStyleSide}"  Content="+" Click="ShowMovieGrid" Visibility="Hidden"  />
                     <TextBlock  Text="" Height="40"  />
                     <Grid>
                         <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=genre,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="25 0"    />
@@ -2011,7 +2011,7 @@
 
             <!--升级-->
 
-            <Grid Visibility="Visible" x:Name="UpdateGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="360" Width="500"  >
+            <Grid Visibility="Hidden" x:Name="UpdateGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="360" Width="500"  >
                 <Border Background="{DynamicResource BackgroundMain}" CornerRadius="5" Opacity="1" Margin="2">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>

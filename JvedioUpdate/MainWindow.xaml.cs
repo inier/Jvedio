@@ -217,7 +217,8 @@ namespace JvedioUpdate
                 //更新进度
                 this.Dispatcher.Invoke((Action)delegate () {
                     ProgressBar.Value = ProgressBar.Maximum * (progressvalue / progressmaximum);
-                    progressText.Text = $"{progressvalue}/{progressmaximum}";
+                    int p = (int)(ProgressBar.Value) ;
+                    progressText.Text = $"{p} %";
                 });
 
 
@@ -274,6 +275,9 @@ namespace JvedioUpdate
                 return;
             }
 
+            InfoStackPanel.Visibility = Visibility.Collapsed;
+            ProgressStackPanel.Visibility = Visibility.Visible;
+
             Task.Run(() => { DownLoadFromGitee(); });
 
             }
@@ -282,7 +286,7 @@ namespace JvedioUpdate
 
         public void DownLoadFile(string temppath,string filename)
         {
-            this.Dispatcher.Invoke((Action)delegate () { statusText.Text = $"开始下载 {filename}"; });
+            this.Dispatcher.Invoke((Action)delegate () { statusText.Text = $"下载 {filename}"; });
             byte[] filebyte = GetFile($"http://hitchao.gitee.io/jvedioupdate/File/{filename}");
             try
             {

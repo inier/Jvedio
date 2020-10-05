@@ -64,6 +64,15 @@ namespace JvedioToGitee
                     opTextBox.AppendText("------------------------\n");
                     opTextBox.AppendText("成功生成 Version\n");
 
+                    string updatePath = AppDomain.CurrentDomain.BaseDirectory + "public\\JvedioUpdate.exe";
+                    if (File.Exists(updatePath))
+                    {
+                        using(StreamWriter sw=new StreamWriter(AppDomain.CurrentDomain.BaseDirectory + "public\\" + "update", false))
+                        {
+                            sw.Write(GetMD5(updatePath));
+                        }
+                    }
+
 
                 }
                 catch(Exception ex)
@@ -126,6 +135,12 @@ namespace JvedioToGitee
                 if (Directory.Exists(basePath + "DataBase")) { Directory.Delete(basePath + "DataBase", true); opTextBox.AppendText($"删除目录 DataBase\n"); }
                 if (Directory.Exists(basePath + "log")) { Directory.Delete(basePath + "log", true); opTextBox.AppendText($"删除目录 log\n"); }
                 if (Directory.Exists(basePath + "Pic")) { Directory.Delete(basePath + "Pic", true); opTextBox.AppendText($"删除目录 Pic\n"); }
+
+
+                if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "public\\DataBase")) { Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "public\\DataBase", true); opTextBox.AppendText($"删除目录 DataBase\n"); }
+                if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "public\\log")) { Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "public\\log", true); opTextBox.AppendText($"删除目录 log\n"); }
+                if (Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "public\\BackUp")) { Directory.Delete(AppDomain.CurrentDomain.BaseDirectory + "public\\BackUp", true); opTextBox.AppendText($"删除目录 BackUp\n"); }
+
 
                 opTextBox.ScrollToEnd();
 
