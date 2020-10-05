@@ -334,8 +334,10 @@ namespace Jvedio
                             else if (infoNode.InnerText.IndexOf("使用者评价:") >= 0)
                             {
                                 content = infoNode.SelectSingleNode("td/span")?.InnerText;
-                                string rating = Regex.Match(content, @"([0-9]|\.)+").Value;
-                                result.Add("rating", Math.Ceiling(double.Parse(rating) * 10).ToString());
+                            double rating = 0;
+                            if(Regex.Match(content, @"([0-9]|\.)+") != null)
+                                double.TryParse(Regex.Match(content, @"([0-9]|\.)+").Value, out rating);
+                            result.Add("rating", Math.Ceiling(rating * 10).ToString());
                             }
                             else if (infoNode.InnerText.IndexOf("类别") >= 0)
                             {
@@ -367,7 +369,7 @@ namespace Jvedio
                             }
                         }
                         catch (NullReferenceException ex) { continue; }
-                    }
+                }
                 }
 
                 //大图：library没有小图，大小图一致

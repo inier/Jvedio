@@ -4,6 +4,16 @@
              xmlns:local="clr-namespace:JvedioUpdate"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary >
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="XAML/ScrollViewStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+
+
+
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

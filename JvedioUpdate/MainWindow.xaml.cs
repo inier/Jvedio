@@ -61,7 +61,6 @@ namespace JvedioUpdate
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            LoadingStackPanel.Visibility = Visibility.Visible;
 
             progressText.Visibility = Visibility.Hidden;
             ProgressBar.Visibility = Visibility.Hidden;
@@ -107,7 +106,7 @@ namespace JvedioUpdate
                 remoteversion = contentversion.Split('\n')[0];
                 remoteinfo = contentversion.Replace(remoteversion + "\n", "");
                 if (localversion.CompareTo(remoteinfo) < 0) { IsToUpdate = true; } else { IsToUpdate = false; }
-                this.Dispatcher.Invoke((Action)delegate () { remoteversionTextBlock.Text = $"最新版本：{remoteversion}"; UpdateTextBox.Text = contentversion; });
+                this.Dispatcher.Invoke((Action)delegate () { remoteversionTextBlock.Text = $"检测到新版本：{remoteversion}"; UpdateTextBox.Text = contentversion; });
 
                 //校验文件一致性
                 string url_list = "http://hitchao.gitee.io/jvedioupdate/list";
@@ -178,7 +177,7 @@ namespace JvedioUpdate
                 this.Dispatcher.Invoke((Action)delegate () { statusText.Text = "无法连接到服务器"; UpdateButton.IsEnabled = false; });
             }
 
-            this.Dispatcher.Invoke((Action)delegate () { CheckUpdateButton.IsEnabled = true; LoadingStackPanel.Visibility = Visibility.Hidden;});
+            this.Dispatcher.Invoke((Action)delegate () { CheckUpdateButton.IsEnabled = true; });
 
         }
 
@@ -248,7 +247,6 @@ namespace JvedioUpdate
             this.Dispatcher.Invoke((Action)delegate () { statusText.Text = "更新完成！"; });
 
             this.Dispatcher.Invoke((Action)delegate () {
-                LoadingStackPanel.Visibility = Visibility.Hidden;
                 UpdateButton.IsEnabled = false;
                 CheckUpdateButton.IsEnabled = true;
             });
@@ -457,6 +455,9 @@ namespace JvedioUpdate
             if (e.ChangedButton == MouseButton.Left) this?.DragMove();
         }
 
-
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://hitchao.gitee.io/jvediowebpage/");
+        }
     }
 }
