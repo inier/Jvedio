@@ -41,6 +41,13 @@ namespace Jvedio
             DataBase cdb = new DataBase();
             cdb.UpdateInfoFromNet(Info, webSite);
             cdb.CloseDB();
+
+            //nfo 信息保存到视频同目录
+
+
+
+
+
         }
 
 

@@ -416,7 +416,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
 
                         <StackPanel Orientation="Horizontal" Margin="10">
                             <TextBlock Text="强制关闭连接" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
@@ -447,6 +447,22 @@
                             <Slider x:Name="StreamTimeoutSlider" Value="{Binding Timeout_stream, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="3" Maximum="10" Width="100" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding ElementName=StreamTimeoutSlider,Path=Value,StringFormat='\{0} 秒'}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
                         </StackPanel>
+
+                        <WrapPanel Orientation="Horizontal" Margin="20 5">
+
+                            <CheckBox IsChecked="{Binding SaveInfoToNFO, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="保存信息到NFO（不填则与视频同目录）" Height="40"/>
+
+
+                            <StackPanel Orientation="Horizontal" Visibility="{Binding Path=SaveInfoToNFO, Source={x:Static p:Settings.Default}, Converter={StaticResource BoolToVis},Mode=OneWay}">
+                                <TextBox Margin="5 5" Width="400" Style="{StaticResource BaseTextBox}" Text="{Binding NFOSavePath, Source={x:Static p:Settings.Default}}"/>
+                                <Button Content="选择文件夹" Style="{StaticResource ButtonStyleFill}" HorizontalAlignment="Left" Width="100" />
+
+                            </StackPanel>
+
+
+
+
+                        </WrapPanel>
 
 
 
@@ -682,7 +698,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Visible" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Hidden" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TextBlock Text="ffmpeg.exe 路径" Style="{StaticResource TextBlockTitle}" Margin="20 20"/>
                         <WrapPanel Orientation="Horizontal" Margin="20 5">
                             <TextBox HorizontalAlignment="Left"  Style="{StaticResource BaseTextBox}"  Text="{Binding FFMPEG_Path, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="400" TextAlignment="Left"  Height="auto" Margin="5 2"/>

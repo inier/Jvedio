@@ -189,7 +189,7 @@
 
                             <!--NFO-->
 
-                            <Grid Visibility="Hidden">
+                            <Grid Visibility="Visible">
                                 <StackPanel>
 
 
@@ -331,7 +331,7 @@
 
 
                             <!--网络磁盘扫描-->
-                            <Grid Visibility="Visible">
+                            <Grid Visibility="Hidden">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Text="网络地址：" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20"/>
 
@@ -379,7 +379,9 @@
 
 
                         <Grid  VerticalAlignment="Bottom" >
-                            <StackPanel Visibility="Hidden" x:Name="LoadingStackPanel"  Margin="0 10" Orientation="Horizontal" HorizontalAlignment="Center" Height="20">
+
+                            <TextBlock x:Name="StatusTextBlock" Visibility="Hidden" Text="扫描中……" Style="{StaticResource TextBlockStyle}" HorizontalAlignment="Stretch" Margin="120 0 280 0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self},Path=Text}"/>
+                            <StackPanel Visibility="Hidden" x:Name="LoadingStackPanel"  Margin="240 10" Orientation="Horizontal" HorizontalAlignment="Right" Height="20">
                                 <StackPanel.Triggers>
                                     <EventTrigger RoutedEvent="Rectangle.Loaded">
                                         <BeginStoryboard>

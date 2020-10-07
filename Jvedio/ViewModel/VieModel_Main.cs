@@ -1026,7 +1026,7 @@ namespace Jvedio.ViewModel
             cdb.CloseDB();
             MovieList = new ObservableCollection<Movie>();
             models?.ForEach(arg => { MovieList.Add(arg); });
-            Sort();
+            Sort(false);
         }
 
 
@@ -1046,12 +1046,14 @@ namespace Jvedio.ViewModel
                 cdb.CloseDB();
         }
 
-        public void Sort()
+        public void Sort(bool IsSort=true)
         {
             if (MovieList != null)
             {
                 List<Movie> sortMovieList = new List<Movie>();
                 bool SortDescending = Properties.Settings.Default.SortDescending;
+                if (IsSort)
+                {
                 switch (Properties.Settings.Default.SortType)
                 {
                     case "识别码":
@@ -1087,6 +1089,11 @@ namespace Jvedio.ViewModel
                     default:
                         if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.id).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.id).ToList(); }
                         break;
+                }
+                }
+                else
+                {
+                    foreach (var item in MovieList) { sortMovieList.Add(item); }
                 }
                 MovieList = new ObservableCollection<Movie>();
                 sortMovieList.ForEach(arg =>

@@ -222,17 +222,17 @@ namespace Jvedio
             return result2;
         }
 
-        public static List<string> ScanNFO(StringCollection stringCollection, CancellationToken cancellationToken)
+        public static List<string> ScanNFO(StringCollection stringCollection, CancellationToken cancellationToken, Action<string> callBack)
         {
             List<string> result = new List<string>();
-            foreach (var item in stringCollection) { result.AddRange(GetAllFilesFromFolder(item, cancellationToken, "*.*")); }
+            foreach (var item in stringCollection) { result.AddRange(GetAllFilesFromFolder(item, cancellationToken, "*.*", callBack)); }
             return result.Where(s => Path.GetExtension(s).ToLower().IndexOf("nfo") > 0).ToList();
         }
 
 
 
 
-        public static  List<string> GetAllFilesFromFolder(string root, CancellationToken cancellationToken, string pattern = "")
+        public static  List<string> GetAllFilesFromFolder(string root, CancellationToken cancellationToken , string pattern = "", Action<string> callBack = null)
         {
             Queue<string> folders = new Queue<string>();
             List<string> files = new List<string>();
@@ -255,23 +255,22 @@ namespace Jvedio
                 {
                     string[] filesInCurrent = System.IO.Directory.GetFiles(currentFolder, pattern == "" ? "*.*" : pattern, System.IO.SearchOption.TopDirectoryOnly);
                     files.AddRange(filesInCurrent);
+                    foreach(var file in filesInCurrent) {if(callBack!=null) callBack(file); }
                 }
                 catch
                 {
-                    // Do Nothing
                 }
                 try
                 {
-                    //search subfolders
                     string[] foldersInCurrent = System.IO.Directory.GetDirectories(currentFolder, pattern == "" ? "*.*" : pattern, System.IO.SearchOption.TopDirectoryOnly);
                     foreach (string _current in foldersInCurrent)
                     {
                         folders.Enqueue(_current);
+                        if (callBack != null) callBack(_current); 
                     }
                 }
                 catch
                 {
-                    // Do Nothing
                 }
             }
             return files;

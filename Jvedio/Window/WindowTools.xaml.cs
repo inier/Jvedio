@@ -354,22 +354,34 @@ namespace Jvedio
                             //扫描所有nfo文件
                             await Task.Run(() =>
                             {
+                                this.Dispatcher.Invoke((Action)delegate {
+                                    StatusTextBlock.Visibility = Visibility.Visible;
+                                    StatusTextBlock.Text = "开始扫描";
+                                });
 
                                 StringCollection stringCollection = new StringCollection();
                                 foreach (var item in vieModel.NFOScanPath)
                                 {
                                     if (Directory.Exists(item)) { stringCollection.Add(item); }
                                 }
-                                nfoFiles = Scan.ScanNFO(stringCollection, ct);
+                                nfoFiles = Scan.ScanNFO(stringCollection, ct,(filepath)=> {
+                                    this.Dispatcher.Invoke((Action)delegate { StatusTextBlock.Text = filepath; });
+                                });
                             }, cts.Token);
-
                         }
 
+
+                        //记录日志
+                        Logger.LogScanInfo("\n-----【" + DateTime.Now.ToString() + "】NFO扫描-----");
+                        Logger.LogScanInfo($"\n扫描出 => {nfoFiles.Count}  个 ");
+
+
                         //导入所有 nfo 文件信息
+                        double total = 0;
                         await Task.Run(() =>
                         {
                             DataBase cdb = new DataBase();
-
+                            
                             nfoFiles.ForEach(item =>
                             {
                                 if (File.Exists(item))
@@ -381,6 +393,8 @@ namespace Jvedio
                                         cdb.InsertFullMovie(GetInfoFromNfo(item));
                                         //复制并覆盖所有图片
                                         CopyPicToPath(movie.id, item);
+                                        total += 1;
+                                        Logger.LogScanInfo($"\n成功导入数据库 => {item}  ");
                                     }
 
                                 }
@@ -389,8 +403,9 @@ namespace Jvedio
 
                         });
                         LoadingStackPanel.Visibility = Visibility.Hidden;
-                        if (!cts.IsCancellationRequested) new PopupWindow(this, "成功！").Show();
-
+                        if (!cts.IsCancellationRequested) {
+                            Logger.LogScanInfo($"\n成功导入 {total} 个");
+                            new PopupWindow(this, "成功！").Show(); }
                     }
                     finally
                     {
@@ -612,7 +627,8 @@ namespace Jvedio
                         if (File.Exists(filepath)) Process.Start(filepath); else new PopupWindow(this, "不存在").Show();
                         break;
                     case 2:
-                        new PopupWindow(this, "无报告").Show();
+                        filepath = AppDomain.CurrentDomain.BaseDirectory + $"Log\\ScanLog\\{DateTime.Now.ToString("yyyy-MM-dd")}.log";
+                        if (File.Exists(filepath)) Process.Start(filepath); else new PopupWindow(this, "不存在").Show();
                         break;
 
                     case 3:
