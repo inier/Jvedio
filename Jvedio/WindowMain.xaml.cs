@@ -564,14 +564,19 @@ namespace Jvedio
 
             this.Dispatcher.Invoke((Action)delegate ()
             {
+                try
+                {
 
-                if (result[Properties.Settings.Default.Bus]) { BusStatus.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.DB]) { DBStatus.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.Library]) { LibraryStatus.Fill = Brushes.Green; }
-                //if (result[Properties.Settings.Default.Fc2Club]) { FC2Status.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.BusEurope]) { BusEuropeStatus.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.Jav321]) { Jav321Status.Fill = Brushes.Green; }
-                if (result[Properties.Settings.Default.DMM]) { DMMStatus.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.Bus]) { BusStatus.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.DB]) { DBStatus.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.Library]) { LibraryStatus.Fill = Brushes.Green; }
+                    //if (result[Properties.Settings.Default.Fc2Club]) { FC2Status.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.BusEurope]) { BusEuropeStatus.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.Jav321]) { Jav321Status.Fill = Brushes.Green; }
+                    if (result[Properties.Settings.Default.DMM]) { DMMStatus.Fill = Brushes.Green; }
+
+                }
+                catch(KeyNotFoundException ex) { Console.WriteLine(ex.Message);  }
 
 
             });
@@ -3092,11 +3097,12 @@ namespace Jvedio
 
 
             //检查更新
-            if (Properties.Settings.Default.AutoCheckUpdate) CheckUpdate();
+            //if (Properties.Settings.Default.AutoCheckUpdate) CheckUpdate();
+            CheckUpdate();
 
 
             //检查网络连接
-                
+
 
             this.Cursor = Cursors.Arrow;
 

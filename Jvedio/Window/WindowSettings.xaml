@@ -300,7 +300,7 @@
 
                             <CheckBox IsChecked="{Binding CloseToTaskBar, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="关闭后最小化" Height="40"/>
                             <CheckBox Visibility="Collapsed" IsChecked="{Binding ShowNotice, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启动后显示公告" Height="40" VerticalContentAlignment="Center"/>
-                            <CheckBox IsChecked="{Binding AutoCheckUpdate, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启动后检查更新" Height="40" VerticalContentAlignment="Center"/>
+                            <CheckBox Visibility="Collapsed" IsChecked="{Binding AutoCheckUpdate, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启动后检查更新" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding RandomDisplay, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启动后随机展示" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding SearchImmediately, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="搜索框变动时立即查询" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding OpenDataBaseDefault, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="开启时不显示库选择" Height="40" VerticalContentAlignment="Center"/>
@@ -455,8 +455,8 @@
 
                             <StackPanel Orientation="Horizontal" Visibility="{Binding Path=SaveInfoToNFO, Source={x:Static p:Settings.Default}, Converter={StaticResource BoolToVis},Mode=OneWay}">
                                 <TextBox Margin="5 5" Width="400" Style="{StaticResource BaseTextBox}" Text="{Binding NFOSavePath, Source={x:Static p:Settings.Default}}"/>
-                                <Button Content="选择文件夹" Style="{StaticResource ButtonStyleFill}" HorizontalAlignment="Left" Width="100" />
-
+                                <Button Content="选择文件夹" Style="{StaticResource ButtonStyleFill}" HorizontalAlignment="Left" Width="100" Click="Button_Click_3" />
+                
                             </StackPanel>
 
 

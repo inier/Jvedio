@@ -620,6 +620,29 @@ namespace Jvedio
             Jvedio.StaticClass.SavePathToConfig(vieModel_Settings.DataBase, vieModel_Settings.ScanPath.ToList());
 
         }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            //选择NFO存放位置
+            System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+            dialog.Description = "请选择保存 NFO 的路径";
+            dialog.ShowNewFolderButton = true;
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (string.IsNullOrEmpty(dialog.SelectedPath))
+                {
+                    System.Windows.MessageBox.Show(this, "文件夹路径不能为空", "提示");
+                    return;
+                }
+                else
+                {
+                    string path = dialog.SelectedPath;
+                    if (path.Substring(path.Length - 1, 1) != "\\") { path = path + "\\"; }
+                    Properties.Settings.Default.NFOSavePath = path;
+                }
+            }
+
+        }
     }
     public class SkinStringToCheckedConverter : IValueConverter
     {

@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using static Jvedio.Net;
 using static Jvedio.StaticVariable;
-
+using static Jvedio.StaticClass;
+using System.IO;
 namespace Jvedio
 {
     public class Crawler 
@@ -37,13 +38,34 @@ namespace Jvedio
 
         public static void SaveInfo(Dictionary<string, string> Info,WebSite webSite)
         {
+            string id = "";
+            try { id = Info["id"].ToUpper(); }
+            catch { return; }
+            if (id == "") return;
             //保存信息
             DataBase cdb = new DataBase();
             cdb.UpdateInfoFromNet(Info, webSite);
+            DetailMovie detailMovie = cdb.SelectDetailMovieById(id);
             cdb.CloseDB();
 
             //nfo 信息保存到视频同目录
-
+            if (Properties.Settings.Default.SaveInfoToNFO)
+            {
+                if (Directory.Exists(Properties.Settings.Default.NFOSavePath))
+                {
+                    //固定位置
+                    SaveToNFO(detailMovie, Path.Combine(Properties.Settings.Default.NFOSavePath, $"{id}.nfo"));
+                }
+                else
+                {
+                    //与视频同路径
+                    string path = detailMovie.filepath;
+                    if (System.IO.File.Exists(path))
+                    {
+                        SaveToNFO(detailMovie, Path.Combine(new FileInfo(path).DirectoryName, $"{id}.nfo"));
+                    }
+                }
+            }
 
 
 
