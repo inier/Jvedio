@@ -58,48 +58,64 @@ namespace Jvedio.ViewModel
         {
 
             cdb = new DataBase();
-            DetailMovie models = cdb.SelectDetailMovieById(movieid);
+            DetailMovie detailMovie = cdb.SelectDetailMovieById(movieid);
             //访问次数+1
-            models.visits += 1;
-            cdb.UpdateMovieByID(movieid, "visits", models.visits);
+            detailMovie.visits += 1;
+            cdb.UpdateMovieByID(movieid, "visits", detailMovie.visits);
             cdb.CloseDB();
 
             //扫描目录
             List<string> imagePathList = new List<string>();
-            if(Directory.Exists(StaticVariable.BasePicPath + $"ExtraPic\\{models.id}\\"))
+            if(Directory.Exists(StaticVariable.BasePicPath + $"ExtraPic\\{detailMovie.id}\\"))
             {
                 try
                 {
-                    foreach (var path in Directory.GetFiles(StaticVariable.BasePicPath + $"ExtraPic\\{models.id}\\")) imagePathList.Add(path);
+                    foreach (var path in Directory.GetFiles(StaticVariable.BasePicPath + $"ExtraPic\\{detailMovie.id}\\")) imagePathList.Add(path);
                 }
                 catch { }
                 if (imagePathList.Count > 0) imagePathList = imagePathList.CustomSort().ToList();
             }
-
-            DetailMovie = new DetailMovie();
-            if (models != null)
+            //释放图片内存
+            if (DetailMovie != null)
             {
-                foreach (var path in imagePathList) models.extraimagelist.Add(StaticClass.GetExtraImage(path));//加载预览图
-                models.bigimage = StaticClass.GetBitmapImage(models.id, "BigPic");
+                DetailMovie.smallimage = null;
+                DetailMovie.bigimage = null;
+                for (int i = 0; i < DetailMovie.extraimagelist.Count; i++)
+                {
+                    DetailMovie.extraimagelist[i] = null;
+                }
+
+                for (int i = 0; i < DetailMovie.actorlist.Count; i++)
+                {
+                    DetailMovie.actorlist[i].bigimage = null;
+                    DetailMovie.actorlist[i].smallimage = null;
+                }
+            }
+            GC.Collect();
+            DetailMovie = new DetailMovie();
+            if (detailMovie != null)
+            {
+                foreach (var path in imagePathList) detailMovie.extraimagelist.Add(StaticClass.GetExtraImage(path));//加载预览图
+                detailMovie.bigimage = StaticClass.GetBitmapImage(detailMovie.id, "BigPic");
 
                 DataBase dataBase = new DataBase("Translate");
                 //加载翻译结果
                 if (Properties.Settings.Default.TitleShowTranslate)
                 {
-                    string translate_title = dataBase.GetInfoBySql($"select translate_title from youdao where id='{models.id}'");
-                    if (translate_title != "") models.title = translate_title;
+                    string translate_title = dataBase.GetInfoBySql($"select translate_title from youdao where id='{detailMovie.id}'");
+                    if (translate_title != "") detailMovie.title = translate_title;
                 }
 
                 if (Properties.Settings.Default.PlotShowTranslate)
                 {
-                    string translate_plot = dataBase.GetInfoBySql($"select translate_plot from youdao where id='{models.id}'");
-                    if (translate_plot != "") models.plot = translate_plot;
+                    string translate_plot = dataBase.GetInfoBySql($"select translate_plot from youdao where id='{detailMovie.id}'");
+                    if (translate_plot != "") detailMovie.plot = translate_plot;
                 }
                 dataBase.CloseDB();
 
 
 
-                DetailMovie = models;
+                DetailMovie = detailMovie;
             }
         }
 

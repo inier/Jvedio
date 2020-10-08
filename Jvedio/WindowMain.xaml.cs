@@ -22,6 +22,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Jvedio.StaticVariable;
 using static Jvedio.StaticClass;
+using System.Windows.Shapes;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace Jvedio
 {
@@ -57,6 +60,8 @@ namespace Jvedio
         public Settings WindowSet = null;
         public VieModel_Main vieModel;
         public WindowSearch windowSearch = null;
+
+        private HwndSource _hwndSource;
 
         System.Windows.Forms.NotifyIcon notifyIcon = new System.Windows.Forms.NotifyIcon();
 
@@ -101,20 +106,155 @@ namespace Jvedio
             #endregion
 
             ProgressBar.Visibility = Visibility.Hidden;
-
             WinState = 0;
-
-
-
 
             if (Properties.Settings.Default.SortDescending) { SortArrow.Text = "↓"; } else { SortArrow.Text = "↑"; }
             AdjustWindow();
 
+            #region "改变窗体大小"
+            //https://www.cnblogs.com/yang-fei/p/4737308.html
 
-
-
-
+            if (resizeGrid != null)
+            {
+                foreach (UIElement element in resizeGrid.Children)
+                {
+                    Rectangle resizeRectangle = element as Rectangle;
+                    if (resizeRectangle != null)
+                    {
+                        resizeRectangle.PreviewMouseDown += ResizeRectangle_PreviewMouseDown;
+                        resizeRectangle.MouseMove += ResizeRectangle_MouseMove;
+                    }
+                }
+            }
+            PreviewMouseMove+= OnPreviewMouseMove;
+            #endregion
         }
+
+        #region "改变窗体大小"
+        private void ResizeRectangle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle rectangle = sender as Rectangle;
+
+            if (rectangle != null)
+            {
+                switch (rectangle.Name)
+                {
+                    case "TopRectangle":
+                        Cursor = Cursors.SizeNS;
+                        ResizeWindow(ResizeDirection.Top);
+                        break;
+                    case "Bottom":
+                        Cursor = Cursors.SizeNS;
+                        ResizeWindow(ResizeDirection.Bottom);
+                        break;
+                    case "LeftRectangle":
+                        Cursor = Cursors.SizeWE;
+                        ResizeWindow(ResizeDirection.Left);
+                        break;
+                    case "Right":
+                        Cursor = Cursors.SizeWE;
+                        ResizeWindow(ResizeDirection.Right);
+                        break;
+                    case "TopLeft":
+                        Cursor = Cursors.SizeNWSE;
+                        ResizeWindow(ResizeDirection.TopLeft);
+                        break;
+                    case "TopRight":
+                        Cursor = Cursors.SizeNESW;
+                        ResizeWindow(ResizeDirection.TopRight);
+                        break;
+                    case "BottomLeft":
+                        Cursor = Cursors.SizeNESW;
+                        ResizeWindow(ResizeDirection.BottomLeft);
+                        break;
+                    case "BottomRight":
+                        Cursor = Cursors.SizeNWSE;
+                        ResizeWindow(ResizeDirection.BottomRight);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+        protected void OnPreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (Mouse.LeftButton != MouseButtonState.Pressed)
+                Cursor = Cursors.Arrow;
+        }
+
+        private void ResizeRectangle_MouseMove(object sender, MouseEventArgs e)
+        {
+            Rectangle rectangle = sender as Rectangle;
+
+            if (rectangle != null)
+            {
+                switch (rectangle.Name)
+                {
+                    case "TopRectangle":
+                        Cursor = Cursors.SizeNS;
+                        break;
+                    case "Bottom":
+                        Cursor = Cursors.SizeNS;
+                        break;
+                    case "LeftRectangle":
+                        Cursor = Cursors.SizeWE;
+                        break;
+                    case "Right":
+                        Cursor = Cursors.SizeWE;
+                        break;
+                    case "TopLeft":
+                        Cursor = Cursors.SizeNWSE;
+                        break;
+                    case "TopRight":
+                        Cursor = Cursors.SizeNESW;
+                        break;
+                    case "BottomLeft":
+                        Cursor = Cursors.SizeNESW;
+                        break;
+                    case "BottomRight":
+                        Cursor = Cursors.SizeNWSE;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public enum ResizeDirection
+        {
+            Left = 1,
+            Right = 2,
+            Top = 3,
+            TopLeft = 4,
+            TopRight = 5,
+            Bottom = 6,
+            BottomLeft = 7,
+            BottomRight = 8,
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            SourceInitialized += MainWindow_SourceInitialized;
+            base.OnInitialized(e);
+        }
+
+        private void MainWindow_SourceInitialized(object sender, EventArgs e)
+        {
+            _hwndSource = (HwndSource)PresentationSource.FromVisual(this);
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam);
+
+        private void ResizeWindow(ResizeDirection direction)
+        {
+            SendMessage(_hwndSource.Handle, 0x112, (IntPtr)(61440 + direction), IntPtr.Zero);
+        }
+
+        #endregion
+
 
         public void InitMovie()
         {
@@ -628,7 +768,6 @@ namespace Jvedio
                 }
                 else
                 {
-                    this.WindowState = WindowState.Normal;
                     this.Left = rect.X > 0 ? rect.X : 0;
                     this.Top = rect.Y > 0 ? rect.Y : 0;
                     this.Height = rect.Height > 100 ? rect.Height : 100;
@@ -755,7 +894,7 @@ namespace Jvedio
             if (WinState == JvedioWindowState.Normal)
             {
                 MainGrid.Margin = new Thickness(2);
-                this.ResizeMode = ResizeMode.CanResizeWithGrip;
+                this.ResizeMode = ResizeMode.CanResize;
             }
             else if (WinState == JvedioWindowState.Maximized || this.WindowState == WindowState.Maximized)
             {

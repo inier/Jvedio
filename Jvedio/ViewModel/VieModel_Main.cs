@@ -699,6 +699,18 @@ namespace Jvedio.ViewModel
 
         }
 
+        public void DisposeMovieList(ObservableCollection<Movie> movies)
+        {
+            if (movies == null) return;
+
+            for (int i = 0; i < movies.Count; i++)
+            {
+                movies[i].bigimage = null;
+                movies[i].smallimage = null;
+            }
+            GC.Collect();
+        }
+
 
         //翻页
         public void FlipOver()
@@ -708,6 +720,8 @@ namespace Jvedio.ViewModel
                 //只在翻页时加载图片、显示翻译结果
                 int DisPlayNum = Properties.Settings.Default.DisplayNumber;
                 int FlowNum = Properties.Settings.Default.FlowNum;
+                DisposeMovieList(CurrentMovieList);
+                
                 CurrentMovieList = new ObservableCollection<Movie>();
                 for (int i = (CurrentPage - 1) * DisPlayNum; i < (CurrentPage - 1) * DisPlayNum + FlowNum; i++)
                 {
