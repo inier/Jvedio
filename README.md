@@ -30,9 +30,9 @@
 
 
 
-![主界面](https://img.kancloud.cn/2e/26/2e260a170bbf6e8adda8478a0944f8b4_1167x825.jpg)
+![主界面](https://img.kancloud.cn/1f/fa/1ffa50abdbca0c625f8ddf6b5516406d_1175x895.png)
 
-![详情页](https://img.kancloud.cn/53/b7/53b71fee5f3850fe4d163873d1a03d28_1460x815.jpg)
+![详情页](https://img.kancloud.cn/11/ba/11baccb48d9ca5a6fa04440b3b7ade5f_1200x700.png)
 
 
 ---
