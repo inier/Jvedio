@@ -143,7 +143,104 @@ namespace Jvedio
             }
         }
 
+        public static void SaveServersInfoToConfig(WebSite webSite, List<string> infos)
+        {
+            string info1 = string.Join("*", infos);
+            string url = webSite.ToString();
+            if (!File.Exists(ServersConfigPath))
+            {
+                string content = $"{url}?{info1}\n";
+                using (StreamWriter sw = new StreamWriter(ServersConfigPath))
+                {
+                    sw.Write(content);
+                }
+            }
+            else
+            {
+                string content = "";
+                using (StreamReader sr = new StreamReader(ServersConfigPath))
+                {
+                    content = sr.ReadToEnd();
+                }
+                List<string> info = content.Split('\n').ToList();
 
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                info.ForEach(arg => {
+                    if (!string.IsNullOrEmpty(arg))
+                    {
+                        string key = arg.Split('?')[0];
+                        string value = arg.Split('?')[1];
+                        if (!string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(key) && !dic.ContainsKey(key)) dic.Add(key, value);
+                    }
+
+                });
+
+                if (dic.ContainsKey(url))
+                    dic[url] = $"{info1}";
+                else
+                    dic.Add(url, info1);
+
+                content = "";
+                foreach (KeyValuePair<string, string> item in dic)
+                {
+                    content = content + $"{item.Key}?{item.Value}\n";
+                }
+
+                using (StreamWriter sw = new StreamWriter(ServersConfigPath))
+                {
+                    sw.Write(content);
+                }
+            }
+        }
+
+        public static void DeleteServerInfoFromConfig(WebSite webSite)
+        {
+
+            if (!File.Exists(ServersConfigPath)) return ;
+            string total = "";
+            string content = "";
+            using (StreamReader sr = new StreamReader(ServersConfigPath))
+            {
+                try
+                {
+                    total = sr.ReadToEnd();
+                    List<string> info = total.Split('\n').ToList();
+                    content = info.Where(arg => !string.IsNullOrEmpty(arg)).Where(arg => arg.Split('?')[0] == webSite.ToString()).First();
+                }
+                catch (Exception e) { Console.WriteLine(e.Message); }
+            }
+            if(total != "" && content!="")
+            {
+                total=total.Replace(content + "\n", "");
+                using(StreamWriter sw=new StreamWriter(ServersConfigPath))
+                {
+                    sw.Write(total);
+                }
+            }
+          
+        }
+
+        public static List<string> ReadServerInfoFromConfig(WebSite webSite)
+        {
+            
+            if (!File.Exists(ServersConfigPath)) return new List<string>() { webSite.ToString(),"","" };
+
+
+            List<string> result = new List<string>();
+            using (StreamReader sr = new StreamReader(ServersConfigPath))
+            {
+                try
+                {
+                    string content = sr.ReadToEnd();
+                    List<string> info = content.Split('\n').ToList();
+                    List<string> row = info.Where(arg => !string.IsNullOrEmpty(arg)).Where(arg => arg.Split('?')[0] == webSite.ToString()).First().Split('?')[1].Split('*').ToList();
+                    row.ForEach(arg => { result.Add(arg); });
+                }
+                catch(Exception e) { Console.WriteLine(e.Message); }
+            }
+            if (result.Count < 3) result= new List<string>() { webSite.ToString(), "", "" };
+            return result;
+        }
 
         public static StringCollection ReadScanPathFromConfig(string name)
         {
@@ -163,8 +260,6 @@ namespace Jvedio
                 catch { }
             }
             return result;
-
-
         }
 
 

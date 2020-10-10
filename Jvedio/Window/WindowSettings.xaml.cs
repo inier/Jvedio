@@ -702,38 +702,74 @@ namespace Jvedio
             var button = (FrameworkElement)sender;
             var row = (DataGridRow)button.Tag;
             int rowIndex = ServersDataGrid_RowIndex;
-
             Server server = vieModel_Settings.Servers[rowIndex];
-
-            Console.WriteLine(rowIndex);
-
             CheckBox cb = GetVisualChild<CheckBox>(GetCell(rowIndex, 0));
-
-
-            //TextBlock tb2 = GetVisualChild<TextBlock>(GetCell(rowIndex, 2));
-            //string cookie = tb2.Text;
-            //Console.WriteLine(cookie);
-
-            //TextBlock tb3 = GetVisualChild<TextBlock>(GetCell(rowIndex, 5));
-            //tb3.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
-            //DataGridCell cell2 = GetCell(rowIndex, 3);
-            //ImageAwesome  imageAwesome  = GetVisualChild<ImageAwesome>(cell2);
-            //imageAwesome.Icon = FontAwesomeIcon.Refresh;
-            //imageAwesome.Spin = true;
-            //imageAwesome.Foreground= new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["ForegroundSearch"].ToString()));
 
             CheckUrl( server,cb);
         }
 
-        //private void UpdateServersEnable()
-        //{
-        //    for (int i = 0; i < vieModel_Settings.Servers.Count; i++)
-        //    {
-        //        CheckBox cb = GetVisualChild<CheckBox>(GetCell(i, 0));
-        //        vieModel_Settings.Servers[i].IsEnable = (bool)cb.IsChecked;
-        //    }
-        //}
+        private void delete_Click(object sender, RoutedEventArgs e)
+        {
+            //if(new Msgbox(this, "删除后不可恢复，是否删除？").ShowDialog() == false) { return; }
+            FocusTextBox.Focus();
+
+            Server server = vieModel_Settings.Servers[ServersDataGrid_RowIndex];
+
+            //保存到文件
+            if (server.ServerTitle == "JavBus" | server.Url.ToLower()==Properties.Settings.Default.Bus.ToLower())
+            {
+                Properties.Settings.Default.Bus = "";
+                DeleteServerInfoFromConfig(WebSite.Bus);
+            }
+            else if (server.ServerTitle == "JavBus Europe" | server.Url.ToLower() == Properties.Settings.Default.BusEurope.ToLower())
+            {
+                Properties.Settings.Default.BusEurope = "";
+                DeleteServerInfoFromConfig(WebSite.BusEu);
+            }
+                
+            else if (server.ServerTitle == "JavDB" | server.Url.ToLower() == Properties.Settings.Default.DB.ToLower())
+            {
+                Properties.Settings.Default.DB = "";
+                DeleteServerInfoFromConfig(WebSite.DB);
+            }
+                
+            else if (server.ServerTitle == "JavLibrary" | server.Url.ToLower() == Properties.Settings.Default.Library.ToLower())
+            {
+                Properties.Settings.Default.Library = "";
+                DeleteServerInfoFromConfig(WebSite.Library);
+            }
+               
+            else if (server.ServerTitle == "FANZA" | server.Url.ToLower() == Properties.Settings.Default.DMM.ToLower())
+            {
+                Properties.Settings.Default.DMM = "";
+                DeleteServerInfoFromConfig(WebSite.DMM);
+            }
+                
+            else if (server.ServerTitle == "JAV321" | server.Url.ToLower() == Properties.Settings.Default.Jav321.ToLower())
+            {
+                Properties.Settings.Default.Jav321 = "";
+                DeleteServerInfoFromConfig(WebSite.Jav321);
+            }
+
+            //如果本地没有，则判断 properties
+
+
+
+            vieModel_Settings.Servers.RemoveAt(ServersDataGrid_RowIndex);
+            ServersDataGrid.ItemsSource = vieModel_Settings.Servers;
+            ServersDataGrid.Items.Refresh();
+
+
+
+
+
+
+
+
+
+
+        }
+
 
         private void Previe_Mouse_LBtnDown(object sender, MouseButtonEventArgs e)
         {
@@ -753,7 +789,6 @@ namespace Jvedio
         private async void CheckUrl(Server server, CheckBox checkBox)
         {
             ServersDataGrid.ItemsSource = vieModel_Settings.Servers;
-            Console.WriteLine($"开始测试 {server.Url}");
             server.LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             server.Available = 2;
             ServersDataGrid.Items.Refresh();
@@ -808,36 +843,33 @@ namespace Jvedio
             }
             ServersDataGrid.Items.Refresh();
 
-            //保存
-
-            //检查是否重复
-
-
-           
-            if(server.ServerTitle== "JavBus")
+            //保存，重复的会覆盖
+            if (server.ServerTitle== "JavBus")
             {
                 Properties.Settings.Default.Bus = server.Url;
                 Properties.Settings.Default.EnableBus = (bool)checkBox.IsChecked;
+
+                SaveServersInfoToConfig(WebSite.Bus, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
             }
             else if (server.ServerTitle == "JavBus Europe")
             {
                 Properties.Settings.Default.BusEurope = server.Url;
                 Properties.Settings.Default.EnableBusEu = (bool)checkBox.IsChecked;
+                SaveServersInfoToConfig(WebSite.BusEu, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
             }
             else if (server.ServerTitle == "JavDB")
             {
-
-
                 //是否包含 cookie
                 if(server.Cookie=="无" || server.Cookie == "")
                 {
-                    new Msgbox(this, "该网址需要填入 Cookie !").ShowDialog();
+                    new Msgbox(this, "该网址需要填入 Cookie !，填入后在测试一次！").ShowDialog();
                 }
                 else
                 {
                     Properties.Settings.Default.DB = server.Url;
                     Properties.Settings.Default.EnableDB = (bool)checkBox.IsChecked;
                     Properties.Settings.Default.DBCookie = server.Cookie;
+                    SaveServersInfoToConfig(WebSite.DB, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
                 }
                 
             }
@@ -845,19 +877,22 @@ namespace Jvedio
             {
                 Properties.Settings.Default.Library = server.Url;
                 Properties.Settings.Default.EnableLibrary = (bool)checkBox.IsChecked;
+                SaveServersInfoToConfig(WebSite.Library, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
             }
             else if (server.ServerTitle == "FANZA")
             {
                 Properties.Settings.Default.DMM = server.Url;
                 Properties.Settings.Default.EnableDMM = (bool)checkBox.IsChecked;
+                SaveServersInfoToConfig(WebSite.DMM, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
             }
             else if (server.ServerTitle == "JAV321")
             {
                 Properties.Settings.Default.Jav321 = server.Url;
                 Properties.Settings.Default.Enable321 = (bool)checkBox.IsChecked;
+                SaveServersInfoToConfig(WebSite.Jav321, new List<string>() { server.Url, server.ServerTitle, server.LastRefreshDate });
             }
-            Properties.Settings.Default.Save();
-            Console.WriteLine("结束");
+                Properties.Settings.Default.Save();
+
         }
 
         
@@ -957,10 +992,28 @@ namespace Jvedio
 
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void CheckBox_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            vieModel_Settings.Servers[ServersDataGrid_RowIndex].IsEnable = (bool)((CheckBox)sender).IsChecked;
+            bool enable = !(bool)((CheckBox)sender).IsChecked;
+            vieModel_Settings.Servers[ServersDataGrid_RowIndex].IsEnable = enable;
+
+            if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "JavBus")
+                Properties.Settings.Default.EnableBus = enable;
+            else if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "JavBus Europe") 
+                Properties.Settings.Default.EnableBusEu = enable;
+            else if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "JavDB")
+                Properties.Settings.Default.EnableDB = enable;
+            else if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "JavLibrary")
+                Properties.Settings.Default.EnableLibrary = enable;
+            else if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "FANZA")
+                Properties.Settings.Default.EnableDMM = enable;
+            else if (vieModel_Settings.Servers[ServersDataGrid_RowIndex].ServerTitle == "JAV321")
+                Properties.Settings.Default.Enable321 = enable;
+
+            Properties.Settings.Default.Save();
         }
+
+
     }
 
 

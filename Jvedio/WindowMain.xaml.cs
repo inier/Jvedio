@@ -25,6 +25,7 @@ using static Jvedio.StaticClass;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 
 namespace Jvedio
 {
@@ -41,6 +42,8 @@ namespace Jvedio
         public DispatcherTimer CheckurlTimer = new DispatcherTimer();
         public int CheckurlInterval = 10;//每5分钟检测一次网址
 
+        public bool Resizing = false;
+        public DispatcherTimer ResizingTimer = new DispatcherTimer();
 
         public Point WindowPoint = new Point(100, 100);
         public Size WindowSize = new Size(1000, 600);
@@ -285,7 +288,9 @@ namespace Jvedio
             CheckurlTimer.Interval = TimeSpan.FromMinutes(CheckurlInterval);
             CheckurlTimer.Tick += new EventHandler(CheckurlTimer_Tick);
 
-            
+            ResizingTimer.Interval = TimeSpan.FromSeconds(0.5);
+            ResizingTimer.Tick += new EventHandler(ResizingTimer_Tick);
+
 
 
 
@@ -313,7 +318,13 @@ namespace Jvedio
             BeginCheckurlThread();
         }
 
+        
 
+        private void ResizingTimer_Tick(object sender, EventArgs e)
+        {
+            Resizing = false;
+            ResizingTimer.Stop();
+        }
         private void FlowTimer_Tick(object sender, EventArgs e)
         {
             //FLowNum++;
@@ -901,6 +912,7 @@ namespace Jvedio
 
         public void MaxWindow(object sender, MouseButtonEventArgs e)
         {
+            Resizing = true;
             if (WinState == 0)
             {
                 //最大化
@@ -938,6 +950,7 @@ namespace Jvedio
                 MainGrid.Margin = new Thickness(0);
                 this.ResizeMode = ResizeMode.NoResize;
             }
+            ResizingTimer.Start();
         }
 
         public void FullScreen(object sender, MouseButtonEventArgs e)
@@ -1083,11 +1096,7 @@ namespace Jvedio
         }
 
 
-        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            //if ( vieModel.SearchAll) AllSearchPopup.IsOpen = false;
-            //if (SearchCandidate != null & !vieModel.SearchAll) SearchCandidate.Visibility = Visibility.Hidden;
-        }
+
 
         private void SetSearchValue(object sender, MouseButtonEventArgs e)
         {
@@ -1106,6 +1115,24 @@ namespace Jvedio
 
             //if ( vieModel.SearchAll) AllSearchPopup.IsOpen = true;
             //if (SearchCandidate != null & !vieModel.SearchAll) SearchCandidate.Visibility = Visibility.Visible;
+
+            //动画
+            DoubleAnimation doubleAnimation = new DoubleAnimation(200, 300, new Duration(TimeSpan.FromMilliseconds(200)));
+            AllSearchGrid.BeginAnimation(FrameworkElement.WidthProperty, doubleAnimation);
+            AllSearchBorder.BorderBrush =new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["ForegroundSearch"].ToString()));
+
+            
+        }
+
+        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            //if ( vieModel.SearchAll) AllSearchPopup.IsOpen = false;
+            //if (SearchCandidate != null & !vieModel.SearchAll) SearchCandidate.Visibility = Visibility.Hidden;
+
+            DoubleAnimation doubleAnimation = new DoubleAnimation(300, 200, new Duration(TimeSpan.FromMilliseconds(200)));
+            AllSearchGrid.BeginAnimation(FrameworkElement.WidthProperty, doubleAnimation);
+            AllSearchBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["BackgroundSide"].ToString()));
+
         }
 
 
@@ -1378,6 +1405,7 @@ namespace Jvedio
         WindowDetails wd;
         private void ShowDetails(object sender, MouseEventArgs e)
         {
+            if (Resizing) return;
             StackPanel parent = ((sender as FrameworkElement).Parent as Grid).Parent as StackPanel;
             var TB = parent.Children.OfType<TextBox>().First();//识别码
             //Console.WriteLine(TB.Text.ToUpper());
@@ -3302,14 +3330,14 @@ namespace Jvedio
                 Application.Current.Resources["ForegroundGlobal"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
                 Application.Current.Resources["ForegroundSearch"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 Application.Current.Resources["BorderBursh"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Transparent"));
-                SideBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323639"));
-                TopBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#22252A"));
+                SideBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["BackgroundSide"].ToString()));
+                TopBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["BackgroundTitle"].ToString()));
             }
             else if (Properties.Settings.Default.Themes == "白色")
             {
-                Application.Current.Resources["BackgroundTitle"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D1D1D1"));
-                Application.Current.Resources["BackgroundMain"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
-                Application.Current.Resources["BackgroundSide"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E5E5"));
+                Application.Current.Resources["BackgroundTitle"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E2E3E5"));
+                Application.Current.Resources["BackgroundMain"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F9F9F9"));
+                Application.Current.Resources["BackgroundSide"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F2F3F4"));
                 Application.Current.Resources["BackgroundTab"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFF5EE"));
                 Application.Current.Resources["BackgroundSearch"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D1D1D1"));
                 Application.Current.Resources["BackgroundMenu"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("White"));
@@ -3317,8 +3345,8 @@ namespace Jvedio
                 Application.Current.Resources["ForegroundSearch"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
                 Application.Current.Resources["BorderBursh"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("Gray"));
 
-                SideBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E5E5"));
-                TopBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D1D1D1"));
+                SideBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["BackgroundSide"].ToString()));
+                TopBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["BackgroundTitle"].ToString()));
             }
             else if (Properties.Settings.Default.Themes == "蓝色")
 
@@ -3598,6 +3626,14 @@ namespace Jvedio
                 SaveText(sender);
             }
 
+        }
+
+        private void TopBorder_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount>1)
+            {
+                MaxWindow(sender, new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, MouseButton.Left));
+            }
         }
     }
 

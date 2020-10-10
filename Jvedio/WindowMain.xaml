@@ -328,10 +328,10 @@
 
         <Style x:Key="SearchTextGrid" TargetType="{x:Type Border}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}" Value="True">
+                <DataTrigger Binding="{Binding IsMouseOver, ElementName=AllSearchGrid}" Value="True">
                     <Setter Property="BorderBrush" Value="{DynamicResource ForegroundSearch}"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}" Value="False">
+                <DataTrigger Binding="{Binding IsMouseOver, ElementName=AllSearchGrid}" Value="False">
                     <Setter Property="Background" Value="Transparent"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -791,7 +791,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0"  Background="{DynamicResource BackgroundTitle}" x:Name="TopBorder" Width="auto" HorizontalAlignment="Stretch" Height="40"  CornerRadius="0" BorderBrush="{DynamicResource BorderBursh}" BorderThickness="0" VerticalAlignment="Top" MouseMove="MoveWindow"  >
+            <Border PreviewMouseLeftButtonDown="TopBorder_MouseLeftButtonUp" Grid.Row="0"  Background="{DynamicResource BackgroundTitle}" x:Name="TopBorder" Width="auto" HorizontalAlignment="Stretch" Height="40"  CornerRadius="0" BorderBrush="{DynamicResource BorderBursh}" BorderThickness="0" VerticalAlignment="Top" MouseMove="MoveWindow"  >
                 <Grid Panel.ZIndex="4" >
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10 0">
                         <Image HorizontalAlignment="Center"  VerticalAlignment="Center" Height="20" Source="/Resources/Picture/Jvedio.png"/>
@@ -802,7 +802,7 @@
                     </StackPanel>
 
                     <StackPanel Panel.ZIndex="5" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Border ToolTip="皮肤"  x:Name="SkinBorder"   Height="27" Width="27" Margin="5 0" CornerRadius="3" Style="{StaticResource BorderStyle}" MouseLeftButtonUp="ShowSkinPopup">
+                        <Border Visibility="Collapsed" ToolTip="皮肤"  x:Name="SkinBorder"   Height="27" Width="27" Margin="5 0" CornerRadius="3" Style="{StaticResource BorderStyle}" MouseLeftButtonUp="ShowSkinPopup">
                             <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=skin,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   Visibility="Visible" />
                         </Border>
 
@@ -866,7 +866,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="40"/>
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Panel.ZIndex="3" Height="auto" VerticalAlignment="Top" Margin="0,10,0,0">
+                            <Grid Grid.Row="0" Panel.ZIndex="3" Height="auto" VerticalAlignment="Top" Margin="0,10,0,0" Background="Transparent">
                                 <ComboBox FontSize="16"  Text="历史电影库" Style="{StaticResource SideComboBoxStyle}" HorizontalAlignment="Left" Margin="5 0"  SelectionChanged="DatabaseComboBox_SelectionChanged" x:Name="DatabaseComboBox" ItemsSource="{Binding DataBases}"   Width="150"  Height="30"  ToolTip="{Binding RelativeSource={RelativeSource Mode=Self},Path=Text}" />
 
                                 <Border HorizontalAlignment="Right"  ToolTip="选项" ContextMenuService.IsEnabled="False" x:Name="SettingsBorder" Width="27" Height="27"  Margin="5 0"  CornerRadius="3" Style="{StaticResource BorderStyle}"  MouseLeftButtonUp="ShowSettingsPopup">
@@ -900,7 +900,7 @@
                                 </Border>
 
                             </Grid>
-                            <StackPanel Grid.Row="1" Height="auto" Margin="0 10 0 0"   VerticalAlignment="Stretch"  Background="{DynamicResource BackgroundSide}"  >
+                            <StackPanel Grid.Row="1" Height="auto" Margin="0 10 0 0"   VerticalAlignment="Stretch"   >
 
                                 <Popup VerticalOffset="10" HorizontalOffset="-40" x:Name="NewTypePopup" Placement="MousePoint" PopupAnimation="Fade"   AllowsTransparency="True" StaysOpen="False" IsOpen="False">
                                     <Border Background="{DynamicResource BackgroundMenu}"  Margin="2" >
@@ -931,7 +931,7 @@
 
                                 <Grid>
                                     <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=recent,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="10 0"    />
-                                    <RadioButton Padding="20 0"   Style="{StaticResource SideRadioButtonStyle}" Command="{Binding FavoritesCommand}" Content="最近创建"  Click="ShowMovieGrid"  />
+                                    <RadioButton Padding="20 0"   Style="{StaticResource SideRadioButtonStyle}" Command="{Binding RecentCommand}" Content="最近创建"  Click="ShowMovieGrid"  />
                                     <TextBlock Text="{Binding RecentVedioCount}" Style="{StaticResource BaseTextBlock}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10 0" Foreground="{DynamicResource ForegroundGlobal}"/>
                                 </Grid>
                                 <TreeView    BorderThickness="0" Background="Transparent" HorizontalAlignment="Stretch" Width="auto" Style="{DynamicResource TreeViewStyle1}" >
@@ -1063,7 +1063,7 @@
 
                             </StackPanel>
 
-                            <StackPanel Grid.Row="2" Background="{DynamicResource BackgroundSide}" MouseRightButtonUp="ShowNewTypePopup">
+                            <StackPanel Grid.Row="2"  MouseRightButtonUp="ShowNewTypePopup">
                                 
                             </StackPanel>
 
@@ -1151,7 +1151,9 @@
                             <!--搜索-->
                             <Grid HorizontalAlignment="Left" x:Name="AllSearchGrid"   Height="40"  Width="200" Margin="10 0"   >
 
-                                <Border Style="{StaticResource SearchTextGrid}"   CornerRadius="2"  Background="Transparent" BorderBrush="{DynamicResource BackgroundSide}" BorderThickness="2" />
+
+
+                                <Border x:Name="AllSearchBorder"    Style="{StaticResource SearchTextGrid}"   CornerRadius="2"  Background="Transparent" BorderBrush="{DynamicResource BackgroundSide}" BorderThickness="2" />
 
 
                                 <Grid x:Name="SearchOptionGrid"  Width="25" Panel.ZIndex="3" HorizontalAlignment="Left" Margin="10 0 0 0" MouseUp="ShowSearchMenu" Cursor="Hand">

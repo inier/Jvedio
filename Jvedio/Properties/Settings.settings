@@ -24,7 +24,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Fc2Club" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://fc2club.com/</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DisplayID" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -189,10 +189,10 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Jav321" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://www.jav321.com/</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DMM" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://www.dmm.co.jp/</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DBCookie" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -448,6 +448,9 @@
     </Setting>
     <Setting Name="TypeName3" Type="System.String" Scope="User">
       <Value Profile="(Default)">类型3</Value>
+    </Setting>
+    <Setting Name="RecentDays" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

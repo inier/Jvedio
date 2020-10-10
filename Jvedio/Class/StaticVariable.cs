@@ -44,6 +44,7 @@ namespace Jvedio
         public static string SQLITETABLE_YOUDAO = "create table if not exists youdao (id VARCHAR(50) PRIMARY KEY , title TEXT , translate_title TEXT, plot TEXT, translate_plot TEXT)";
 
         public static string DataBaseConfigPath = "DataBase\\Config.ini";
+        public static string ServersConfigPath = "ServersConfig.ini";
 
         //禁止的文件名
         public static readonly char[] BANFILECHAR =  {'\\','#','%', '&', '*', '|', ':', '"', '<', '>', '?', '/','.' }; //https://docs.microsoft.com/zh-cn/previous-versions/s6feh8zw(v=vs.110)?redirectedfrom=MSDN
@@ -56,6 +57,15 @@ namespace Jvedio
                 BasePicPath = Properties.Settings.Default.BasePicPath;
             else
                 BasePicPath = AppDomain.CurrentDomain.BaseDirectory + "Pic\\";
+
+
+            if (Properties.Settings.Default.Bus == "") Properties.Settings.Default.EnableBus = false;
+            if (Properties.Settings.Default.BusEurope == "") Properties.Settings.Default.EnableBusEu = false;
+            if (Properties.Settings.Default.DB == "") Properties.Settings.Default.EnableDB = false;
+            if (Properties.Settings.Default.Library == "") Properties.Settings.Default.EnableLibrary = false;
+            if (Properties.Settings.Default.DMM == "") Properties.Settings.Default.EnableDMM = false;
+            if (Properties.Settings.Default.Jav321 == "") Properties.Settings.Default.Enable321 = false;
+            Properties.Settings.Default.Save();
 
 
             //格式化网址

@@ -571,7 +571,7 @@
 
 
 
-                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
+                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
                         <WrapPanel Orientation="Horizontal" Margin="5 20">
 
 
@@ -582,6 +582,12 @@
                             <CheckBox IsChecked="{Binding SearchImmediately, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="搜索框变动时立即查询" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding OpenDataBaseDefault, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="开启时不显示库选择" Height="40" VerticalContentAlignment="Center"/>
                         </WrapPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
+                            <TextBlock Text="显示最近创建的天数" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="RecentDaysSlider" Value="{Binding RecentDays, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="1" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, ElementName=RecentDaysSlider, StringFormat=\{0\} 天}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
 
 
                         <StackPanel  Orientation="Horizontal" Visibility="Visible" IsEnabled="true">
@@ -691,7 +697,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource TextBlockTitle}" Text="服务器源" HorizontalAlignment="Left"/>
@@ -711,7 +717,7 @@
                                 <DataGridTemplateColumn Header="启用" Width="auto" MinWidth="40">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <CheckBox Checked="CheckBox_Checked" HorizontalAlignment="Center" IsChecked="{Binding IsEnable}" Style="{StaticResource CheckBoxStyle1}"/>
+                                            <CheckBox PreviewMouseUp="CheckBox_PreviewMouseUp" HorizontalAlignment="Center" IsChecked="{Binding IsEnable}" Style="{StaticResource CheckBoxStyle1}"/>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -766,7 +772,7 @@
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                                                 <Button Content="测试" x:Name="test" Tag="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}}"  Style="{StaticResource ButtonStyleFill}" Width="40" Height="25" Click="test_Click" />
-                                                <Button Content="删除" x:Name="delete"   Style="{StaticResource ButtonStyleFill}" Background="OrangeRed" Width="40" Height="25"  />
+                                                <Button Content="删除" x:Name="delete"   Style="{StaticResource ButtonStyleFill}" Background="OrangeRed" Width="40" Height="25" Click="delete_Click"  />
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -782,7 +788,7 @@
 
 
 
-                        <StackPanel Orientation="Horizontal" Margin="10 50">
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
                             <TextBlock Text="强制关闭连接" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
                             <Slider x:Name="HttpTimeoutSlider" Value="{Binding Timeout_forcestop, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="2" Maximum="10" Width="100" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding Value, ElementName=HttpTimeoutSlider, StringFormat=\{0\} 秒}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>

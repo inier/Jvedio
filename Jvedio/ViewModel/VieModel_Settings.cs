@@ -38,13 +38,38 @@ namespace Jvedio.ViewModel
             }
             if (ScanPath.Count == 0) ScanPath = null;
 
-             Servers = new ObservableCollection<Server>();
-            if(Properties.Settings.Default.Bus!="") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBus, Url = Properties.Settings.Default.Bus, Available = 0, ServerTitle = "JavBus", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
-            if (Properties.Settings.Default.BusEurope != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBusEu, Url = Properties.Settings.Default.BusEurope, Available = 0, ServerTitle = "JavBus 欧美", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
-            if (Properties.Settings.Default.DB != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDB, Url = Properties.Settings.Default.DB,Cookie= Properties.Settings.Default.DBCookie, Available = 0, ServerTitle = "JavDB", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
-            if (Properties.Settings.Default.Library != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableLibrary, Url = Properties.Settings.Default.Library, Available = 0, ServerTitle = "JavLibrary", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
-            
+            Servers = new ObservableCollection<Server>();
+            if (Properties.Settings.Default.Bus != "")
+            {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.Bus);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBus, Url = Properties.Settings.Default.Bus, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
+            }
+            if (Properties.Settings.Default.BusEurope != "") {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.BusEu);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBusEu, Url = Properties.Settings.Default.BusEurope, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] }); 
+            }
+            if (Properties.Settings.Default.DB != "") {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.DB);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDB, Url = Properties.Settings.Default.DB, Cookie = Properties.Settings.Default.DBCookie, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] }); }
+            if (Properties.Settings.Default.Library != "") {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.Library);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableLibrary, Url = Properties.Settings.Default.Library, Available = 0,  ServerTitle = infos[1], LastRefreshDate = infos[2] }); }
+
+            if (Properties.Settings.Default.DMM != "")
+            {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.DMM);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDMM, Url = Properties.Settings.Default.DMM, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
+            }
+            if (Properties.Settings.Default.Jav321 != "")
+            {
+                List<string> infos = ReadServerInfoFromConfig(WebSite.Jav321);
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.Enable321, Url = Properties.Settings.Default.Jav321, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
+            }
+
         }
+
+
+
 
 
         private ObservableCollection<Server> _Servers;

@@ -43,6 +43,7 @@ namespace Jvedio.ViewModel
 
 
             FavoritesCommand = new RelayCommand(GetFavoritesMovie);
+            RecentCommand = new RelayCommand(GetRecentMovie);
             UncensoredCommand = new RelayCommand<int>(t => Getmoviebysql(1));
             CensoredCommand = new RelayCommand<int>(t => Getmoviebysql(2));
             EuropeCommand = new RelayCommand<int>(t => Getmoviebysql(3));
@@ -71,6 +72,9 @@ namespace Jvedio.ViewModel
         public RelayCommand LabelCommand { get; set; }
 
         public RelayCommand FavoritesCommand { get; set; }
+        public RelayCommand RecentCommand { get; set; }
+
+        
         public RelayCommand<int> CensoredCommand { get; set; }
         public RelayCommand<int> UncensoredCommand { get; set; }
         public RelayCommand<int> EuropeCommand { get; set; }
@@ -925,6 +929,24 @@ namespace Jvedio.ViewModel
         }
 
 
+        public async void GetRecentMovie()
+        {
+            TextType = "最近创建";
+            cdb = new DataBase();
+            List<Movie> models = null;
+            string date1 = DateTime.Now.AddDays(-1 * Properties.Settings.Default.RecentDays).Date.ToString("yyyy-MM-dd");
+            string date2 = DateTime.Now.ToString("yyyy-MM-dd");
+            await Task.Run(() => { models = cdb.SelectMoviesBySql($"SELECT * from movie WHERE scandate BETWEEN '{date1}' AND '{date2}'"); });
+
+            await Task.Run(() =>
+            {
+                cdb.CloseDB();
+                MovieList = new ObservableCollection<Movie>();
+                models?.ForEach(arg => { MovieList.Add(arg); });
+                Sort();
+            });
+        }
+
         public async void GetFavoritesMovie()
         {
             TextType = "我的喜爱";
@@ -1167,7 +1189,7 @@ namespace Jvedio.ViewModel
             VedioTypeBCount = await dataBase.SelectCountBySql("where vediotype=2");
             VedioTypeCCount = await dataBase.SelectCountBySql("where vediotype=3");
 
-            string date1 = DateTime.Now.AddDays(-3).Date.ToString("yyyy-MM-dd");
+            string date1 = DateTime.Now.AddDays(-1 * Properties.Settings.Default.RecentDays).Date.ToString("yyyy-MM-dd");
             string date2 = DateTime.Now.ToString("yyyy-MM-dd");
             RecentVedioCount  = await dataBase.SelectCountBySql($"WHERE scandate BETWEEN '{date1}' AND '{date2}'");
             dataBase.CloseDB();

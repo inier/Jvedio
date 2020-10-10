@@ -109,7 +109,7 @@ namespace Jvedio.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://fc2club.com/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Fc2Club {
             get {
                 return ((string)(this["Fc2Club"]));
@@ -769,7 +769,7 @@ namespace Jvedio.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://www.jav321.com/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Jav321 {
             get {
                 return ((string)(this["Jav321"]));
@@ -781,7 +781,7 @@ namespace Jvedio.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://www.dmm.co.jp/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DMM {
             get {
                 return ((string)(this["DMM"]));
@@ -1808,6 +1808,18 @@ namespace Jvedio.Properties {
             }
             set {
                 this["TypeName3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int RecentDays {
+            get {
+                return ((int)(this["RecentDays"]));
+            }
+            set {
+                this["RecentDays"] = value;
             }
         }
     }
