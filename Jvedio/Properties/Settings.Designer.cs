@@ -1738,5 +1738,77 @@ namespace Jvedio.Properties {
                 this["NFOSavePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public double SideGridWidth {
+            get {
+                return ((double)(this["SideGridWidth"]));
+            }
+            set {
+                this["SideGridWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsExpanded1 {
+            get {
+                return ((bool)(this["IsExpanded1"]));
+            }
+            set {
+                this["IsExpanded1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsExpanded2 {
+            get {
+                return ((bool)(this["IsExpanded2"]));
+            }
+            set {
+                this["IsExpanded2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("类型1")]
+        public string TypeName1 {
+            get {
+                return ((string)(this["TypeName1"]));
+            }
+            set {
+                this["TypeName1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("类型2")]
+        public string TypeName2 {
+            get {
+                return ((string)(this["TypeName2"]));
+            }
+            set {
+                this["TypeName2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("类型3")]
+        public string TypeName3 {
+            get {
+                return ((string)(this["TypeName3"]));
+            }
+            set {
+                this["TypeName3"] = value;
+            }
+        }
     }
 }

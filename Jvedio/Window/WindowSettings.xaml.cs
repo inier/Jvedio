@@ -16,6 +16,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using static Jvedio.StaticVariable;
 using static Jvedio.StaticClass;
+using System.Data;
+using System.Windows.Controls.Primitives;
+using FontAwesome.WPF;
+using System.ComponentModel;
+using DynamicData.Annotations;
+using System.Runtime.CompilerServices;
 
 namespace Jvedio
 {
@@ -73,6 +79,13 @@ namespace Jvedio
 
             var RadioButtons = RadioButtonStackPanel.Children.OfType<RadioButton>().ToList();
             RadioButtons[Properties.Settings.Default.SettingsIndex].IsChecked = true;
+
+            //设置网址
+            //List<Server> servers = new List<Server>();
+            //servers.Add(new Server() { IsEnable = false, Url = "https://www.fanbus.cam/",  Avaliable = true, ServerTitle = "JavBus", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            //servers.Add(new Server() { IsEnable = true, Url = "http://www.b47w.com/cn/", Avaliable = false, ServerTitle = "JavLibrary", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            //servers.Add(new Server() { IsEnable = true,  Url = "https://javdb5.com/", Avaliable = true, ServerTitle = "JavDB", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            ServersDataGrid.ItemsSource = vieModel_Settings.Servers;
 
 
         }
@@ -474,6 +487,9 @@ namespace Jvedio
                 App.Current.Windows[0].Opacity = Properties.Settings.Default.Opacity_Main;
             else
                 App.Current.Windows[0].Opacity = 1;
+
+            ////UpdateServersEnable();
+
             StaticVariable.InitVariable();
             Scan.InitSearchPattern();
             Net.Init();
@@ -591,6 +607,12 @@ namespace Jvedio
             }
 
             if (vieModel_Settings.DataBases.Count == 1) DatabaseComboBox.Visibility = Visibility.Hidden;
+
+            //ServersDataGrid.Columns[0].Header = "是否启用";
+            //ServersDataGrid.Columns[1].Header = "服务器地址";
+            //ServersDataGrid.Columns[2].Header = "是否可用";
+            //ServersDataGrid.Columns[3].Header = "服务器名称";
+            //ServersDataGrid.Columns[4].Header = "上一次更新时间";
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -643,7 +665,306 @@ namespace Jvedio
             }
 
         }
+
+        private void ServersDataGrid_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            if (vieModel_Settings.Servers.Count >= 10) return;
+
+            //ServersDataGrid.ItemsSource = null;
+            vieModel_Settings.Servers.Add(new Server()
+            {
+                IsEnable = true,
+                Url = "请输入网址",
+                Cookie = "无",
+                Available = 0,
+                ServerTitle = "",
+                LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            }); ;
+            ServersDataGrid.ItemsSource = vieModel_Settings.Servers;
+
+            //TextBox tb = GetVisualChild<TextBox>(GetCell(vieModel_Settings.Servers.Count-1, 1));
+            //tb.Focus();
+            //tb.SelectAll();
+
+        }
+
+
+        private int  ServersDataGrid_RowIndex=0;
+        private void test_Click(object sender, RoutedEventArgs e)
+        {
+            FocusTextBox.Focus();
+            //UpdateServersEnable();
+            var button = (FrameworkElement)sender;
+            var row = (DataGridRow)button.Tag;
+            int rowIndex = ServersDataGrid_RowIndex;
+
+            Server server = vieModel_Settings.Servers[rowIndex];
+
+            Console.WriteLine(rowIndex);
+
+            CheckBox cb = GetVisualChild<CheckBox>(GetCell(rowIndex, 0));
+
+
+            //TextBlock tb2 = GetVisualChild<TextBlock>(GetCell(rowIndex, 2));
+            //string cookie = tb2.Text;
+            //Console.WriteLine(cookie);
+
+            //TextBlock tb3 = GetVisualChild<TextBlock>(GetCell(rowIndex, 5));
+            //tb3.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+            //DataGridCell cell2 = GetCell(rowIndex, 3);
+            //ImageAwesome  imageAwesome  = GetVisualChild<ImageAwesome>(cell2);
+            //imageAwesome.Icon = FontAwesomeIcon.Refresh;
+            //imageAwesome.Spin = true;
+            //imageAwesome.Foreground= new SolidColorBrush((Color)ColorConverter.ConvertFromString(Application.Current.Resources["ForegroundSearch"].ToString()));
+
+            CheckUrl( server,cb);
+        }
+
+        //private void UpdateServersEnable()
+        //{
+        //    for (int i = 0; i < vieModel_Settings.Servers.Count; i++)
+        //    {
+        //        CheckBox cb = GetVisualChild<CheckBox>(GetCell(i, 0));
+        //        vieModel_Settings.Servers[i].IsEnable = (bool)cb.IsChecked;
+        //    }
+        //}
+
+        private void Previe_Mouse_LBtnDown(object sender, MouseButtonEventArgs e)
+        {
+            DataGridRow dgr = null;
+            var visParent = VisualTreeHelper.GetParent(e.OriginalSource as FrameworkElement);
+            while (dgr == null && visParent != null)
+            {
+                dgr = visParent as DataGridRow;
+                visParent = VisualTreeHelper.GetParent(visParent);
+            }
+            if (dgr == null) { return; }
+
+            ServersDataGrid_RowIndex = dgr.GetIndex();
+        }
+
+
+        private async void CheckUrl(Server server, CheckBox checkBox)
+        {
+            ServersDataGrid.ItemsSource = vieModel_Settings.Servers;
+            Console.WriteLine($"开始测试 {server.Url}");
+            server.LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            server.Available = 2;
+            ServersDataGrid.Items.Refresh();
+            if (server.Url.IndexOf("http") < 0) server.Url = "https://" + server.Url; 
+            if (!server.Url.EndsWith("/")) server.Url = server.Url + "/";
+
+            bool enablecookie = false;
+            string label = "";
+
+            (bool result,string title) = await Net.TestAndGetTitle(server.Url, enablecookie, server.Cookie, label);
+            if (result && title!="")
+            {
+                server.Available = 1;
+
+                if(title.IndexOf("JavBus")>=0 && title.IndexOf("歐美") < 0)
+                {
+                    server.ServerTitle = "JavBus";
+                }
+                else if (title.IndexOf("JavBus") >= 0 && title.IndexOf("歐美") >= 0)
+                {
+                    server.ServerTitle = "JavBus Europe";
+                }
+                else if (title.IndexOf("JavDB") >= 0)
+                {
+                    server.ServerTitle = "JavDB";
+                }
+                else if (title.IndexOf("JavLibrary") >= 0)
+                {
+                    server.ServerTitle = "JavLibrary";
+                }
+                else if (title.IndexOf("FANZA") >= 0)
+                {
+                    server.ServerTitle = "FANZA";
+                }
+                else if (title.IndexOf("FANZA") >= 0)
+                {
+                    server.ServerTitle = "FANZA";
+                }
+                else if (title.IndexOf("JAV321") >= 0)
+                {
+                    server.ServerTitle = "JAV321";
+                }
+                else
+                {
+                    server.ServerTitle = title;
+                }
+
+
+            }
+            else {
+                server.Available = -1;
+            }
+            ServersDataGrid.Items.Refresh();
+
+            //保存
+
+            //检查是否重复
+
+
+           
+            if(server.ServerTitle== "JavBus")
+            {
+                Properties.Settings.Default.Bus = server.Url;
+                Properties.Settings.Default.EnableBus = (bool)checkBox.IsChecked;
+            }
+            else if (server.ServerTitle == "JavBus Europe")
+            {
+                Properties.Settings.Default.BusEurope = server.Url;
+                Properties.Settings.Default.EnableBusEu = (bool)checkBox.IsChecked;
+            }
+            else if (server.ServerTitle == "JavDB")
+            {
+
+
+                //是否包含 cookie
+                if(server.Cookie=="无" || server.Cookie == "")
+                {
+                    new Msgbox(this, "该网址需要填入 Cookie !").ShowDialog();
+                }
+                else
+                {
+                    Properties.Settings.Default.DB = server.Url;
+                    Properties.Settings.Default.EnableDB = (bool)checkBox.IsChecked;
+                    Properties.Settings.Default.DBCookie = server.Cookie;
+                }
+                
+            }
+            else if (server.ServerTitle == "JavLibrary")
+            {
+                Properties.Settings.Default.Library = server.Url;
+                Properties.Settings.Default.EnableLibrary = (bool)checkBox.IsChecked;
+            }
+            else if (server.ServerTitle == "FANZA")
+            {
+                Properties.Settings.Default.DMM = server.Url;
+                Properties.Settings.Default.EnableDMM = (bool)checkBox.IsChecked;
+            }
+            else if (server.ServerTitle == "JAV321")
+            {
+                Properties.Settings.Default.Jav321 = server.Url;
+                Properties.Settings.Default.Enable321 = (bool)checkBox.IsChecked;
+            }
+            Properties.Settings.Default.Save();
+            Console.WriteLine("结束");
+        }
+
+        
+
+
+        public static T GetVisualChild<T>(Visual parent) where T : Visual
+
+        {
+
+            T child = default(T);
+
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+
+            for (int i = 0; i < numVisuals; i++)
+
+            {
+
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+
+                child = v as T;
+
+                if (child == null)
+
+                {
+
+                    child = GetVisualChild<T>
+
+                    (v);
+
+                }
+
+                if (child != null)
+
+                {
+
+                    break;
+
+                }
+
+            }
+
+            return child;
+
+        }
+
+        public DataGridCell GetCell(int row, int column)
+
+        {
+
+            DataGridRow rowContainer = GetRow(row);
+
+            if (rowContainer != null)
+
+            {
+
+                DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+
+                if (presenter == null)
+
+                {
+
+                    ServersDataGrid.ScrollIntoView(rowContainer, ServersDataGrid.Columns[column]);
+
+                    presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+
+                }
+
+                DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+
+                return cell;
+
+            }
+
+            return null;
+
+        }
+
+        public DataGridRow GetRow(int index)
+
+        {
+
+            DataGridRow row = (DataGridRow)ServersDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+
+            if (row == null)
+
+            {
+
+                ServersDataGrid.UpdateLayout();
+
+                ServersDataGrid.ScrollIntoView(ServersDataGrid.Items[index]);
+
+                row = (DataGridRow)ServersDataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+
+            }
+
+            return row;
+
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            vieModel_Settings.Servers[ServersDataGrid_RowIndex].IsEnable = (bool)((CheckBox)sender).IsChecked;
+        }
     }
+
+
+
     public class SkinStringToCheckedConverter : IValueConverter
     {
         public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -847,6 +1168,37 @@ namespace Jvedio
         {
             return null;
         }
+
+    }
+
+    public class Server
+    {
+        private bool isEnable;
+        private string url;
+        private string cookie;
+        private int available;
+        private string serverTitle;
+        private string lastRefreshDate;
+
+        public bool IsEnable { get => isEnable; set { isEnable = value; OnPropertyChanged(); } }
+
+
+        public string Url { get => url; set { url = value; OnPropertyChanged(); } }
+        public string Cookie { get => cookie; set { cookie = value; OnPropertyChanged(); } }
+
+        public int Available { get => available; set { available = value; OnPropertyChanged(); } }
+        public string ServerTitle { get => serverTitle; set { serverTitle = value; OnPropertyChanged(); } }
+        public string LastRefreshDate { get => lastRefreshDate; set { lastRefreshDate = value; OnPropertyChanged(); } }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
 
     }
 }

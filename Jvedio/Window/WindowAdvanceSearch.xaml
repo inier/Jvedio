@@ -34,9 +34,9 @@
                 
                 <TextBlock Text="视频类型：" Style="{StaticResource BaseTextBlock}"/>
                 <WrapPanel Orientation="Horizontal" Margin="50 5">
-                        <CheckBox Content="步兵" Margin="10 0"/>
-                        <CheckBox Content="骑兵"  Margin="10 0"/>
-                        <CheckBox Content="欧美" Margin="10 0" />
+                    <CheckBox Content="{Binding TypeName1,Source={x:Static p:Settings.Default}}" Margin="10 0"/>
+                    <CheckBox Content="{Binding TypeName2,Source={x:Static p:Settings.Default}}"  Margin="10 0"/>
+                    <CheckBox Content="{Binding TypeName3,Source={x:Static p:Settings.Default}}" Margin="10 0" />
                     </WrapPanel>
 
                 <!--<WrapPanel Orientation="Horizontal">

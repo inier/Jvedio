@@ -108,7 +108,7 @@ namespace Jvedio
             ProgressBar.Visibility = Visibility.Hidden;
             WinState = 0;
 
-            if (Properties.Settings.Default.SortDescending) { SortArrow.Text = "↓"; } else { SortArrow.Text = "↑"; }
+            RefreshSideRB();
             AdjustWindow();
 
             #region "改变窗体大小"
@@ -474,8 +474,44 @@ namespace Jvedio
 
         }
 
-        public void RefreshCurrentPage(object sender, RoutedEventArgs e)
+        public async void RefreshCurrentPage(object sender, RoutedEventArgs e)
         {
+            if (DownLoader?.State == DownLoadState.DownLoading)
+            {
+                new PopupWindow(this, "停止当前下载后再试").Show();
+                return;
+            }
+
+            //刷新文件夹
+
+            if (vieModel.IsScanning)
+            {
+                vieModel.IsScanning = false;
+                RefreshScanCTS?.Cancel();
+            }
+            else
+            {
+                vieModel.IsScanning = true;
+                RefreshScanCTS = new CancellationTokenSource();
+                RefreshScanCTS.Token.Register(() => Console.WriteLine("取消任务"));
+                RefreshScanCT = RefreshScanCTS.Token;
+                await Task.Run(() =>
+                {
+                    List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), RefreshScanCT);
+                    DataBase cdb = new DataBase();
+                    Scan.DistinctMovieAndInsert(filepaths, RefreshScanCT);
+                    cdb.CloseDB();
+                    vieModel.IsScanning = false;
+
+                    this.Dispatcher.BeginInvoke(new Action(() => { vieModel.Reset(); }), System.Windows.Threading.DispatcherPriority.Render);
+
+
+                }, RefreshScanCTS.Token);
+
+            }
+
+            Console.WriteLine("刷新结束");
+
             CancelSelect();
             vieModel.Refresh();
         }
@@ -780,8 +816,9 @@ namespace Jvedio
                 WinState = 0;
                 this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             }
-
             HideMargin();
+
+            SideGridColumn.Width = new GridLength(Properties.Settings.Default.SideGridWidth);
         }
 
 
@@ -1056,8 +1093,8 @@ namespace Jvedio
         {
             if (vieModel.SearchAll)
                 AllSearchTextBox.Text = ((Label)sender).Content.ToString();
-            else
-                SearchTextBox.Text = ((Label)sender).Content.ToString();
+            //else
+            //    SearchTextBox.Text = ((Label)sender).Content.ToString();
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -1399,7 +1436,20 @@ namespace Jvedio
 
         }
 
+        public void ShowDownloadPopup(object sender, MouseButtonEventArgs e)
+        {
+            DownloadPopup.IsOpen = true;
+        }
 
+        public void ShowSortPopup(object sender, MouseButtonEventArgs e)
+        {
+            SortPopup.IsOpen = true;
+        }
+
+        public void ShowImagePopup(object sender, MouseButtonEventArgs e)
+        {
+            ImageSortPopup.IsOpen = true;
+        }
 
 
         public void ShowMenu(object sender, MouseButtonEventArgs e)
@@ -1410,25 +1460,6 @@ namespace Jvedio
         }
 
 
-        public void ShowViewMenu(object sender, MouseButtonEventArgs e)
-        {
-            if (ViewMenu.Visibility == Visibility.Visible)
-            {
-                ViewMenu.Visibility = Visibility.Hidden;
-            }
-            else { ViewMenu.Visibility = Visibility.Visible; }
-
-        }
-
-        public void ShowImageMenu(object sender, MouseButtonEventArgs e)
-        {
-            if (ImageMenu.Visibility == Visibility.Visible)
-            {
-                ImageMenu.Visibility = Visibility.Hidden;
-            }
-            else { ImageMenu.Visibility = Visibility.Visible; }
-
-        }
 
 
         public void ShowDownloadMenu(object sender, MouseButtonEventArgs e)
@@ -1438,45 +1469,6 @@ namespace Jvedio
 
 
 
-
-
-
-        public async void RefreshScanPath(object sender, MouseButtonEventArgs e)
-        {
-            if (DownLoader?.State == DownLoadState.DownLoading)
-            {
-                new PopupWindow(this, "停止当前下载后再试").Show();
-                return;
-            }
-                
-            //刷新文件夹
-
-            if (vieModel.IsScanning) {
-                vieModel.IsScanning = false;
-                RefreshScanCTS?.Cancel();
-            }
-            else
-            {
-                vieModel.IsScanning = true;
-                RefreshScanCTS = new CancellationTokenSource();
-                RefreshScanCTS.Token.Register(() => Console.WriteLine("取消任务"));
-                RefreshScanCT = RefreshScanCTS.Token;
-                await Task.Run(() =>
-                {
-                    List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), RefreshScanCT);
-                    DataBase cdb = new DataBase();
-                    Scan.DistinctMovieAndInsert(filepaths, RefreshScanCT);
-                    cdb.CloseDB();
-                    vieModel.IsScanning = false;
-
-                    this.Dispatcher.BeginInvoke(new Action(() => { vieModel.Reset(); }), System.Windows.Threading.DispatcherPriority.Render);
-
-                    
-                }, RefreshScanCTS.Token);
-
-            }
-
-        }
 
 
         public void ShowSearchMenu(object sender, MouseButtonEventArgs e)
@@ -1496,8 +1488,31 @@ namespace Jvedio
         public void SetTypeValue(object sender, MouseButtonEventArgs e)
         {
             Label label = sender as Label;
-            this.vieModel.VedioType = (VedioType)Enum.Parse(typeof(VedioType), label.Content.ToString());
-            Properties.Settings.Default.VedioType = label.Content.ToString();
+            string name = label.Content.ToString();
+            string content = "所有";
+            if (name == Properties.Settings.Default.TypeName1)
+            {
+                content = "步兵";
+            }
+            else if (name == Properties.Settings.Default.TypeName2)
+            {
+                content = "骑兵";
+            }
+            else if (name == Properties.Settings.Default.TypeName3)
+            {
+                content = "欧美";
+            }
+
+
+
+
+            this.vieModel.VedioType = (VedioType)Enum.Parse(typeof(VedioType), content);
+
+
+
+
+
+            Properties.Settings.Default.VedioType = content;
             Properties.Settings.Default.Save();
             TypeMenu.Visibility = Visibility.Hidden;
         }
@@ -1649,21 +1664,31 @@ namespace Jvedio
 
 
 
-        public void SetSortValue(object sender, MouseButtonEventArgs e)
+        public void SetSortValue(object sender, RoutedEventArgs e)
         {
 
-            Label label = sender as Label;
-            if (label.Content.ToString() == SortLabel.Text.ToString())
+            RadioButton rb = sender as RadioButton;
+            if (rb.Content.ToString() == vieModel.SortType)
             {
                 Properties.Settings.Default.SortDescending = !Properties.Settings.Default.SortDescending;
+                vieModel.SortDescending = Properties.Settings.Default.SortDescending;
             }
             else
             {
-                SortLabel.Text = label.Content.ToString();
+                vieModel.SortType = rb.Content.ToString();
             }
-            if (Properties.Settings.Default.SortDescending) { SortArrow.Text = "↓"; } else { SortArrow.Text = "↑"; }
+            //if (Properties.Settings.Default.SortDescending) { SortArrow.Text = "↓"; } else { SortArrow.Text = "↑"; }
             Properties.Settings.Default.Save();
             vieModel.Sort();
+
+            if (vieModel.SortDescending)
+                SortImage.Source = new BitmapImage(new Uri("/Resources/Picture/sort_down.png", UriKind.Relative));
+            else
+                SortImage.Source = new BitmapImage(new Uri("/Resources/Picture/sort_up.png", UriKind.Relative));
+
+
+
+
         }
 
         public void SaveAllSearchType(object sender, RoutedEventArgs e)
@@ -1682,8 +1707,8 @@ namespace Jvedio
 
         public void SaveShowViewMode(object sender, RoutedEventArgs e)
         {
-            RadioButton radioButton = sender as RadioButton;
-            Properties.Settings.Default.ShowViewMode = radioButton.Content.ToString();
+            MenuItem menuItem = sender as MenuItem;
+            Properties.Settings.Default.ShowViewMode = menuItem.Header.ToString();
             Properties.Settings.Default.Save();
         }
 
@@ -3463,6 +3488,117 @@ namespace Jvedio
         {
 
         }
+
+        private bool IsDragingSideGrid = false;
+
+        private void DragRectangle_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (IsDragingSideGrid)
+            {
+                this.Cursor = Cursors.SizeWE;
+                double width = e.GetPosition(this).X;
+                if (width <= 200 || width >= 500) 
+                    return;
+                else
+                    SideGridColumn.Width =new GridLength(width);
+            }
+        }
+
+        private void DragRectangle_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                IsDragingSideGrid = true;
+            }
+        }
+
+        private void DragRectangle_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.Cursor = Cursors.Arrow;
+            IsDragingSideGrid = false;
+            Properties.Settings.Default.SideGridWidth = SideGridColumn.Width.Value;
+            Properties.Settings.Default.Save();
+        }
+
+
+        private void CheckMode_Click(object sender, RoutedEventArgs e)
+        {
+            vieModel.SelectedMovie.Clear();
+            SetSelected();
+        }
+
+        private void ShowNewTypePopup(object sender, MouseButtonEventArgs e)
+        {
+            NewTypePopup.IsOpen = true;
+        }
+
+        private void RenameChildTree(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void RenameType(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+            RadioButton radioButton = contextMenu.PlacementTarget as RadioButton;
+            TextBox textBox = radioButton.Content as TextBox;
+            textBox.Focusable = true;
+            textBox.IsReadOnly = false;
+            textBox.Focus();
+            textBox.SelectAll();
+
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SaveText(sender);
+        }
+
+        private void SaveText(object sender)
+        {
+            TextBox textBox = sender as TextBox;
+            string tbname = textBox.Name;
+            string name = textBox.Text;
+            textBox.IsReadOnly = true;
+                textBox.Focusable = false;
+
+                AllSearchTextBox.Focus();
+
+            //保存
+            if (name != "")
+            {
+                if (tbname == "TypeNameTextBox1")
+                {
+                    Properties.Settings.Default.TypeName1 = name;
+                }else if (tbname == "TypeNameTextBox2")
+                {
+                    Properties.Settings.Default.TypeName2 = name;
+                }
+                else if (tbname == "TypeNameTextBox3")
+                {
+                    Properties.Settings.Default.TypeName3 = name;
+                }
+                Properties.Settings.Default.Save();
+            }
+            RefreshSideRB();
+        }
+
+        private void RefreshSideRB()
+        {
+            TypeNameTextBox1.Text = Properties.Settings.Default.TypeName1;
+            TypeNameTextBox2.Text = Properties.Settings.Default.TypeName2;
+            TypeNameTextBox3.Text = Properties.Settings.Default.TypeName3;
+        }
+
+        private void TextBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SaveText(sender);
+            }
+
+        }
     }
 
     public class DownLoadProgress
@@ -3576,6 +3712,23 @@ namespace Jvedio
 
     public enum MyViewType { 默认, 有图, 无图 }
 
+
+
+    public class WidthToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return 
+                    150;
+            else
+                return double.Parse(value.ToString()) - 40;
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
 
 
     public class StringToUriStringConverterMain : IValueConverter

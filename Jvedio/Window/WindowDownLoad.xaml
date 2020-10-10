@@ -134,9 +134,9 @@
 
                     </StackPanel>
                     <WrapPanel>
-                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadUnCensored,Mode=TwoWay}"     Width="auto" Height="30" Content="步兵"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="25 0" HorizontalAlignment="Left" />
-                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadCensored,Mode=TwoWay}"     Width="auto" Height="30" Content="骑兵"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="5 0" HorizontalAlignment="Left" />
-                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadEurope,Mode=TwoWay}"     Width="auto" Height="30" Content="欧美"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="25 0" HorizontalAlignment="Left" />
+                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadUnCensored,Mode=TwoWay}"     Width="auto" Height="30" Content="{Binding TypeName1,Source={x:Static p:Settings.Default}}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="25 0" HorizontalAlignment="Left" />
+                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadCensored,Mode=TwoWay}"     Width="auto" Height="30" Content="{Binding TypeName2,Source={x:Static p:Settings.Default}}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="5 0" HorizontalAlignment="Left" />
+                        <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadEurope,Mode=TwoWay}"     Width="auto" Height="30" Content="{Binding TypeName3,Source={x:Static p:Settings.Default}}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="25 0" HorizontalAlignment="Left" />
 
                     </WrapPanel>
                     <CheckBox IsChecked="{Binding Source={x:Static p:Settings.Default},Path=DLLoadFC2,Mode=TwoWay}"     Width="auto" Height="30" Content="加载FC2"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Margin="25 0" HorizontalAlignment="Left" />

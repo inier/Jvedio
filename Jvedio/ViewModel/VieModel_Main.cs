@@ -301,7 +301,107 @@ namespace Jvedio.ViewModel
 
 
 
+
+
+
         #region "Variable"
+        private string _SortType = Properties.Settings.Default.SortType;
+        public string SortType
+        {
+            get { return _SortType; }
+            set
+            {
+                _SortType = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private bool _SortDescending = Properties.Settings.Default.SortDescending;
+        public bool SortDescending
+        {
+            get { return _SortDescending; }
+            set
+            {
+                _SortDescending = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private double _VedioTypeACount = 0;
+        public double VedioTypeACount
+        {
+            get { return _VedioTypeACount; }
+            set
+            {
+                _VedioTypeACount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private double _VedioTypeBCount = 0;
+        public double VedioTypeBCount
+        {
+            get { return _VedioTypeBCount; }
+            set
+            {
+                _VedioTypeBCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+
+        private double _VedioTypeCCount = 0;
+        public double VedioTypeCCount
+        {
+            get { return _VedioTypeCCount; }
+            set
+            {
+                _VedioTypeCCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private double _AllVedioCount = 0;
+        public double AllVedioCount
+        {
+            get { return _AllVedioCount; }
+            set
+            {
+                _AllVedioCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _FavoriteVedioCount = 0;
+        public double FavoriteVedioCount
+        {
+            get { return _FavoriteVedioCount; }
+            set
+            {
+                _FavoriteVedioCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private double _RecentVedioCount = 0;
+        public double RecentVedioCount
+        {
+            get { return _RecentVedioCount; }
+            set
+            {
+                _RecentVedioCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
         public bool _IsScanning = false;
         public bool IsScanning
         {
@@ -597,7 +697,7 @@ namespace Jvedio.ViewModel
 
                 }
             }
-            MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计{MovieList.Count} 个";
+            MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
             CurrentMovieListChanged?.Invoke(this, EventArgs.Empty);
 
         }
@@ -743,7 +843,7 @@ namespace Jvedio.ViewModel
                             dataBase.CloseDB();
                             if (translate_title != "") movie.title = translate_title;
                         }
-                        App.Current.Dispatcher.BeginInvoke((Action)delegate { CurrentMovieList.Add(movie); MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计{MovieList.Count} 个"; }); 
+                        App.Current.Dispatcher.BeginInvoke((Action)delegate { CurrentMovieList.Add(movie); MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个"; }); 
 
                     }
                     else { break; }
@@ -1057,7 +1157,20 @@ namespace Jvedio.ViewModel
                     MovieList = new ObservableCollection<Movie>();
                     models?.ForEach(arg => { MovieList.Add(arg); });
                     Sort();
-                cdb.CloseDB();
+            cdb.CloseDB();
+
+            //统计
+            DataBase dataBase = new DataBase();
+            AllVedioCount = await dataBase.SelectCountBySql("");
+            FavoriteVedioCount  = await dataBase.SelectCountBySql("where favorites>0");
+            VedioTypeACount=await dataBase.SelectCountBySql("where vediotype=1");
+            VedioTypeBCount = await dataBase.SelectCountBySql("where vediotype=2");
+            VedioTypeCCount = await dataBase.SelectCountBySql("where vediotype=3");
+
+            string date1 = DateTime.Now.AddDays(-3).Date.ToString("yyyy-MM-dd");
+            string date2 = DateTime.Now.ToString("yyyy-MM-dd");
+            RecentVedioCount  = await dataBase.SelectCountBySql($"WHERE scandate BETWEEN '{date1}' AND '{date2}'");
+            dataBase.CloseDB();
         }
 
         public void Sort(bool IsSort=true)
@@ -1065,10 +1178,9 @@ namespace Jvedio.ViewModel
             if (MovieList != null)
             {
                 List<Movie> sortMovieList = new List<Movie>();
-                bool SortDescending = Properties.Settings.Default.SortDescending;
                 if (IsSort)
                 {
-                switch (Properties.Settings.Default.SortType)
+                switch (SortType)
                 {
                     case "识别码":
                         if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.id).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.id).ToList(); }

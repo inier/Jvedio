@@ -135,6 +135,32 @@ namespace Jvedio
 
         #region "SELECT"
 
+        public async Task<double> SelectCountBySql(string sql)
+        {
+            return await Task.Run(() => {
+            double result = 0;
+            if (sql == "")
+            {
+                cmd.CommandText = "SELECT count(id) FROM movie";
+            }
+            else
+            {
+                cmd.CommandText = "SELECT count(id) FROM movie " + sql;
+            }
+            SQLiteDataReader sr = cmd.ExecuteReader();
+            while (sr.Read())
+            {
+                double.TryParse(sr[0].ToString(), out result);
+            }
+            sr.Close();
+
+            return result;
+            });
+        }
+
+
+
+
 
         /// <summary>
         /// 获得标签，如：奇葩( 20 )

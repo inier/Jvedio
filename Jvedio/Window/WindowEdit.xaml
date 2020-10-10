@@ -167,9 +167,9 @@
                             <Label  Content="视频类型"  Style="{StaticResource BaseLabel2}"/>
                             <StackPanel Orientation="Horizontal" Margin="120 0">
                                 <RadioButton  FontSize="15" Foreground="{DynamicResource ForegroundSearch}" IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=0,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}" Content="未识别" Style="{StaticResource FlatRadioButton}"/>
-                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"  IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=1,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="步兵"  Style="{StaticResource FlatRadioButton}"/>
-                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"   IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=2,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="骑兵"  Style="{StaticResource FlatRadioButton}"/>
-                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"    IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=3,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="欧美"  Style="{StaticResource FlatRadioButton}"/>
+                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"  IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=1,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="{Binding TypeName1,Source={x:Static p:Settings.Default}}"  Style="{StaticResource FlatRadioButton}"/>
+                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"   IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=2,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="{Binding TypeName2,Source={x:Static p:Settings.Default}}"  Style="{StaticResource FlatRadioButton}"/>
+                                <RadioButton FontSize="15"  Foreground="{DynamicResource ForegroundSearch}"    IsChecked="{Binding Path=DetailMovie.vediotype,ConverterParameter=3,Converter={StaticResource IntToCheckedConverter},Mode=TwoWay}"  Content="{Binding TypeName3,Source={x:Static p:Settings.Default}}"  Style="{StaticResource FlatRadioButton}"/>
                             </StackPanel>
                         </Grid>
                         <Grid Style="{StaticResource InfoGrid}">

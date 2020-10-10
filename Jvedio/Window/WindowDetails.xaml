@@ -137,7 +137,7 @@
 
 
 
-    <Grid x:Name="FatherGrid" PreviewKeyDown="Grid_PreviewKeyDown"   Focusable="True" Margin="5">
+    <Grid x:Name="FatherGrid" PreviewKeyUp="Grid_PreviewKeyUp"   Focusable="True" Margin="5">
         <Grid.Effect>
             <DropShadowEffect BlurRadius="15" Direction="-90" RenderingBias="Quality" ShadowDepth="2"/>
         </Grid.Effect>
@@ -456,7 +456,7 @@
 
                             </Canvas>
 
-                            <Canvas  ToolTip="刮削"  MouseLeftButtonUp="DownLoad" Cursor="Hand"   Width="40" Height="40" VerticalAlignment="Center" Margin="10 0" HorizontalAlignment="Left" Visibility="Visible">
+                            <Canvas  ToolTip="下载信息"  MouseLeftButtonUp="DownLoad" Cursor="Hand"   Width="40" Height="40" VerticalAlignment="Center" Margin="10 0" HorizontalAlignment="Left" Visibility="Visible">
                                 <Ellipse Style="{StaticResource Ellipse}" Width="40" Height="40"  Canvas.Left="3" Canvas.Top="3" />
                                 <Image Cursor="Hand"   Source="{Binding Themes, Mode=OneWay, ConverterParameter=detaildownload,Converter={StaticResource StringToUriStringConverterOther}, Source={x:Static p:Settings.Default}}" Height="20" HorizontalAlignment="Left"  Canvas.Left="13" Canvas.Top="12"></Image>
                             </Canvas>

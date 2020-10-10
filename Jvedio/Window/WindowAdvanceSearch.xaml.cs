@@ -51,11 +51,11 @@ namespace Jvedio
                     if (cb != null)
                         if ((bool)cb.IsChecked)
                         {
-                            if (cb.Content.ToString() == "步兵")
+                            if (cb.Content.ToString() == Properties.Settings.Default.TypeName1)
                                 vediotype.Add(1);
-                            else if (cb.Content.ToString() == "骑兵")
+                            else if (cb.Content.ToString() == Properties.Settings.Default.TypeName2)
                                 vediotype.Add(2);
-                            else if (cb.Content.ToString() == "欧美")
+                            else if (cb.Content.ToString() == Properties.Settings.Default.TypeName3)
                                 vediotype.Add(3);
                         }
                 }

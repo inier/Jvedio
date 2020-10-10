@@ -25,6 +25,7 @@ namespace Jvedio
 
         public static double MinHDVFileSize = 2;//多少 GB 视为高清
 
+
         //数据库
         public static string[] GenreEurope = new string[8];
         public static string[] GenreCensored = new string[7];

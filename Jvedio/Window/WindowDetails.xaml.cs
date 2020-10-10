@@ -661,7 +661,7 @@ namespace Jvedio
 
 
 
-        private void Grid_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Grid_PreviewKeyUp(object sender, KeyEventArgs e)
         {
 
             if (e.Key == Key.Escape)

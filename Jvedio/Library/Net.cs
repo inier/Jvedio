@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -115,6 +116,46 @@ namespace Jvedio
             }
 
             return (HtmlText, StatusCode);
+        }
+
+
+        public static async Task<(bool,string)> TestAndGetTitle(string Url, bool EnableCookie, string Cookie, string Label)
+        {
+            return await Task.Run(async () => {
+                bool result = false;
+                string title = "";
+                string content = ""; int statusCode = 404;
+                if (EnableCookie)
+                {
+                    if (Label == "DB")
+                    {
+                        (content, statusCode) = await Http(Url + "v/P2Rz9", Proxy: null, Cookie: Cookie);
+                        if (content != "")
+                        {
+                            if (content.IndexOf("FC2-659341") >= 0) result = true;
+                            else result = false;
+                        }
+                    }
+                }
+                else
+                {
+                    (content, statusCode) = await Http(Url, Proxy: null);
+                    if (content != "")
+                    {
+                        result = true;
+                        //获得标题
+                        HtmlDocument doc = new HtmlDocument();
+                        doc.LoadHtml(content);
+                        HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//title");
+                        if (titleNode != null)
+                        {
+                            title = titleNode.InnerText;
+                        }
+
+                    }
+                }
+                return (result, title);
+            });
         }
 
 

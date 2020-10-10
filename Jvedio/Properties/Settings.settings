@@ -431,5 +431,23 @@
     <Setting Name="NFOSavePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SideGridWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="IsExpanded1" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsExpanded2" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="TypeName1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">类型1</Value>
+    </Setting>
+    <Setting Name="TypeName2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">类型2</Value>
+    </Setting>
+    <Setting Name="TypeName3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">类型3</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

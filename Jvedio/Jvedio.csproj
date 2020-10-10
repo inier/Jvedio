@@ -100,6 +100,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
@@ -131,6 +134,7 @@
       <HintPath>Lib\PInvoke.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="QueryEngine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Lib\QueryEngine.dll</HintPath>
@@ -303,6 +307,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="XAML\Main\SideComboBoxStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="XAML\Main\SideRadioButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="XAML\ProgressBarStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -394,6 +406,31 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <Resource Include="Resources\Gif\loading.gif" />
+    <Resource Include="Resources\Picture\sort_up.png" />
+    <Resource Include="Resources\Picture\sort_down.png" />
+    <Resource Include="Resources\Skin\black\selectmode.png" />
+    <Resource Include="Resources\Skin\white\selectmode.png" />
+    <Resource Include="Resources\Skin\white\download.png" />
+    <Resource Include="Resources\Skin\black\download.png" />
+    <Resource Include="Resources\Skin\white\image.png" />
+    <Resource Include="Resources\Skin\black\image.png" />
+    <Resource Include="Resources\Skin\white\search.png" />
+    <Resource Include="Resources\Skin\black\search.png" />
+    <Resource Include="Resources\Skin\white\menu.png" />
+    <Resource Include="Resources\Skin\black\menu.png" />
+    <Resource Include="Resources\Skin\black\arrow_up.png" />
+    <Resource Include="Resources\Skin\white\arrow_up.png" />
+    <Resource Include="Resources\Skin\white\arrow_down.png" />
+    <Resource Include="Resources\Skin\black\arrow_down.png" />
+    <Resource Include="Resources\Skin\white\dir.png" />
+    <Resource Include="Resources\Skin\black\dir.png" />
+    <Resource Include="Resources\Skin\black\like.png" />
+    <Resource Include="Resources\Skin\white\like.png" />
+    <Resource Include="Resources\Skin\black\recent.png" />
+    <Resource Include="Resources\Skin\white\recent.png" />
+    <Resource Include="Resources\Skin\white\all.png" />
+    <Resource Include="Resources\Skin\black\all.png" />
     <Resource Include="Resources\Ico\github.png" />
     <Resource Include="Resources\Ico\gitee.ico" />
     <Resource Include="Resources\Picture\随机.png" />
@@ -486,12 +523,6 @@
     <Resource Include="Resources\Picture\help.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Skin\black\image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\black\view.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Picture\hdcn.png" />
   </ItemGroup>
   <ItemGroup>
@@ -502,12 +533,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\black\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\black\all.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\black\like.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\black\actor.png" />
@@ -522,9 +547,6 @@
     <Resource Include="Resources\Skin\black\fullscreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Skin\black\setting.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Skin\black\skin.png" />
   </ItemGroup>
   <ItemGroup>
@@ -532,9 +554,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\white\actor.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\all.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\white\edit.png" />
@@ -553,21 +572,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\white\label.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\like.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\setting.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\search.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\view.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\white\image.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\black\openfolder.png" />
@@ -677,9 +681,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Skin\black\min.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\Skin\black\search.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Picture\subsection2.png" />

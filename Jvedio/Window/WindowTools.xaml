@@ -305,7 +305,7 @@
 
                                     </StackPanel>
                                     <TextBlock Text="注：文件名必须包含形如 BrazzersExxtra.20.07.22" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20 5"/>
-                                    <TextBlock Text="刮削仅支持 Bus 站点" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20 5"/>
+                                    <TextBlock Text="下载信息仅支持 Bus 站点" FontSize="20" Foreground="{DynamicResource ForegroundSearch}" Margin="20 5"/>
 
 
                                 </StackPanel>

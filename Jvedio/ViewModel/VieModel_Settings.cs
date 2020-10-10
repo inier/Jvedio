@@ -38,6 +38,25 @@ namespace Jvedio.ViewModel
             }
             if (ScanPath.Count == 0) ScanPath = null;
 
+             Servers = new ObservableCollection<Server>();
+            if(Properties.Settings.Default.Bus!="") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBus, Url = Properties.Settings.Default.Bus, Available = 0, ServerTitle = "JavBus", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            if (Properties.Settings.Default.BusEurope != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBusEu, Url = Properties.Settings.Default.BusEurope, Available = 0, ServerTitle = "JavBus 欧美", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            if (Properties.Settings.Default.DB != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDB, Url = Properties.Settings.Default.DB,Cookie= Properties.Settings.Default.DBCookie, Available = 0, ServerTitle = "JavDB", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            if (Properties.Settings.Default.Library != "") Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableLibrary, Url = Properties.Settings.Default.Library, Available = 0, ServerTitle = "JavLibrary", LastRefreshDate = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") });
+            
+        }
+
+
+        private ObservableCollection<Server> _Servers;
+
+        public ObservableCollection<Server> Servers
+        {
+            get { return _Servers; }
+            set
+            {
+                _Servers = value;
+                RaisePropertyChanged();
+            }
         }
 
 

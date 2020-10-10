@@ -390,7 +390,7 @@ namespace Jvedio
                                     if (movie != null)
                                     {
 
-                                        cdb.InsertFullMovie(GetInfoFromNfo(item));
+                                        cdb.InsertFullMovie(movie);
                                         //复制并覆盖所有图片
                                         CopyPicToPath(movie.id, item);
                                         total += 1;
@@ -729,8 +729,13 @@ namespace Jvedio
         public Movie GetInfoFromNfo(string path)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            try
+            {
+                doc.Load(path);
+            }
+            catch { return null; }
             XmlNode rootNode = doc.SelectSingleNode("movie");
+            if (rootNode == null) return null;
             Movie movie = new Movie();
             foreach (XmlNode node in rootNode.ChildNodes)
             {

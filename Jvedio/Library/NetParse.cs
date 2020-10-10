@@ -179,16 +179,16 @@ namespace Jvedio
                     //Console.WriteLine(VedioType.ToString());
                         if (VedioType == VedioType.骑兵)
                         {
-                            result.Add("smallimageurl", "https://pics.javcdn.pw/thumb/" + movieid + ".jpg");//骑兵
+                            result.Add("smallimageurl", "https://pics.javcdn.pw/thumb/" + movieid + ".jpg");
                         }
                         else if (VedioType == VedioType.步兵)
                         {
-                            result.Add("smallimageurl", "https://images.javcdn.pw/thumbs/" + movieid + ".jpg");//步兵
+                            result.Add("smallimageurl", "https://images.javcdn.pw/thumbs/" + movieid + ".jpg");
                         }
                         else if (VedioType == VedioType.欧美)
                         {
                             //https://images.javbus.one/thumb/10jc.jpg
-                            result.Add("smallimageurl", RootUrl.BusEu.Replace("www", "images") + "thumbs/" + movieid + ".jpg");//欧美
+                            result.Add("smallimageurl", RootUrl.BusEu.Replace("www", "images") + "thumbs/" + movieid + ".jpg");
 
                         }
                     }
