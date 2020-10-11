@@ -247,7 +247,10 @@ namespace Jvedio
                         }
                         else if (info.IndexOf("身高") >= 0)
                         {
-                            result.height = Regex.Match(info, @"[0-9]+").Value;
+                            int h = 0;
+                            if (Regex.Match(info, @"[0-9]+") != null)
+                                int.TryParse( Regex.Match(info, @"[0-9]+").Value,out h);
+                            result.height = h;
                         }
                         else if (info.IndexOf("罩杯") >= 0)
                         {

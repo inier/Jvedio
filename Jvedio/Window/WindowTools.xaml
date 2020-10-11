@@ -95,7 +95,7 @@
                         <RadioButton Visibility="Collapsed" Click="ShowGrid"  Style="{StaticResource RadioButtonStyleSide}" Content="数据库管理" Margin="5 5 5 0"/>
                         <RadioButton Click="ShowGrid"  Style="{StaticResource RadioButtonStyleSide}" Content="网络磁盘扫描" Margin="5 5 5 0"/>
                         <Button Click="InsertOneMovie"   Style="{StaticResource ButtonStyleFill}" Content="导入单个视频" Margin="5" HorizontalAlignment="Center" Width="100" Height="30"/>
-                        <Button Click="DownloadMany"  Style="{StaticResource ButtonStyleFill}" Content="批量下载" Margin="5"  HorizontalAlignment="Center" Width="100" Height="30"/>
+                        <Button Visibility="Collapsed" Click="DownloadMany"  Style="{StaticResource ButtonStyleFill}" Content="批量下载" Margin="5"  HorizontalAlignment="Center" Width="100" Height="30"/>
                     </StackPanel>
                     <Grid>
 

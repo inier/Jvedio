@@ -15,8 +15,10 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using static Jvedio.StaticVariable;
+using static Jvedio.StaticClass;
 
 namespace Jvedio
 {
@@ -43,6 +45,11 @@ namespace Jvedio
                 vieModel = new VieModel_Details();
                 vieModel.Query(movieid);
                 this.DataContext = vieModel;
+                vieModel.QueryCompletedHandler += (s,e) =>
+                {
+                    BigImage.Source = vieModel.DetailMovie.bigimage;
+                };
+
             }
             else { this.DataContext = null; }
 
@@ -55,6 +62,9 @@ namespace Jvedio
 
 
         }
+
+
+
 
 
         public void SetSkin()
@@ -545,6 +555,99 @@ namespace Jvedio
         }
 
 
+        private async void SetToSmallPic(object sender, RoutedEventArgs e)
+        {
+            MenuItem m1 = sender as MenuItem;
+            MenuItem m2 = m1.Parent as MenuItem;
+
+            ContextMenu contextMenu = m2.Parent as ContextMenu;
+
+            Image image = contextMenu.PlacementTarget as Image;
+            StackPanel stackPanel = image.Parent as StackPanel;
+            TextBlock textBox = stackPanel.Children.OfType<TextBlock>().First();
+            int idx = int.Parse(textBox.Text);
+
+            string path = vieModel.DetailMovie.extraimagePath[idx];
+
+            try { 
+                File.Copy(path, BasePicPath + $"SmallPic\\{vieModel.DetailMovie.id.ToUpper()}.jpg",true);
+                //更新到 UI
+                RefreshUI(path);
+            }
+            catch(Exception ex)
+            {
+                new Msgbox(this, ex.Message).ShowDialog();
+            }
+        }
+
+
+
+
+
+
+        private void SetToBigPic(object sender, RoutedEventArgs e)
+        {
+            MenuItem m1 = sender as MenuItem;
+            MenuItem m2 = m1.Parent as MenuItem;
+
+            ContextMenu contextMenu = m2.Parent as ContextMenu;
+
+            Image image = contextMenu.PlacementTarget as Image;
+            StackPanel stackPanel = image.Parent as StackPanel;
+            TextBlock textBox = stackPanel.Children.OfType<TextBlock>().First();
+            int idx = int.Parse(textBox.Text);
+
+            string path = vieModel.DetailMovie.extraimagePath[idx];
+            if (!File.Exists(path)) { return; }
+
+            try {
+                File.Copy(path, BasePicPath + $"BigPic\\{vieModel.DetailMovie.id.ToUpper()}.jpg", true);
+                //更新到 UI
+                
+                //BigImage.Source = new BitmapImage(new Uri(path));
+                DetailMovie detailMovie = vieModel.DetailMovie;
+                detailMovie.bigimage = null;
+
+                vieModel.DetailMovie = null;
+
+                detailMovie.bigimage = StaticClass.BitmapImageFromFile(path);
+                vieModel.DetailMovie = detailMovie;
+
+                RefreshUI("", path);
+            }
+            catch (Exception ex)
+            {
+                new Msgbox(this, ex.Message).ShowDialog();
+            }
+        }
+
+
+        private void RefreshUI(string smallPicPath,string BigPicPath="")
+        {
+            windowMain = App.Current.Windows[0] as Main;
+            for (int i = 0; i < windowMain.vieModel.CurrentMovieList.Count; i++)
+            {
+                try
+                {
+                    if (windowMain.vieModel.CurrentMovieList[i]?.id.ToUpper() == vieModel.DetailMovie.id.ToUpper())
+                    {
+                        Movie movie = windowMain.vieModel.CurrentMovieList[i];
+                        if(smallPicPath!="") movie.bigimage = null;
+                        if (BigPicPath != "") movie.smallimage = null;
+                        windowMain.vieModel.CurrentMovieList[i] = null;
+                        if (smallPicPath != "") movie.smallimage = StaticClass.BitmapImageFromFile(smallPicPath);
+                        if (BigPicPath != "") movie.bigimage = StaticClass.BitmapImageFromFile(BigPicPath);
+                        windowMain.vieModel.CurrentMovieList[i] = movie;
+                    }
+                }
+                catch (Exception ex1)
+                {
+                    Console.WriteLine(ex1.StackTrace);
+                    Console.WriteLine(ex1.Message);
+                }
+            }
+        }
+
 
         public void CopyFile(object sender, RoutedEventArgs e)
         {
@@ -764,6 +867,120 @@ namespace Jvedio
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Console.WriteLine(this.WindowState.ToString());
+        }
+
+        private void BigImage_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void BigImage_Drop(object sender, DragEventArgs e)
+        {
+            //分为文件夹和文件
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            string file = dragdropFiles[0];
+
+            if (StaticClass.IsFile(file))
+            {
+                FileInfo fileInfo = new FileInfo(file);
+                if (fileInfo.Extension.ToLower() == ".jpg")
+                {
+                    try
+                    {
+                        File.Copy(fileInfo.FullName, BasePicPath + $"BigPic\\{vieModel.DetailMovie.id.ToUpper()}.jpg", true);
+                        DetailMovie detailMovie = vieModel.DetailMovie;
+                        detailMovie.bigimage = null;
+                        vieModel.DetailMovie = null;
+                        detailMovie.bigimage = StaticClass.BitmapImageFromFile(fileInfo.FullName);
+                        vieModel.DetailMovie = detailMovie;
+
+                        RefreshUI("", fileInfo.FullName);
+
+
+                    }
+                    catch(Exception ex)
+                    {
+                        new Msgbox(this, ex.Message).ShowDialog();
+                    }
+                }else{
+                    new Msgbox(this, "仅支持 jpg").ShowDialog();
+                }
+            }
+
+        }
+
+        private void Border_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.Link;
+            e.Handled = true;//必须加
+        }
+
+        private void Border_Drop(object sender, DragEventArgs e)
+        {
+            //分为文件夹和文件
+            string[] dragdropFiles = (string[])e.Data.GetData(DataFormats.FileDrop);
+            List<string> files = new List<string>();
+            StringCollection stringCollection = new StringCollection();
+            foreach (var item in dragdropFiles)
+            {
+                if (IsFile(item))
+                    files.Add(item);
+                else
+                    stringCollection.Add(item);
+            }
+            List<string> filepaths = new List<string>();
+            //扫描导入
+            foreach (var item in stringCollection)
+            {
+                try { filepaths.AddRange(Directory.GetFiles(item, "*.jpg").ToList<string>()); }
+                catch(Exception ex) { Console.WriteLine(ex.Message); continue; }
+            }
+            if (files.Count > 0) filepaths.AddRange(files);
+
+            //复制文件
+            string path = BasePicPath + $"ExtraPic\\{vieModel.DetailMovie.id.ToUpper()}\\";
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            bool success = false;
+            foreach (var item in filepaths)
+            {
+                try
+                {
+                    File.Copy(item, path + item.Split('\\').Last());
+                    success = true;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    continue;
+                }
+                
+            }
+            if (success)
+            {
+                //更新UI
+                DetailMovie detailMovie = vieModel.DetailMovie;
+                List<BitmapSource> oldImageList = detailMovie.extraimagelist;
+                List<string> oldImagePath = detailMovie.extraimagePath;
+
+                detailMovie.extraimagelist = new List<BitmapSource>();
+                detailMovie.extraimagePath = new List<string>() ;
+                vieModel.DetailMovie = null;
+
+                //载入默认的和新的
+                detailMovie.extraimagelist.AddRange(oldImageList);
+                detailMovie.extraimagePath.AddRange(oldImagePath);
+
+
+                foreach (var item in filepaths)
+                {
+                    detailMovie.extraimagelist.Add(StaticClass.GetExtraImage(item));
+                    detailMovie.extraimagePath.Add(path + item.Split('\\').Last());
+                }
+                vieModel.DetailMovie = detailMovie;
+
+            }
+            
         }
     }
 

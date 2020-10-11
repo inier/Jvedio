@@ -17,7 +17,7 @@ namespace Jvedio.ViewModel
     public class VieModel_Details : ViewModelBase
     {
 
-
+        public event EventHandler QueryCompletedHandler;
         public VieModel_Details()
         {
             QueryCommand = new RelayCommand<string>(Query);
@@ -95,7 +95,10 @@ namespace Jvedio.ViewModel
             DetailMovie = new DetailMovie();
             if (detailMovie != null)
             {
-                foreach (var path in imagePathList) detailMovie.extraimagelist.Add(StaticClass.GetExtraImage(path));//加载预览图
+                foreach (var path in imagePathList) { 
+                    detailMovie.extraimagelist.Add(StaticClass.GetExtraImage(path));
+                    detailMovie.extraimagePath.Add(path);
+                }//加载预览图
                 detailMovie.bigimage = StaticClass.GetBitmapImage(detailMovie.id, "BigPic");
 
                 DataBase dataBase = new DataBase("Translate");
@@ -116,6 +119,7 @@ namespace Jvedio.ViewModel
 
 
                 DetailMovie = detailMovie;
+                //QueryCompletedHandler?.Invoke(null, EventArgs.Empty);
             }
         }
 

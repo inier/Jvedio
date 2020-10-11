@@ -40,10 +40,7 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="5 5 0 5"/>
             <Setter Property="Stretch" Value="Uniform"/>
-            
-            
-            
-            <Setter Property="Source" Value="{Binding DetailMovie.bigimage}" />
+            <Setter Property="Source" Value="{Binding DetailMovie.bigimage,UpdateSourceTrigger=Explicit}" />
             <Style.Triggers>
                 <DataTrigger  Binding="{Binding DetailMovie.bigimage}"  Value="{x:Null}">
                     <Setter Property="Source" Value="pack://application:,,,/Resources/Picture/NoPrinting_B.jpg" />
@@ -148,7 +145,7 @@
                 <Grid Width="740" Height="490" HorizontalAlignment="Left" VerticalAlignment="Top"  >
 
                     <Border Background="{DynamicResource BackgroundSide}" Margin="5"  MouseMove="MoveWindow" />
-                    <Image x:Name="BigImage" Margin="10"   Style="{StaticResource BigImage}" MouseMove="MoveWindow"    >
+                    <Image x:Name="BigImage" Margin="10"   Style="{StaticResource BigImage}" MouseMove="MoveWindow" AllowDrop="True" DragOver="BigImage_DragOver" Drop="BigImage_Drop"    >
                     <Image.ContextMenu>
                         <ContextMenu>
                                 <MenuItem Header="打开位置" Icon="pack://application:,,,/Resources/menuitem/openfolder.png"  >
@@ -497,7 +494,7 @@
                 </Border>
 
 
-                <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="10" Padding="20 5">
+                <Border AllowDrop="True" DragOver="Border_DragOver" Drop="Border_Drop"   Background="{DynamicResource BackgroundTitle}" CornerRadius="10" Padding="20 5">
                     <ScrollViewer  Background="Transparent" PreviewMouseWheel="scrollViewer_PreviewMouseWheel"   x:Name="scrollViewer"      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
 
                         <ItemsControl x:Name="imageItemsControl"  ItemsSource="{Binding DetailMovie.extraimagelist}" AlternationCount="99" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="Transparent">
@@ -518,6 +515,10 @@
                                                 <Image.ContextMenu>
                                                     <ContextMenu>
                                                         <MenuItem Header="打开位置" Click="OpenExtraImagePath" ></MenuItem>
+                                                        <MenuItem Header="设置为" >
+                                                            <MenuItem Header="缩略图"  Click="SetToSmallPic" ></MenuItem>
+                                                            <MenuItem Header="海报图" Click="SetToBigPic" ></MenuItem>
+                                                        </MenuItem>
                                                     </ContextMenu>
                                                 </Image.ContextMenu>
                                             </Image>

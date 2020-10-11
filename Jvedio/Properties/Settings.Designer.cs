@@ -1822,5 +1822,17 @@ namespace Jvedio.Properties {
                 this["RecentDays"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoDeleteNotExistMovie {
+            get {
+                return ((bool)(this["AutoDeleteNotExistMovie"]));
+            }
+            set {
+                this["AutoDeleteNotExistMovie"] = value;
+            }
+        }
     }
 }

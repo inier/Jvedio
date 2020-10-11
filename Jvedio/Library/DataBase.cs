@@ -574,13 +574,15 @@ namespace Jvedio
             SQLiteDataReader sr = cmd.ExecuteReader();
             while (sr.Read())
             {
+                int v1, v2,v3, v4, v5 = 0;
                 actress.birthday = sr["birthday"].ToString();
-                actress.age = int.Parse(sr["age"].ToString());
-                actress.height = sr["height"].ToString();
+                int.TryParse(sr["age"].ToString(),out v1); actress.age = v1;
+                int.TryParse(sr["height"].ToString(), out v2); actress.height = v2;
+                int.TryParse(sr["chest"].ToString(), out v3); actress.chest = v3;
+                int.TryParse(sr["waist"].ToString(), out v4); actress.waist = v4;
+                int.TryParse(sr["hipline"].ToString(), out v5); actress.hipline = v5;
+
                 actress.cup = sr["cup"].ToString();
-                actress.chest = int.Parse(sr["chest"].ToString());
-                actress.waist = int.Parse(sr["waist"].ToString());
-                actress.hipline = int.Parse(sr["hipline"].ToString());
                 actress.birthplace = sr["birthplace"].ToString();
                 actress.hobby = sr["hobby"].ToString();
                 actress.source = sr["source"].ToString();
@@ -1312,6 +1314,7 @@ namespace Jvedio
         public List<string> labellist { get; set; }
 
         public List<BitmapSource> extraimagelist { get; set; }
+        public List<string> extraimagePath { get; set; }
 
         public DetailMovie()
         {
@@ -1319,6 +1322,7 @@ namespace Jvedio
             actorlist = new List<Actress>();
             labellist = new List<string>();
             extraimagelist = new List<BitmapSource>();
+            extraimagePath = new List<string>();
         }
 
 
@@ -1334,13 +1338,88 @@ namespace Jvedio
         public BitmapSource smallimage { get { return _smallimage; } set { _smallimage = value; OnPropertyChanged(); } }
         public BitmapSource bigimage { get; set; }
 
-        public string birthday { get; set; }
-        public int age { get; set; }
-        public string height { get; set; }
-        public string cup { get; set; }
-        public int chest { get; set; }
-        public int waist { get; set; }
-        public int hipline { get; set; }
+
+        private string _birthday;
+        public string birthday { get { return _birthday; } 
+            set {
+                //验证数据
+                DateTime dateTime;
+                DateTime.TryParse(value, out dateTime);
+                try
+                {
+                    _birthday = dateTime.ToString("yyyy-MM-dd");
+                }
+                catch { _birthday = ""; }
+                
+            } 
+        }
+
+        private int _age;
+        public int age { get { return _age; } set {
+                int a = 0;
+                int.TryParse(value.ToString(), out a);
+                if (a < 0 || a > 200) a = 0;
+                _age = a;
+            } }
+
+        private int _height;
+        public int height
+        {
+            get { return _height; }
+            set
+            {
+                int a = 0;
+                int.TryParse(value.ToString(), out a);
+                if (a < 0 || a > 300) a = 0;
+                _height = a;
+            }
+        }
+
+        private string _cup;
+        public string cup { get { return _cup; } set { if (value == "") _cup = ""; else _cup = value[0].ToString().ToUpper(); } }
+
+
+        private int _hipline;
+        public int hipline
+        {
+            get { return _hipline; }
+            set
+            {
+                int a = 0;
+                int.TryParse(value.ToString(), out a);
+                if (a < 0 || a > 500) a = 0;
+                _hipline = a;
+            }
+        }
+
+
+        private int _waist;
+        public int waist
+        {
+            get { return _waist; }
+            set
+            {
+                int a = 0;
+                int.TryParse(value.ToString(), out a);
+                if (a < 0 || a > 500) a = 0;
+                _waist = a;
+            }
+        }
+
+
+        private int _chest;
+        public int chest
+        {
+            get { return _chest; }
+            set
+            {
+                int a = 0;
+                int.TryParse(value.ToString(), out a);
+                if (a < 0 || a>500) a = 0;
+                _chest = a;
+            }
+        }
+
         public string birthplace { get; set; }
         public string hobby { get; set; }
 

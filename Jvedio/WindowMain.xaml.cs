@@ -136,6 +136,7 @@ namespace Jvedio
         #region "改变窗体大小"
         private void ResizeRectangle_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (WinState == JvedioWindowState.Maximized || WinState == JvedioWindowState.FullScreen) return;
             Rectangle rectangle = sender as Rectangle;
 
             if (rectangle != null)
@@ -189,6 +190,7 @@ namespace Jvedio
 
         private void ResizeRectangle_MouseMove(object sender, MouseEventArgs e)
         {
+            if (WinState == JvedioWindowState.Maximized || WinState == JvedioWindowState.FullScreen) return;
             Rectangle rectangle = sender as Rectangle;
 
             if (rectangle != null)
@@ -494,6 +496,7 @@ namespace Jvedio
             }
 
             //刷新文件夹
+            this.Cursor = Cursors.Wait;
 
             if (vieModel.IsScanning)
             {
@@ -504,7 +507,7 @@ namespace Jvedio
             {
                 vieModel.IsScanning = true;
                 RefreshScanCTS = new CancellationTokenSource();
-                RefreshScanCTS.Token.Register(() => Console.WriteLine("取消任务"));
+                RefreshScanCTS.Token.Register(() => { Console.WriteLine("取消任务"); this.Cursor = Cursors.Arrow; });
                 RefreshScanCT = RefreshScanCTS.Token;
                 await Task.Run(() =>
                 {
@@ -513,6 +516,22 @@ namespace Jvedio
                     Scan.DistinctMovieAndInsert(filepaths, RefreshScanCT);
                     cdb.CloseDB();
                     vieModel.IsScanning = false;
+
+                    if (Properties.Settings.Default.AutoDeleteNotExistMovie)
+                    {
+                        //删除不存在影片
+                        cdb = new DataBase();
+                        var movies = cdb.SelectMoviesBySql("select * from movie");
+                        movies.ForEach(movie =>
+                        {
+                            if (!File.Exists(movie.filepath))
+                            {
+                                cdb.DelInfoByType("movie", "id", movie.id);
+                            }
+                        });
+                        cdb.CloseDB();
+
+                    }
 
                     this.Dispatcher.BeginInvoke(new Action(() => { vieModel.Reset(); }), System.Windows.Threading.DispatcherPriority.Render);
 
@@ -525,6 +544,7 @@ namespace Jvedio
 
             CancelSelect();
             vieModel.Refresh();
+            this.Cursor = Cursors.Arrow;
         }
 
 
@@ -568,7 +588,7 @@ namespace Jvedio
         }
 
 
-        private  void Refresh(int i, InfoUpdateEventArgs eventArgs, double totalcount)
+        public  void Refresh(int i, InfoUpdateEventArgs eventArgs, double totalcount)
         {
             Dispatcher.Invoke((Action) async delegate ()
             {
@@ -596,7 +616,6 @@ namespace Jvedio
 
                 vieModel.CurrentMovieList[i] = null;
                 vieModel.CurrentMovieList[i] = movie;
-
 
             });
         }
@@ -942,12 +961,16 @@ namespace Jvedio
         {
             if (WinState == JvedioWindowState.Normal)
             {
-                MainGrid.Margin = new Thickness(2);
+                MainGrid.Margin = new Thickness(10);
+                MainBorder.Margin = new Thickness(5);
+                Grid.Margin=new Thickness(5);
                 this.ResizeMode = ResizeMode.CanResize;
             }
             else if (WinState == JvedioWindowState.Maximized || this.WindowState == WindowState.Maximized)
             {
                 MainGrid.Margin = new Thickness(0);
+                MainBorder.Margin = new Thickness(0);
+                Grid.Margin = new Thickness(0);
                 this.ResizeMode = ResizeMode.NoResize;
             }
             ResizingTimer.Start();
@@ -2318,7 +2341,7 @@ namespace Jvedio
                 if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
 
                 if (Properties.Settings.Default.EditMode)
-                    if (new Msgbox(this, $"是否确认删除选中的 {vieModel.SelectedMovie.Count}个视频（保留数据库信息）？").ShowDialog() == false) { return; }
+                    if (new Msgbox(this, $"是否确认删除选中的 {vieModel.SelectedMovie.Count}个视频？").ShowDialog() == false) { return; }
 
                 int num = 0;
                 vieModel.SelectedMovie.ToList().ForEach(arg =>
@@ -2327,7 +2350,7 @@ namespace Jvedio
                     {
                         try
                         {
-                            FileSystem.DeleteFile(arg.filepath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                            FileSystem.DeleteFile(arg.filepath, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
                             num++;
                         }
                         catch (Exception ex) { Logger.LogF(ex); }
@@ -2335,7 +2358,42 @@ namespace Jvedio
                     }
                 });
                 if (num > 0)
+                {
+                    try
+                    {
+                        DataBase cdb = new DataBase();
+                        vieModel.SelectedMovie.ToList().ForEach(arg => {
+                            cdb.DelInfoByType("movie", "id", arg.id);
+                            vieModel.CurrentMovieList.Remove(arg); //从主界面删除
+                            vieModel.MovieList.Remove(arg);
+                        });
+                        cdb.CloseDB();
+
+                        //从详情窗口删除
+                        if (Jvedio.GetWindow.Get("WindowDetails") != null)
+                        {
+                            WindowDetails windowDetails = Jvedio.GetWindow.Get("WindowDetails") as WindowDetails;
+                            foreach (var item in vieModel.SelectedMovie.ToList())
+                            {
+                                if (windowDetails.vieModel.DetailMovie.id.ToUpper() == item.id.ToUpper())
+                                {
+                                    windowDetails.Close();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+
+
                     new PopupWindow(this, $"已删除 {num}/{vieModel.SelectedMovie.Count}个视频到回收站").Show();
+                    
+                }
+                    
                 else
                     new PopupWindow(this, $"删除失败！ ").Show();
 
@@ -2373,6 +2431,10 @@ namespace Jvedio
             if (mnu != null)
             {
                 sp = ((ContextMenu)mnu.Parent).PlacementTarget as StackPanel;
+                if (sp != null)
+                {
+
+              
                 var TB = sp.Children.OfType<TextBox>().First();
                 Movie CurrentMovie = GetMovieFromVieModel(TB.Text);
                 if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
@@ -2410,6 +2472,7 @@ namespace Jvedio
 
                
                 await Task.Run(() => { Task.Delay(1000).Wait(); });
+                }
             }
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
         }

@@ -778,14 +778,14 @@
 
 
     <Grid x:Name="MainGrid"  AllowDrop="True" Margin="10"   >
-        <Border Background="{DynamicResource BackgroundMain}" CornerRadius="5" Margin="5"  >
+        <Border  x:Name="MainBorder"   Background="{DynamicResource BackgroundMain}" CornerRadius="5" Margin="5"  >
             <Border.Effect>
                 <DropShadowEffect BlurRadius="5" Direction="-90" RenderingBias="Quality" ShadowDepth="0"/>
             </Border.Effect>
         </Border>
 
         <!--<ResizeGrip Visibility="Collapsed"   HorizontalAlignment="Right" x:Name="WindowResizeGrip" VerticalAlignment="Bottom" Margin="5" />-->
-        <Grid Visibility="Visible"    Background="Transparent"  Margin="5">
+        <Grid x:Name="Grid" Visibility="Visible"    Background="Transparent"  Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
@@ -1362,52 +1362,48 @@
                                         <TextBox Text="{Binding Actress.id}" Style="{StaticResource InfoTextBox}" Visibility="Collapsed"  />
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="生日："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.birthday,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}" PreviewKeyUp="SaveActress" />
+                                            <TextBox Text="{Binding Actress.birthday,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}" PreviewKeyUp="SaveActress"  ToolTip="格式为【0000-00-00】，回车后保存" />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="年龄："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.age,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="年龄："  Style="{StaticResource ActorInfoTextBlock}"  />
+                                            <TextBox Text="{Binding Actress.age,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="整数，回车后保存" />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="出生地："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.birthplace,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="出生地："  Style="{StaticResource ActorInfoTextBlock}"  />
+                                            <TextBox Text="{Binding Actress.birthplace,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="少于 50  字符，回车后保存"  />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="身高："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.height,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="身高："  Style="{StaticResource ActorInfoTextBlock}"   />
+                                            <TextBox Text="{Binding Actress.height,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="整数，回车后保存"   />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="罩杯："  Style="{StaticResource ActorInfoTextBlock}"  />
-                                            <TextBox Text="{Binding Actress.cup,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="罩杯："  Style="{StaticResource ActorInfoTextBlock}"    />
+                                            <TextBox Text="{Binding Actress.cup,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="A-Z，回车后保存"  />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="胸围："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.chest,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="胸围："  Style="{StaticResource ActorInfoTextBlock}"  />
+                                            <TextBox Text="{Binding Actress.chest,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" ToolTip="整数，回车后保存"   />
                                         </StackPanel>
 
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="腰围："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.chest,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
-                                        </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="腰围："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.waist,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBox Text="{Binding Actress.waist,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="整数，回车后保存"   />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="臀围："  Style="{StaticResource ActorInfoTextBlock}" />
-                                            <TextBox Text="{Binding Actress.hipline,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="臀围："  Style="{StaticResource ActorInfoTextBlock}"   />
+                                            <TextBox Text="{Binding Actress.hipline,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" ToolTip="整数，回车后保存"  />
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="爱好："  Style="{StaticResource ActorInfoTextBlock}"  />
-                                            <TextBox Text="{Binding Actress.hobby,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress" />
+                                            <TextBlock Text="爱好："  Style="{StaticResource ActorInfoTextBlock}"   />
+                                            <TextBox Text="{Binding Actress.hobby,Mode=TwoWay}" Style="{StaticResource ActorTextBlock}"  PreviewKeyUp="SaveActress"  ToolTip="文本，回车后保存"  />
                                         </StackPanel>
 
                                     </StackPanel>
@@ -2145,10 +2141,19 @@
                         <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                     </Border>
                     <Grid  Margin="0 30">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="700*"/>
-                            <ColumnDefinition Width="300*"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="150"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+
+
+                            </Grid.ColumnDefinitions>
+
 
                         <StackPanel Grid.Column="0" Orientation="Vertical">
 
@@ -2164,11 +2169,7 @@
 
                             </StackPanel>
 
-                            <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="50 20" Height="150">
-                                <TextBlock  HorizontalAlignment="Left"  FontSize="18"  Text="更新日志" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
-                                <TextBox x:Name="UpdateContentTextBox" TextAlignment="Left" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderThickness="0" Height="100"    FontSize="18" Width="auto"  Text="" Foreground="{DynamicResource ForegroundGlobal}" Margin="10"   />
 
-                            </StackPanel>
 
 
 
@@ -2180,6 +2181,14 @@
                         <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Margin="0 20">
                             <Button  Margin="0 10"  Style="{StaticResource ButtonStyleFill}" Content="开始更新" Width="120" Height="30" FontSize="15" Click="OpenUpdate" />
                             <Button Margin="0 10" Background="{DynamicResource BackgroundSide}" Style="{StaticResource ButtonStyleFill}" Content="官网下载" Width="120" Height="30" FontSize="15" Click="GotoDownloadUrl" />
+                        </StackPanel>
+
+                        </Grid>
+
+                        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Stretch" Width="auto" Margin="50 0" Height="150">
+                            <TextBlock  HorizontalAlignment="Left"  FontSize="18"  Text="更新日志" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
+                            <TextBox HorizontalScrollBarVisibility="Auto" x:Name="UpdateContentTextBox" HorizontalAlignment="Stretch" TextAlignment="Left" IsReadOnly="True" VerticalScrollBarVisibility="Auto"  Background="Transparent" BorderThickness="0" Height="100"    FontSize="18" Width="auto"  Text="111111111111111111111111111111111111111111111111111111111111111111111111" Foreground="{DynamicResource ForegroundGlobal}" Margin="10"   />
+
                         </StackPanel>
                     </Grid>
 

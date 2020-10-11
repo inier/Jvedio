@@ -247,7 +247,6 @@ namespace Jvedio
             name = name.ToLower();
             StringCollection result = new StringCollection();
             if (!File.Exists(DataBaseConfigPath)) return result;
-
             using(StreamReader sr=new StreamReader(DataBaseConfigPath))
             {
                 try
@@ -460,28 +459,29 @@ namespace Jvedio
         /// </summary>
         /// <param name="filepath"></param>
         /// <returns></returns>
-        private static BitmapImage BitmapImageFromFile(string filepath)
+        public static BitmapImage BitmapImageFromFile(string filepath,bool rotate=false)
         {
             try
             {
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(filepath);
+                if (rotate) bitmap.Rotation = Rotation.Rotate90;
                 bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 bitmap.Freeze();
                 return bitmap;
             }
-            catch (Exception e) { Logger.LogE(e); }
+            catch (Exception e) { Logger.LogE(e); Console.WriteLine(e.Message); }
             return null;
 
         }
 
-        public static BitmapImage GetBitmapImage(string filename, string imagetype)
+        public static BitmapImage GetBitmapImage(string filename, string imagetype, bool rotate = false)
         {
             filename = BasePicPath + $"{imagetype}\\{filename}.jpg";
             if (File.Exists(filename))
-                return BitmapImageFromFile(filename);
+                return BitmapImageFromFile(filename, rotate);
             else
                 return null;
         }

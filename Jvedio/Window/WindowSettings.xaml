@@ -571,7 +571,7 @@
 
 
 
-                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
+                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
                         <WrapPanel Orientation="Horizontal" Margin="5 20">
 
 
@@ -581,6 +581,7 @@
                             <CheckBox IsChecked="{Binding RandomDisplay, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启动后随机展示" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding SearchImmediately, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="搜索框变动时立即查询" Height="40" VerticalContentAlignment="Center"/>
                             <CheckBox IsChecked="{Binding OpenDataBaseDefault, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="开启时不显示库选择" Height="40" VerticalContentAlignment="Center"/>
+                            <CheckBox IsChecked="{Binding AutoDeleteNotExistMovie, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="自动删除不存在的影片" Height="40" VerticalContentAlignment="Center"/>
                         </WrapPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="10 10">
@@ -617,6 +618,7 @@
                             <TextBox   Style="{StaticResource BaseTextBox}"  Text="{Binding BasePicPath, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="auto" HorizontalAlignment="Stretch" TextAlignment="Left"  Height="auto" Margin="100 5 150 5"/>
                             <Button Style="{StaticResource ButtonStyleFill}" Content="选择文件夹" Height="25" Width="100" Click="SetBasePicPath" Margin="5 2" HorizontalAlignment="Right"/>
                         </Grid>
+
 
                         <Grid  Margin="20 5">
                             <Label HorizontalAlignment="Left" FontSize="15" Margin="10 10" Content="指定播放器" Foreground="{DynamicResource ForegroundSearch}"  VerticalAlignment="Center"/>
@@ -697,7 +699,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource TextBlockTitle}" Text="服务器源" HorizontalAlignment="Left"/>
@@ -709,7 +711,7 @@
 
 
 
-                        <DataGrid ScrollViewer.HorizontalScrollBarVisibility="Auto"   PreviewMouseLeftButtonDown="Previe_Mouse_LBtnDown"  x:Name="ServersDataGrid" VerticalScrollBarVisibility="Disabled"   Foreground="{DynamicResource ForegroundSearch}" Margin="20 5" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"  BorderThickness="0" CanUserResizeRows="False" CanUserResizeColumns="True" Background="Transparent" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="True" CanUserSortColumns="True"   DataContextChanged="ServersDataGrid_DataContextChanged" Style="{DynamicResource DataGridStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}"  RowHeaderStyle="{DynamicResource DataGridRowHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" DragIndicatorStyle="{DynamicResource DataGridColumnHeaderStyle2}" DropLocationIndicatorStyle="{DynamicResource DataGridStyle2}" ItemsPanel="{DynamicResource ItemsPanelTemplate1}">
+                        <DataGrid Background="{DynamicResource BackgroundSide}" MinHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"   PreviewMouseLeftButtonDown="Previe_Mouse_LBtnDown"  x:Name="ServersDataGrid" VerticalScrollBarVisibility="Disabled"   Foreground="{DynamicResource ForegroundSearch}" Margin="20 5" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"  BorderThickness="0" CanUserResizeRows="False" CanUserResizeColumns="True"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="True" CanUserSortColumns="True"   DataContextChanged="ServersDataGrid_DataContextChanged" Style="{DynamicResource DataGridStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}"  RowHeaderStyle="{DynamicResource DataGridRowHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" DragIndicatorStyle="{DynamicResource DataGridColumnHeaderStyle2}" DropLocationIndicatorStyle="{DynamicResource DataGridStyle2}" ItemsPanel="{DynamicResource ItemsPanelTemplate1}">
                             
                             
                             
@@ -722,14 +724,6 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="服务器地址" Width="auto" Binding="{Binding Url}" />
-
-                                <!--<DataGridTemplateColumn Header="服务器地址" Width="auto" MinWidth="40">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBox Width="auto" HorizontalAlignment="Center" Text="{Binding Path=Url,Mode=TwoWay}" Style="{StaticResource BaseTextBox}" VerticalAlignment="Center" Background="Transparent" />
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>-->
 
 
                                 <DataGridTextColumn Header="Cookie" Width="200" Binding="{Binding Cookie}" />

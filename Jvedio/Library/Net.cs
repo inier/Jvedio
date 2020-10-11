@@ -258,8 +258,6 @@ namespace Jvedio
                             if (Headers["Set-Cookie"] != null) Cookies = Headers["Set-Cookie"].Split(';')[0];
                             Console.WriteLine(Cookies);
                         }
-                                
-
                     }
                     else
                     {
