@@ -141,10 +141,9 @@ namespace Jvedio
                         vieModel_DBManagement.DataBases.Remove(name);
                         RefreshMain();
                     }
-                    catch(Exception ex)
+                    catch
                     {
-                        Logger.LogF(ex);
-                        MessageBox.Show(ex.Message);
+                        new Msgbox(this, $"数据库【{name}】正在被使用，请切换后重试！").ShowDialog();
                     }
 
 

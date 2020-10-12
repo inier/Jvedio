@@ -236,7 +236,7 @@
                         </Grid>
 
 
-                        <CheckBox ToolTip="显示详情信息" x:Name="ExtraInfoCheckBox"  Content="详情信息 -------------------------------------"  HorizontalAlignment="Left" Margin="25 5"/>
+                        <CheckBox IsChecked="{Binding EditWindow_ShowMore,Mode=TwoWay,Source={x:Static p:Settings.Default}}" ToolTip="显示详情信息" x:Name="ExtraInfoCheckBox"  Content="详情信息 -------------------------------------"  HorizontalAlignment="Left" Margin="25 5"/>
 
                         <StackPanel x:Name="ExtraInfoStackPanel" Orientation="Vertical" >
                             <StackPanel.Style>
@@ -268,7 +268,7 @@
                         </Grid>
                         <Grid Panel.ZIndex="5" Style="{StaticResource InfoGrid}">
                             <Label  Content="发行日期"  Style="{StaticResource BaseLabel2}"   />
-                            <TextBox  x:Name="ReleaseDateTextBox" Text="{Binding DetailMovie.releasedate}" Style="{StaticResource BaseTextBox}" IsReadOnly="True" PreviewMouseLeftButtonUp="SetDateTime"/>
+                            <TextBox  x:Name="ReleaseDateTextBox" Text="{Binding DetailMovie.releasedate}" Style="{StaticResource BaseTextBox}" IsReadOnly="False" PreviewMouseLeftButtonUp="SetDateTime"/>
                             <Popup  VerticalOffset="5" HorizontalOffset="5" x:Name="CalenderPopup" Placement="Bottom" PlacementTarget="{Binding ElementName=ReleaseDateTextBox}" PopupAnimation="Fade"   AllowsTransparency="True" StaysOpen="False" IsOpen="False">
                                 <Calendar x:Name="Calendar" SelectedDatesChanged="Calendar_SelectedDatesChanged" IsTodayHighlighted="False"  />
                             </Popup>

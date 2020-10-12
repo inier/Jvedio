@@ -22,6 +22,8 @@ using FontAwesome.WPF;
 using System.ComponentModel;
 using DynamicData.Annotations;
 using System.Runtime.CompilerServices;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace Jvedio
 {
@@ -91,6 +93,136 @@ namespace Jvedio
         }
 
 
+
+        #region "热键"
+
+
+
+
+
+        private void hotkeyTextBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+            Key currentKey = (e.Key == Key.System ? e.SystemKey : e.Key);
+
+            if (currentKey == Key.LeftCtrl | currentKey == Key.LeftAlt | currentKey == Key.LeftShift)
+            {
+                if (!funcKeys.Contains(currentKey)) funcKeys.Add(currentKey);
+            }
+            else if ((currentKey >= Key.A && currentKey <= Key.Z) || (currentKey >= Key.D0 && currentKey <= Key.D9) || (currentKey >= Key.NumPad0 && currentKey <= Key.NumPad9))
+            {
+                key = currentKey;
+            }
+            else
+            {
+                //Console.WriteLine("不支持");
+            }
+
+            string singleKey = key.ToString();
+            if (key.ToString().Length > 1)
+            {
+                singleKey = singleKey.ToString().Replace("D", "");
+            }
+
+            if (funcKeys.Count > 0)
+            {
+                if (key == Key.None)
+                {
+                    hotkeyTextBox.Text = string.Join("+", funcKeys);
+                    _funcKeys = new List<Key>();
+                    _funcKeys.AddRange(funcKeys);
+                    _key = Key.None;
+                }
+                else
+                {
+                    hotkeyTextBox.Text = string.Join("+", funcKeys) + "+" + singleKey;
+                    _funcKeys = new List<Key>();
+                    _funcKeys.AddRange(funcKeys);
+                    _key = key;
+                }
+
+            }
+            else
+            {
+                if (key != Key.None)
+                {
+                    hotkeyTextBox.Text = singleKey;
+                    _funcKeys = new List<Key>();
+                    _key = key;
+                }
+            }
+
+
+
+
+        }
+
+        private void hotkeyTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+
+            Key currentKey = (e.Key == Key.System ? e.SystemKey : e.Key);
+
+            if (currentKey == Key.LeftCtrl | currentKey == Key.LeftAlt | currentKey == Key.LeftShift)
+            {
+                if (funcKeys.Contains(currentKey)) funcKeys.Remove(currentKey);
+            }
+            else if ((currentKey >= Key.A && currentKey <= Key.Z) || (currentKey >= Key.D0 && currentKey <= Key.D9) || (currentKey >= Key.F1 && currentKey <= Key.F12))
+            {
+                if (currentKey == key)
+                {
+                    key = Key.None;
+                }
+
+            }
+
+
+        }
+
+        private void ApplyHotKey(object sender, RoutedEventArgs e)
+        {
+            bool containsFunKey = _funcKeys.Contains(Key.LeftAlt) | _funcKeys.Contains(Key.LeftCtrl) | _funcKeys.Contains(Key.LeftShift) | _funcKeys.Contains(Key.CapsLock);
+
+
+            if (!containsFunKey | _key == Key.None)
+            {
+                new Msgbox(this,"必须为 功能键 + 数字/字母").ShowDialog();
+            }
+            else
+            {
+                //注册热键
+                if (_key != Key.None & IsProperFuncKey(_funcKeys))
+                {
+                    uint fsModifiers = (uint)Modifiers.None;
+                    foreach (Key key in _funcKeys)
+                    {
+                        if (key == Key.LeftCtrl) fsModifiers = fsModifiers | (uint)Modifiers.Control;
+                        if (key == Key.LeftAlt) fsModifiers = fsModifiers | (uint)Modifiers.Alt;
+                        if (key == Key.LeftShift) fsModifiers = fsModifiers | (uint)Modifiers.Shift;
+                    }
+                    VK = (uint)KeyInterop.VirtualKeyFromKey(_key);
+
+                    
+                    UnregisterHotKey(_windowHandle, HOTKEY_ID);//取消之前的热键
+                    bool success = RegisterHotKey(_windowHandle, HOTKEY_ID, fsModifiers, VK);
+                    if (!success) { MessageBox.Show("热键冲突！", "热键冲突"); }
+                    {
+                        //保存设置
+                        Properties.Settings.Default.HotKey_Modifiers = fsModifiers;
+                        Properties.Settings.Default.HotKey_VK = VK;
+                        Properties.Settings.Default.HotKey_Enable = true;
+                        Properties.Settings.Default.HotKey_String = hotkeyTextBox.Text;
+                        Properties.Settings.Default.Save();
+                        new PopupWindow(this, "设置成功！").ShowDialog();
+                    }
+                    
+                }
+
+
+
+            }
+        }
+
+        #endregion
 
 
 
@@ -225,7 +357,7 @@ namespace Jvedio
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if(new Msgbox(this, "确认还原所有设置（保留网址）？").ShowDialog() == true)
+            if(new Msgbox(this, "确认还原所有设置？").ShowDialog() == true)
             {
                 //保存网址
                 List<string> urlList = new List<string>();
@@ -1013,7 +1145,26 @@ namespace Jvedio
             Properties.Settings.Default.Save();
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            //注册热键
+            uint modifier = Properties.Settings.Default.HotKey_Modifiers;
+            uint vk = Properties.Settings.Default.HotKey_VK;
 
+            if ( modifier != 0 && vk != 0)
+            {
+                UnregisterHotKey(_windowHandle, HOTKEY_ID);//取消之前的热键
+                bool success = RegisterHotKey(_windowHandle, HOTKEY_ID, modifier, vk);
+                if (!success) { MessageBox.Show("热键冲突！", "热键冲突");
+                    Properties.Settings.Default.HotKey_Enable = false;
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UnregisterHotKey(_windowHandle, HOTKEY_ID);//取消之前的热键
+        }
     }
 
 

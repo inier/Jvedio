@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 namespace Jvedio
@@ -48,8 +51,52 @@ namespace Jvedio
 
         //禁止的文件名
         public static readonly char[] BANFILECHAR =  {'\\','#','%', '&', '*', '|', ':', '"', '<', '>', '?', '/','.' }; //https://docs.microsoft.com/zh-cn/previous-versions/s6feh8zw(v=vs.110)?redirectedfrom=MSDN
-        //保留名称
+                                                                                                                       //保留名称
 
+
+        #region "热键"
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        public const int HOTKEY_ID = 2415;
+        public static uint VK;
+        public static IntPtr _windowHandle;
+        public static HwndSource _source;
+        public static bool IsHide = false;
+        public static List<string> OpeningWindows = new List<string>();
+        public static List<Key>  funcKeys = new List<Key>(); //功能键 [1,3] 个
+        public static Key key = Key.None;//基础键 1 个
+        public static List<Key> _funcKeys = new List<Key>();
+        public static Key _key = Key.None;
+
+        public  enum Modifiers
+        {
+            None = 0x0000,
+            Alt = 0x0001,
+            Control = 0x0002,
+            Shift = 0x0004,
+            Win = 0x0008
+        }
+
+        public static bool IsProperFuncKey(List<Key> keyList)
+        {
+            bool result = true;
+            List<Key> keys = new List<Key>() { Key.LeftCtrl, Key.LeftAlt, Key.LeftShift };
+
+            foreach (Key item in keyList)
+            {
+                if (!keys.Contains(item))
+                {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        #endregion
 
         public static void InitVariable()
         {

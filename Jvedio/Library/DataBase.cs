@@ -1228,7 +1228,13 @@ namespace Jvedio
         public int vediotype { get; set; }
         public string scandate { get; set; }
 
-        public string releasedate { get; set; }
+
+        private string _releasedate;
+        public string releasedate { get { return _releasedate; } set {
+                DateTime dateTime = new DateTime(1900, 01, 01);
+                DateTime.TryParse(value.ToString(), out dateTime);
+                _releasedate = dateTime.ToString("yyyy-MM-dd");
+            } }
         public int visits { get; set; }
         public string director { get; set; }
         public string genre { get; set; }

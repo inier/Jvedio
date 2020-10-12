@@ -1834,5 +1834,65 @@ namespace Jvedio.Properties {
                 this["AutoDeleteNotExistMovie"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint HotKey_Modifiers {
+            get {
+                return ((uint)(this["HotKey_Modifiers"]));
+            }
+            set {
+                this["HotKey_Modifiers"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint HotKey_VK {
+            get {
+                return ((uint)(this["HotKey_VK"]));
+            }
+            set {
+                this["HotKey_VK"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool HotKey_Enable {
+            get {
+                return ((bool)(this["HotKey_Enable"]));
+            }
+            set {
+                this["HotKey_Enable"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HotKey_String {
+            get {
+                return ((string)(this["HotKey_String"]));
+            }
+            set {
+                this["HotKey_String"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EditWindow_ShowMore {
+            get {
+                return ((bool)(this["EditWindow_ShowMore"]));
+            }
+            set {
+                this["EditWindow_ShowMore"] = value;
+            }
+        }
     }
 }

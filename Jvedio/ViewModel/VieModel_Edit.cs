@@ -16,7 +16,7 @@ namespace Jvedio.ViewModel
     class VieModel_Edit : ViewModelBase
     {
 
-        public string id;
+        public string id;//用于判断是否更改了 id
 
         public DetailMovie detailmovie;
 

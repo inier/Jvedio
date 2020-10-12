@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 
 namespace Jvedio
@@ -31,7 +32,7 @@ namespace Jvedio
                 App.Current.Shutdown();
                 Environment.Exit(0);
             }
-            base.OnStartup(e);
+
 
             //UI线程未捕获异常处理事件
             this.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
@@ -39,8 +40,9 @@ namespace Jvedio
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             //非UI线程未捕获异常处理事件
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-        }
 
+            base.OnStartup(e);
+        }
 
 
         void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

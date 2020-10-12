@@ -571,7 +571,7 @@
 
 
 
-                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
+                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
                         <WrapPanel Orientation="Horizontal" Margin="5 20">
 
 
@@ -625,6 +625,17 @@
                             <TextBox   Style="{StaticResource BaseTextBox}"  Text="{Binding VedioPlayerPath, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="auto" HorizontalAlignment="Stretch" TextAlignment="Left"  Height="auto" Margin="100 5 150 5"/>
                             <Button Style="{StaticResource ButtonStyleFill}" Content="选择程序" Height="25" Width="100" Click="SetVediaPlaterPath" Margin="5 2" HorizontalAlignment="Right"/>
                         </Grid>
+
+                        <StackPanel Orientation="Horizontal" Margin="20 5">
+                            <CheckBox Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked" IsChecked="{Binding HotKey_Enable, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="10 5 10 5" Content="启用老板键" Height="40" VerticalContentAlignment="Center"/>
+
+                            <TextBox x:Name="hotkeyTextBox" Text="{Binding HotKey_String,Mode=OneWay,Source={x:Static p:Settings.Default}}" IsReadOnly="True" PreviewKeyUp="hotkeyTextBox_PreviewKeyUp" PreviewKeyDown="hotkeyTextBox_PreviewKeyDown" Style="{StaticResource BaseTextBox}"  Width="200" Padding="10 0"/>
+
+                            <Button Style="{StaticResource ButtonStyleFill}" Click="ApplyHotKey" Content="应用热键" HorizontalAlignment="Left" Width="80" Height="30" />
+
+                        </StackPanel>
+
+
 
                     </StackPanel>
 
@@ -699,7 +710,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Collapsed">
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource TextBlockTitle}" Text="服务器源" HorizontalAlignment="Left"/>

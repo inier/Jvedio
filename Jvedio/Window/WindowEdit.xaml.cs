@@ -132,7 +132,7 @@ namespace Jvedio
             {
                 try
                 {
-                    if (main.vieModel.CurrentMovieList[i]?.id.ToUpper() == vieModel.DetailMovie.id.ToUpper())
+                    if (main.vieModel.CurrentMovieList[i]?.id.ToUpper() == vieModel.id.ToUpper())
                     {
                         DataBase cdb = new DataBase();
                         Movie movie = await cdb.SelectMovieByID(vieModel.DetailMovie.id);
@@ -160,9 +160,8 @@ namespace Jvedio
             if (vieModel.DetailMovie.id == "") { new Msgbox(this, "识别码为空！").ShowDialog(); return; }
             if (vieModel.DetailMovie.vediotype <= 0) { new Msgbox(this, "请选择视频类型！").ShowDialog(); return; }
             this.vieModel.SaveModel();
-            //更新主窗口
-            UpdateMain();
-            UpdateDetail();
+            UpdateMain();//更新主窗口
+            UpdateDetail();//更新详情窗口
 
             new PopupWindow(this, "保存成功！").Show();
         }

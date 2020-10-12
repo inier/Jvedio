@@ -75,6 +75,8 @@ namespace Jvedio
 
         DispatcherTimer PopupTimer = new DispatcherTimer();
 
+
+
         public Main()
         {
             InitializeComponent();
@@ -261,6 +263,102 @@ namespace Jvedio
         #endregion
 
 
+        #region "热键"
+
+
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+
+            //热键
+            _windowHandle = new WindowInteropHelper(this).Handle;
+            _source = HwndSource.FromHwnd(_windowHandle);
+            _source.AddHook(HwndHook);
+
+            //注册热键
+
+            uint modifier = Properties.Settings.Default.HotKey_Modifiers;
+            uint vk = Properties.Settings.Default.HotKey_VK;
+
+            if (Properties.Settings.Default.HotKey_Enable &&  modifier != 0 && vk!=0)
+            {
+                UnregisterHotKey(_windowHandle, HOTKEY_ID);//取消之前的热键
+                bool success = RegisterHotKey(_windowHandle, HOTKEY_ID, modifier, vk);
+                if (!success) { MessageBox.Show("热键冲突！", "热键冲突"); }
+            }
+
+        }
+
+
+
+
+        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_HOTKEY = 0x0312;
+            switch (msg)
+            {
+                case WM_HOTKEY:
+                    switch (wParam.ToInt32())
+                    {
+                        case HOTKEY_ID:
+                            int vkey = (((int)lParam >> 16) & 0xFFFF);
+                            if (vkey == Properties.Settings.Default.HotKey_VK)
+                            {
+                                HideAllWindow();
+                            }
+                            handled = true;
+                            break;
+                    }
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+        private void HideAllWindow()
+        {
+
+            if (IsHide)
+            {
+                foreach (Window window in App.Current.Windows)
+                {
+                    if (OpeningWindows.Contains(window.GetType().ToString()))
+                    {
+                        window.Visibility = Visibility.Visible;
+                    }
+                }
+                IsHide = false;
+            }
+            else
+            {
+                OpeningWindows.Clear();
+                foreach (Window window in App.Current.Windows)
+                {
+                        window.Visibility = Visibility.Hidden;
+                        OpeningWindows.Add(window.GetType().ToString());
+                }
+                IsHide = true;
+
+                //隐藏图标
+                notifyIcon.Visible = false;
+            }
+
+
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _source.RemoveHook(HwndHook);
+            UnregisterHotKey(_windowHandle, HOTKEY_ID);
+            //取消热键
+            Console.WriteLine("UnregisterHotKey");
+            base.OnClosed(e);
+        }
+
+
+        #endregion
+
         public void InitMovie()
         {
             vieModel = new VieModel_Main();
@@ -306,6 +404,21 @@ namespace Jvedio
         }
 
 
+
+        private const int WM_HOTKEY = 0x312; //窗口消息-热键
+        private const int WM_CREATE = 0x1; //窗口消息-创建
+        private const int WM_DESTROY = 0x2; //窗口消息-销毁
+        private const int Space = 0x3572; //热键ID
+
+
+
+        #region "右键命令"
+        public  void DeleteIDCommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Console.WriteLine("DeleteIDCommandBinding_Executed");
+        }
+
+        #endregion
 
         public void BeginCheckurlThread()
         {
@@ -1995,7 +2108,7 @@ namespace Jvedio
 
 
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
-            MenuItem mnu = sender as MenuItem;
+            MenuItem mnu = ((MenuItem)(sender)).Parent as MenuItem;
             StackPanel sp = null;
             if (mnu != null)
             {
@@ -2130,7 +2243,7 @@ namespace Jvedio
         {
             if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) { new PopupWindow(this, "请设置 ffmpeg.exe 的路径 ").Show(); return; }
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
-            MenuItem mnu = sender as MenuItem;
+            MenuItem mnu = ((MenuItem)(sender)).Parent as MenuItem;
             StackPanel sp = null;
 
             if (mnu != null)
@@ -2744,7 +2857,17 @@ namespace Jvedio
 
                     vieModel.SelectedMovie.ToList().ForEach(arg =>
                     {
-                        if (arg.sourceurl != "") Process.Start(arg.sourceurl);
+                        if (arg.sourceurl != "") 
+                            Process.Start(arg.sourceurl);
+                        else
+                        {
+                            //为空则使用 bus 打开
+                            if (Properties.Settings.Default.Bus != "")
+                            {
+                                Process.Start(Properties.Settings.Default.Bus + arg.id);
+                            }
+
+                        }
                     });
                 }
 
@@ -2764,19 +2887,22 @@ namespace Jvedio
                 {
                     if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
 
-                    MenuItem _mnu = sender as MenuItem;
-                    MenuItem mnu = _mnu.Parent as MenuItem;
+                    //MenuItem _mnu = sender as MenuItem;
+                    MenuItem mnu = sender as MenuItem;
                     StackPanel sp = null;
 
                     if (mnu != null)
                     {
-                        int index = mnu.Items.IndexOf(_mnu);
                         sp = ((ContextMenu)mnu.Parent).PlacementTarget as StackPanel;
                         var TB = sp.Children.OfType<TextBox>().First();
                         Movie CurrentMovie = GetMovieFromVieModel(TB.Text);
-                        if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
+                        if (CurrentMovie != null)
+                        {
+                            if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
 
-                        StartDownload(vieModel.SelectedMovie.ToList());
+                            StartDownload(vieModel.SelectedMovie.ToList());
+                        }
+
                     }
                 }
                 catch (Exception ex) { Console.WriteLine(ex.StackTrace); Console.WriteLine(ex.Message); }
@@ -3696,6 +3822,71 @@ namespace Jvedio
             if (e.ClickCount>1)
             {
                 MaxWindow(sender, new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, MouseButton.Left));
+            }
+        }
+
+        private void ContextMenu_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            ContextMenu contextMenu = sender as ContextMenu;
+            if (e.Key == Key.D)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "删除信息  | D");
+                if (menuItem != null) DeleteID(menuItem, new RoutedEventArgs());
+            }else if (e.Key == Key.T)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "删除文件  | T");
+                if (menuItem != null) DeleteFile(menuItem, new RoutedEventArgs());
+
+            }
+            else if (e.Key == Key.S)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "立即同步  | S");
+                if (menuItem != null) DownLoadSelectMovie(menuItem, new RoutedEventArgs());
+
+            }
+            else if (e.Key == Key.E)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "修改信息  | E");
+                if (menuItem != null) EditInfo(menuItem, new RoutedEventArgs());
+
+            }
+            else if (e.Key == Key.W)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "打开网址  | W");
+                if (menuItem != null) OpenWeb(menuItem, new RoutedEventArgs());
+
+            }
+            else if (e.Key == Key.C)
+            {
+                MenuItem menuItem = GetMenuItem(contextMenu, "复制文件  | C");
+                if (menuItem != null) CopyFile(menuItem, new RoutedEventArgs());
+
+            }
+            contextMenu.IsOpen = false;
+        }
+
+
+        private MenuItem GetMenuItem(ContextMenu contextMenu,string header)
+        {
+            foreach (MenuItem item in contextMenu.Items)
+            {
+                if (item.Header.ToString() == header)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && (Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift && e.Key == Key.S )
+            {
+                MessageBox.Show("1");
+            }
+            else if((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control && e.Key==Key.S)
+            {
+                MessageBox.Show("2");
             }
         }
     }

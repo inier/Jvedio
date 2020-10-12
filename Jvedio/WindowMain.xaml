@@ -26,9 +26,11 @@
     PreviewKeyUp="Window_PreviewKeyUp"
     Activated="Window_Activated"
     
+    PreviewKeyDown="Window_PreviewKeyDown"
     
-        >
 
+
+    >
 
 
 
@@ -1431,14 +1433,14 @@
                                 <ScrollViewer x:Name="ScrollViewer" VerticalScrollBarVisibility="Auto"  ScrollChanged="ScrollViewer_ScrollChanged" PreviewMouseMove="Selecting" IsVisibleChanged="ScrollViewer_IsVisibleChanged"  >
                                     <ScrollViewer.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Header="刷新" Click="RefreshCurrentPage" Icon="pack://application:,,,/Resources/menuitem/refresh.png"/>
-                                            <MenuItem Header="选择/取消所有" Click="SelectAll" Icon="pack://application:,,,/Resources/menuitem/selectall.png"/>
+                                            <MenuItem Header="刷新" Click="RefreshCurrentPage" />
+                                            <MenuItem Header="选择/取消所有" Click="SelectAll" />
                                             <MenuItem Header="显示" >
                                                 <MenuItem  Click="SaveShowViewMode"  IsChecked="{Binding ShowViewMode, ConverterParameter=默认, Converter={StaticResource ViewTypeEnumConverter}, Mode=TwoWay}" Header="默认"    />
                                                 <MenuItem  Click="SaveShowViewMode"   IsChecked="{Binding ShowViewMode, ConverterParameter=有图, Converter={StaticResource ViewTypeEnumConverter}, Mode=TwoWay}"   Header="有图" />
                                                 <MenuItem  Click="SaveShowViewMode"   IsChecked="{Binding ShowViewMode, ConverterParameter=无图, Converter={StaticResource ViewTypeEnumConverter}, Mode=TwoWay}"   Header="无图" />
                                             </MenuItem>
-                                            <MenuItem Header="滚动到最后" Click="ScrollToEnd" Icon="pack://application:,,,/Resources/menuitem/scrolltoend.png"/>
+                                            <MenuItem Header="滚动到最后" Click="ScrollToEnd" />
                                         </ContextMenu>
                                     </ScrollViewer.ContextMenu>
                                     <ItemsControl  x:Name="MovieItemsControl" AlternationCount="999"  ItemsSource="{Binding CurrentMovieList}" ScrollViewer.VerticalScrollBarVisibility="Auto" Background="Transparent" >
@@ -1472,30 +1474,29 @@
                                                                 </MultiBinding>
                                                             </StackPanel.Margin>
                                                             <StackPanel.ContextMenu>
-                                                                <ContextMenu >
-                                                                    <MenuItem Header="下载信息"  Icon="pack://application:,,,/Resources/menuitem/download.png" >
-                                                                        <MenuItem Header="智能识别" Click="DownLoadSelectMovie"  ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed" IsEnabled="False" Header="Bus" Click="DownLoadSelectMovie"  ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="BusEu" Click="DownLoadSelectMovie"   ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="Library" Click="DownLoadSelectMovie"   ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="DB" Click="DownLoadSelectMovie"   ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="Fc2Club" Click="DownLoadSelectMovie"   ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="321" Click="DownLoadSelectMovie"   ></MenuItem>
-                                                                        <MenuItem Visibility="Collapsed"  IsEnabled="False"  Header="DMM" Click="DownLoadSelectMovie"   ></MenuItem>
+                                                                <ContextMenu  PreviewKeyUp="ContextMenu_PreviewKeyUp">
+                                                                    <MenuItem Header="立即同步  | S" Click="DownLoadSelectMovie"   ></MenuItem>
+                                                                    <MenuItem Header="同步其它" Visibility="Collapsed"  >
+                                                                        <MenuItem Header="信息" Click="DownLoadSelectMovie"  ></MenuItem>
+                                                                        <MenuItem Header="缩略图" Click="DownLoadSelectMovie"  ></MenuItem>
+                                                                        <MenuItem Header="海报图" Click="DownLoadSelectMovie"  ></MenuItem>
+                                                                        <MenuItem Header="预览图" Click="DownLoadSelectMovie"  ></MenuItem>
+                                                                        <MenuItem Header="演员信息" Click="DownLoadSelectMovie"  ></MenuItem>
                                                                     </MenuItem>
-                                                                    <MenuItem Header="修改信息" Click="EditInfo" Icon="pack://application:,,,/Resources/menuitem/edit.png" />
-                                                                    <MenuItem Header="翻译影片" Click="TranslateMovie" Icon="pack://application:,,,/Resources/menuitem/translate.png" />
-                                                                    <MenuItem Header="人工智能" Icon="pack://application:,,,/Resources/menuitem/AI.png">
-                                                                        <MenuItem Header="生成缩略图" Click="GenerateSmallImage" Icon="pack://application:,,,/Resources/menuitem/AI_smallimage.png" />
-                                                                        <MenuItem Header="生成演员头像" Click="GenerateActor" Icon="pack://application:,,,/Resources/menuitem/AI_actor.png" />
+                                                                    <MenuItem Header="修改信息  | E" Click="EditInfo"  />
+                                                                    <MenuItem Header="扩展功能"   >
+                                                                        <MenuItem Header="翻译影片" Click="TranslateMovie"  />
+                                                                        <MenuItem Header="生成缩略图" Click="GenerateSmallImage" />
+                                                                        <MenuItem Header="生成演员头像" Click="GenerateActor" />
+                                                                        <MenuItem Header="生成截图" Click="GetScreenShot" />
                                                                     </MenuItem>
-                                                                    <MenuItem Header="生成截图" Click="GetScreenShot" Icon="pack://application:,,,/Resources/menuitem/translate.png" />
-                                                                    <MenuItem Header="标签管理"   Icon="pack://application:,,,/Resources/menuitem/label.png" Click="ShowLabelEditGrid" >
+
+                                                                    <MenuItem Header="标签管理"   Click="ShowLabelEditGrid" >
                                                                         <MenuItem Header="添加" Click="AddLabel"  ></MenuItem>
                                                                         <MenuItem Header="删除" Click="DelLabel"  ></MenuItem>
                                                                         <MenuItem Header="清空" Click="ClearLabel"   ></MenuItem>
                                                                     </MenuItem>
-                                                                    <MenuItem Header="修改喜爱"  Icon="pack://application:,,,/Resources/menuitem/like.png" >
+                                                                    <MenuItem Header="修改喜爱"  >
                                                                         <MenuItem IsChecked="{Binding favorites, ConverterParameter=0, Converter={StaticResource IntToCheckedConverter}}"  IsCheckable="True" Header="0" Click="SetFavorites"  />
                                                                         <MenuItem IsChecked="{Binding favorites, ConverterParameter=1, Converter={StaticResource IntToCheckedConverter}}"  IsCheckable="True" Header="1" Click="SetFavorites"/>
                                                                         <MenuItem IsChecked="{Binding favorites, ConverterParameter=2, Converter={StaticResource IntToCheckedConverter}}"  IsCheckable="True" Header="2" Click="SetFavorites"/>
@@ -1503,18 +1504,18 @@
                                                                         <MenuItem  IsChecked="{Binding favorites, ConverterParameter=4, Converter={StaticResource IntToCheckedConverter}}"  IsCheckable="True" Header="4" Click="SetFavorites"/>
                                                                         <MenuItem  IsChecked="{Binding favorites, ConverterParameter=5, Converter={StaticResource IntToCheckedConverter}}"  IsCheckable="True" Header="5" Click="SetFavorites"/>
                                                                     </MenuItem>
-                                                                    <MenuItem Header="打开位置" Icon="pack://application:,,,/Resources/menuitem/openfolder.png"  >
-                                                                        <MenuItem Header="影片" Click="OpenFilePath"  ></MenuItem>
+                                                                    <MenuItem Header="打开位置"   >
+                                                                        <MenuItem Header="影片" Click="OpenFilePath"   ></MenuItem>
                                                                         <MenuItem Header="海报图" Click="OpenImagePath"  ></MenuItem>
                                                                         <MenuItem Header="缩略图" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="预览图" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="影片截图" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="头像" Click="OpenImagePath"   ></MenuItem>
                                                                     </MenuItem>
-                                                                    <MenuItem Header="打开网址" Click="OpenWeb" Icon="pack://application:,,,/Resources/menuitem/openwebsite.png" />
-                                                                    <MenuItem Header="复制文件" Click="CopyFile"  Icon="pack://application:,,,/Resources/menuitem/copy.png" />
-                                                                    <MenuItem Header="从软件删除" Click="DeleteID"  Icon="pack://application:,,,/Resources/menuitem/del.png"  />
-                                                                    <MenuItem Header="从电脑删除" Click="DeleteFile" Icon="pack://application:,,,/Resources/menuitem/clear.png" />
+                                                                    <MenuItem Header="打开网址  | W" Click="OpenWeb" Icon="pack://application:,,,/Resources/menuitem/openwebsite.png" />
+                                                                    <MenuItem Header="复制文件  | C" Click="CopyFile" />
+                                                                    <MenuItem Header="删除信息  | D"  Click="DeleteID"   />
+                                                                    <MenuItem Header="删除文件  | T" Click="DeleteFile" Icon="pack://application:,,,/Resources/menuitem/clear.png" />
 
 
 

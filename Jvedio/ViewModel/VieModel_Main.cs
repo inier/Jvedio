@@ -614,7 +614,6 @@ namespace Jvedio.ViewModel
             if (!DataBases.Contains("info")) DataBases.Add("info");
         }
 
-
         private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
             Main main = App.Current.Windows[0] as Main;
@@ -700,6 +699,9 @@ namespace Jvedio.ViewModel
                     }
 
                 }
+
+                //0.5s后开始展示预览图
+                if (Properties.Settings.Default.ShowImageMode == "预览图") DispatcherTimer.Start();
             }
             MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
             CurrentMovieListChanged?.Invoke(this, EventArgs.Empty);

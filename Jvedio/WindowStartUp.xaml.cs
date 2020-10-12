@@ -37,6 +37,11 @@ namespace Jvedio
             ct = cts.Token;
         }
 
+
+
+
+
+
         public static string InfoDataBasePath = AppDomain.CurrentDomain.BaseDirectory + "Info.sqlite";
         public static string AIDataBasePath = AppDomain.CurrentDomain.BaseDirectory + "AI.sqlite";
         public static string TranslateDataBasePath = AppDomain.CurrentDomain.BaseDirectory + "Translate.sqlite";
