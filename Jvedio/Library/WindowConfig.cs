@@ -41,9 +41,15 @@ namespace Jvedio
             StreamReader sr = new StreamReader(path);
             string content = sr.ReadToEnd();
             sr.Close();
-            var list = content.Split(',');
-            winstate =(JvedioWindowState)int.Parse(list[4]);
-            rect = new Rect(double.Parse(list[0]), double.Parse(list[1]), double.Parse(list[2]), double.Parse(list[3]));
+            try
+            {
+                var list = content.Split(',');
+                winstate = (JvedioWindowState)int.Parse(list[4]);
+                rect = new Rect(double.Parse(list[0]), double.Parse(list[1]), double.Parse(list[2]), double.Parse(list[3]));
+            }
+            catch(IndexOutOfRangeException ex) {  }
+            
+
             return (rect, winstate);
         }
 

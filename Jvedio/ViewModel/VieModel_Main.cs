@@ -33,9 +33,10 @@ namespace Jvedio.ViewModel
 
         public VedioType CurrentVedioType = VedioType.所有;
 
+        private DispatcherTimer SearchTimer = new DispatcherTimer();
+
         public VieModel_Main()
         {
-            QueryCommand = new RelayCommand(Query);
             ResetCommand = new RelayCommand( Reset);
             GenreCommand = new RelayCommand(GetGenreList);
             ActorCommand = new RelayCommand(GetActorList);
@@ -52,6 +53,11 @@ namespace Jvedio.ViewModel
             DispatcherTimer.Interval = TimeSpan.FromSeconds(0.5);
             DispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
 
+            SearchTimer = new DispatcherTimer();
+            SearchTimer.Interval = TimeSpan.FromSeconds(0.3);
+            SearchTimer.Tick += new EventHandler(SearchTimer_Tick);
+
+
             VedioType vedioType = VedioType.所有;
             bool result = Enum.TryParse<VedioType>(Properties.Settings.Default.VedioType, out vedioType);
             VedioType = vedioType;
@@ -65,7 +71,6 @@ namespace Jvedio.ViewModel
 
 
         #region "RelayCommand"
-        public RelayCommand QueryCommand { get; set; }
         public RelayCommand ResetCommand { get; set; }
         public RelayCommand GenreCommand { get; set; }
         public RelayCommand ActorCommand { get; set; }
@@ -531,6 +536,8 @@ namespace Jvedio.ViewModel
 
         private string search = string.Empty;
 
+        private bool IsSearching=false;
+
         public string Search
         {
             get { return search; }
@@ -538,10 +545,13 @@ namespace Jvedio.ViewModel
             {
                 search = value;
                 RaisePropertyChanged();
-                if (search == "")
-                    Reset();
+                if (search == "") Reset();
                 else
-                    Query();
+                {
+                    SearchTimer.Stop();
+                    SearchTimer.Start();
+                }
+                    
             }
         }
 
@@ -601,6 +611,14 @@ namespace Jvedio.ViewModel
 
         #region "Method"
 
+        public async void BeginSearch()
+        {
+            IsSearching = true;
+            bool result = await Query();
+            IsSearching = false;
+            //Console.WriteLine("停止搜索");
+        }
+
         public void LoadDataBaseList()
         {
             DataBases = new ObservableCollection<string>();
@@ -619,6 +637,16 @@ namespace Jvedio.ViewModel
             Main main = App.Current.Windows[0] as Main;
             main.Loadslide();
             DispatcherTimer.Stop();
+        }
+
+        private void SearchTimer_Tick(object sender, EventArgs e)
+        {
+            if (!IsSearching)
+            {
+                Console.WriteLine("开始搜索");
+                BeginSearch();
+            }
+            SearchTimer.Stop();
         }
 
         public void GetSearchCandidate()
@@ -702,8 +730,15 @@ namespace Jvedio.ViewModel
 
                 //0.5s后开始展示预览图
                 if (Properties.Settings.Default.ShowImageMode == "预览图") DispatcherTimer.Start();
+
+                MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
             }
-            MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
+            else
+            {
+                MovieCount = $"本页有 0  个，总计 0 个";
+            }
+
+            
             CurrentMovieListChanged?.Invoke(this, EventArgs.Empty);
 
         }
@@ -856,7 +891,11 @@ namespace Jvedio.ViewModel
                     if (CurrentMovieList.Count == FlowNum) { break; }
                 }
             }
-            
+            else
+            {
+                App.Current.Dispatcher.BeginInvoke((Action)delegate { MovieCount = $"本页有 0 个，总计 0 个"; });
+            }
+
             //0.5s后开始展示预览图
             if (Properties.Settings.Default.ShowImageMode == "预览图") DispatcherTimer.Start();
             FlipOverCompleted?.Invoke(this, EventArgs.Empty);
@@ -1112,14 +1151,21 @@ namespace Jvedio.ViewModel
         /// <summary>
         /// 在数据库中搜索影片
         /// </summary>
-        public async void Query()
+        public async Task<bool>  Query()
         {
-            if (Search == "") return;
+            IsSearching = true;
+            if (Search == "")
+            {
+                return false;
+            }
             //对输入的内容进行格式化
             string FormatSearch = Search.Replace(" ", "").Replace("%", "").Replace("'", "");
             FormatSearch = FormatSearch.ToUpper();
 
-            if (string.IsNullOrEmpty(FormatSearch)) return;
+            if (string.IsNullOrEmpty(FormatSearch))
+            {
+                return false;
+            }
 
             string fanhao = "";
             if (CurrentVedioType == VedioType.欧美)
@@ -1133,26 +1179,47 @@ namespace Jvedio.ViewModel
             
 
 
-            TextType = searchContent;//当前显示内容
+            
             cdb = new DataBase();
-            List<Movie> models = null ;
+            List<Movie> movies = null ;
 
-            if (!cdb.IsTableExist("movie")) { cdb.CloseDB(); return; }
+            if (!cdb.IsTableExist("movie")) { cdb.CloseDB(); return false; }
 
             try {
             if(Properties.Settings.Default.AllSearchType== "识别码")
-                models = await cdb.SelectMoviesById(searchContent);
+                {
+                    TextType = "搜索识别码：" + searchContent;
+                    movies = await cdb.SelectMoviesById(searchContent);
+                }
+                    
             else if (Properties.Settings.Default.AllSearchType == "名称")
-                models = cdb.SelectMoviesBySql($"SELECT * FROM movie where title like '%{searchContent}%'");
+                {
+                    TextType = "搜索名称：" + searchContent;
+                    movies = cdb.SelectMoviesBySql($"SELECT * FROM movie where title like '%{searchContent}%'");
+                }
+                   
             else if (Properties.Settings.Default.AllSearchType == "演员")
-                models = cdb.SelectMoviesBySql($"SELECT * FROM movie where actor like '%{searchContent}%'");
+                {
+                    TextType = "搜索演员：" + searchContent;
+                    movies = cdb.SelectMoviesBySql($"SELECT * FROM movie where actor like '%{searchContent}%'");
+                }
+                    
             }
             finally { cdb.CloseDB(); }
 
 
             MovieList = new ObservableCollection<Movie>();
-            models?.ForEach(arg => { MovieList.Add(arg); });
+            movies?.ForEach(arg => { MovieList.Add(arg); });
             Sort();
+
+            if (movies == null)
+                MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
+            else
+                if(movies.Count==0) MovieCount = $"本页有 {CurrentMovieList.Count} 个，总计 {MovieList.Count} 个";
+
+
+
+            return true;
             }
 
 

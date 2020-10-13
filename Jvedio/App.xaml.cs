@@ -83,6 +83,9 @@ namespace Jvedio
             Console.WriteLine(((Exception)e.ExceptionObject).StackTrace);
             Console.WriteLine(((Exception)e.ExceptionObject).Message);
             Logger.LogE((Exception)e.ExceptionObject);
+
+            MessageBox.Show(((Exception)e.ExceptionObject).Message);
+            MessageBox.Show(((Exception)e.ExceptionObject).StackTrace);
         }
 
         void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

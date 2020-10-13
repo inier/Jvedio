@@ -7,10 +7,9 @@
         <ResourceDictionary >
 
             <ResourceDictionary.MergedDictionaries>
-                
-                
-                
-                <!--Main-->
+
+
+            <!--Main-->
                 <ResourceDictionary Source="XAML/Main/SideRadioButtonStyle.xaml"/>
                 <ResourceDictionary Source="XAML/Main/SideComboBoxStyle.xaml"/>
 

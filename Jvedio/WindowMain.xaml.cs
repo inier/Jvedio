@@ -442,9 +442,7 @@ namespace Jvedio
         }
         private void FlowTimer_Tick(object sender, EventArgs e)
         {
-            //FLowNum++;
             vieModel.FlowNum++;
-            Console.WriteLine(vieModel.FlowNum);
             vieModel.Flow();
             FlowTimer.Stop();
         }
@@ -1272,11 +1270,13 @@ namespace Jvedio
         }
 
 
+        public bool CanSearch = false;
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!Properties.Settings.Default.SearchImmediately & AllSearchTextBox.Text != "") return;
 
+            //文字改变 n 秒后才执行搜索
 
             TextBox SearchTextBox = sender as TextBox;
             Grid grid = SearchTextBox.Parent as Grid;
@@ -2239,8 +2239,11 @@ namespace Jvedio
         }
 
 
-        public async void GetScreenShot(object sender, RoutedEventArgs e)
+        public  void GetScreenShot(object sender, RoutedEventArgs e)
         {
+
+            if (Properties.Settings.Default.EditMode) { return; }
+
             if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) { new PopupWindow(this, "请设置 ffmpeg.exe 的路径 ").Show(); return; }
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
             MenuItem mnu = ((MenuItem)(sender)).Parent as MenuItem;
@@ -2254,15 +2257,17 @@ namespace Jvedio
                 Movie CurrentMovie = GetMovieFromVieModel(TB.Text);
                 if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
                 this.Cursor = Cursors.Wait;
+                cmdTextBox.Text = "";
+                cmdGrid.Visibility = Visibility.Visible;
                 foreach (Movie movie in vieModel.SelectedMovie)
                 {
                     if (!File.Exists(movie.filepath)) continue;
                     bool result = false;
-                    try { result = await ScreenShot(movie); }catch(Exception ex) { Logger.LogF(ex); }
+                    try {  ScreenShot(movie); }catch(Exception ex) { Logger.LogF(ex); }
                    
                     if (result) successNum++;
                 }
-                new PopupWindow(this, $"成功截图 {successNum} / {vieModel.SelectedMovie.Count} 个影片").Show();
+                //new PopupWindow(this, $"成功截图 {successNum} / {vieModel.SelectedMovie.Count} 个影片").Show();
             }
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
             this.Cursor = Cursors.Arrow;
@@ -2270,54 +2275,65 @@ namespace Jvedio
 
 
 
-
-
-        public Task<bool> ScreenShot(Movie movie)
+        public void BeginScreenShot(object o)
         {
-            try
-            {
-            return Task.Run(() =>
-            {
-                if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return false;
-                //获得影片长度数组
-                string ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
-                if (!Directory.Exists(ScreenShotPath)) Directory.CreateDirectory(ScreenShotPath);
+            List<object> list=o as List<object>;
+            string cutoffTime = list[0] as string;
+            string i= list[1] as string;
+            string filePath = list[2] as string;
+            string ScreenShotPath = list[3] as string;
 
-                string[] cutoffArray = MediaParse.GetCutOffArray(movie.filepath);
-                if (cutoffArray != null)
-                {
-                    for (int i = 0; i < cutoffArray.Count(); i++)
-                    {
-                        if (string.IsNullOrEmpty(cutoffArray[i])) continue;
+            if (string.IsNullOrEmpty(cutoffTime)) return;
+            SemaphoreScreenShot.WaitOne();
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.UseShellExecute = false;    //是否使用操作系统shell启动
+            p.StartInfo.RedirectStandardInput = true;//接受来自调用程序的输入信息
+            p.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
+            p.StartInfo.RedirectStandardError = true;//重定向标准错误输出
+            p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+            p.Start();//启动程序
 
-                        System.Diagnostics.Process p = new System.Diagnostics.Process();
-                        p.StartInfo.FileName = "cmd.exe";
-                        p.StartInfo.UseShellExecute = false;    //是否使用操作系统shell启动
-                        p.StartInfo.RedirectStandardInput = true;//接受来自调用程序的输入信息
-                        p.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
-                        p.StartInfo.RedirectStandardError = true;//重定向标准错误输出
-                        p.StartInfo.CreateNoWindow = true;//不显示程序窗口
-                        p.Start();//启动程序
+            string str = $"{Properties.Settings.Default.FFMPEG_Path} -y -threads 1 -ss {cutoffTime} -i \"{filePath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.PadLeft(2, '0')}.png";
+            Console.WriteLine(str);
 
-                        string str = $"{Properties.Settings.Default.FFMPEG_Path} -ss {cutoffArray[i]} -i \"{movie.filepath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.ToString().PadLeft(2, '0')}.jpg";
-                        Console.WriteLine(str);
-                        p.StandardInput.WriteLine(str + "&exit");
-                        p.StandardInput.WriteLine("exit");//结束执行，很重要的
-                        p.StandardInput.AutoFlush = true;
-                        p.WaitForExit();//等待程序执行完退出进程
-                        p.Close();
-                    }
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }).TimeoutAfter(TimeSpan.FromSeconds(Properties.Settings.Default.ScreenShot_TimeOut));
-            }catch(TimeoutException ex)
+            App.Current.Dispatcher.Invoke((Action)delegate { cmdTextBox.AppendText(str + "\n"); });
+
+            p.StandardInput.WriteLine(str + "&exit");
+            //p.StandardInput.WriteLine("exit");
+            p.StandardInput.AutoFlush = true;
+            string output = p.StandardOutput.ReadToEnd();
+            //App.Current.Dispatcher.Invoke((Action)delegate { cmdTextBox.AppendText(output + "\n"); });
+            p.WaitForExit();//等待程序执行完退出进程
+            p.Close();
+            SemaphoreScreenShot.Release();
+        }
+
+
+        public Semaphore SemaphoreScreenShot;
+
+        public void ScreenShot(Movie movie)
+        {
+            // n 个线程截图
+            if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return ;
+
+            int num = Properties.Settings.Default.ScreenShot_ThreadNum;
+            
+            string ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
+            if (!Directory.Exists(ScreenShotPath)) Directory.CreateDirectory(ScreenShotPath);
+
+
+
+            string[] cutoffArray = MediaParse.GetCutOffArray(movie.filepath); //获得影片长度数组
+            SemaphoreScreenShot = new Semaphore(cutoffArray.Count(), cutoffArray.Count());
+
+            for (int i = 0; i < cutoffArray.Count(); i++)
             {
-                return Task.Run(()=> { return false; });
+                List<object> list = new List<object>() { cutoffArray[i], i.ToString(), movie.filepath, ScreenShotPath };
+                Thread threadObject = new Thread(BeginScreenShot);
+                threadObject.Start(list);
             }
+            cmdTextBox.AppendText($"已启用 {cutoffArray.Count()} 个线程， 3-10S 后即可截图成功\n");
         }
 
 
@@ -3079,7 +3095,7 @@ namespace Jvedio
 
         public void StopDownLoad()
         {
-            Console.WriteLine("停止下载");
+            //Console.WriteLine("停止下载");
             DownLoader?.CancelDownload();
             downLoadActress?.CancelDownload();
             this.Dispatcher.BeginInvoke((Action)delegate
@@ -3888,6 +3904,16 @@ namespace Jvedio
             {
                 MessageBox.Show("2");
             }
+        }
+
+        private void cmdTextBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            cmdGrid.Visibility = Visibility.Collapsed;
         }
     }
 

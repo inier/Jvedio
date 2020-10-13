@@ -26,6 +26,7 @@ namespace Jvedio
         public VieModel_StartUp vieModel_StartUp;
         public WindowStartUp()
         {
+
             InitializeComponent();
 
             vieModel_StartUp = new VieModel_StartUp();

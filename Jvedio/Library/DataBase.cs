@@ -68,7 +68,7 @@ namespace Jvedio
         public void CloseDB()
         {
             if (LockDataBase.Contains(dbName)) { LockDataBase.Remove(dbName); }
-            cn.Close();
+            cn?.Close();
         }
 
 

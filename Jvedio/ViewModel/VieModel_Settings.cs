@@ -44,16 +44,21 @@ namespace Jvedio.ViewModel
                 List<string> infos = ReadServerInfoFromConfig(WebSite.Bus);
                 Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBus, Url = Properties.Settings.Default.Bus, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
             }
-            if (Properties.Settings.Default.BusEurope != "") {
+            if (Properties.Settings.Default.BusEurope != "")
+            {
                 List<string> infos = ReadServerInfoFromConfig(WebSite.BusEu);
-                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBusEu, Url = Properties.Settings.Default.BusEurope, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] }); 
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableBusEu, Url = Properties.Settings.Default.BusEurope, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
             }
-            if (Properties.Settings.Default.DB != "") {
+            if (Properties.Settings.Default.DB != "")
+            {
                 List<string> infos = ReadServerInfoFromConfig(WebSite.DB);
-                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDB, Url = Properties.Settings.Default.DB, Cookie = Properties.Settings.Default.DBCookie, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] }); }
-            if (Properties.Settings.Default.Library != "") {
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableDB, Url = Properties.Settings.Default.DB, Cookie = Properties.Settings.Default.DBCookie, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
+            }
+            if (Properties.Settings.Default.Library != "")
+            {
                 List<string> infos = ReadServerInfoFromConfig(WebSite.Library);
-                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableLibrary, Url = Properties.Settings.Default.Library, Available = 0,  ServerTitle = infos[1], LastRefreshDate = infos[2] }); }
+                Servers.Add(new Server() { IsEnable = Properties.Settings.Default.EnableLibrary, Url = Properties.Settings.Default.Library, Available = 0, ServerTitle = infos[1], LastRefreshDate = infos[2] });
+            }
 
             if (Properties.Settings.Default.DMM != "")
             {

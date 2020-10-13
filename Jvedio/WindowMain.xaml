@@ -786,7 +786,17 @@
             </Border.Effect>
         </Border>
 
-        <!--<ResizeGrip Visibility="Collapsed"   HorizontalAlignment="Right" x:Name="WindowResizeGrip" VerticalAlignment="Bottom" Margin="5" />-->
+        <Grid x:Name="cmdGrid" Visibility="Collapsed" Panel.ZIndex="5">
+
+            <TextBox   x:Name="cmdTextBox" Text="" Padding="10" TextWrapping="WrapWithOverflow"  DockPanel.Dock="Top" Background="{DynamicResource BackgroundMenu}" Opacity="0.8" Foreground="{DynamicResource ForegroundSearch}" Height="auto" Margin="50 100" Width="auto" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+            <Border  ToolTip="关闭"   Height="27" Width="27" Margin="20 100" CornerRadius="3" Style="{StaticResource CloseBorderStyle}" MouseLeftButtonUp="Border_MouseLeftButtonUp" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
+            </Border>
+        </Grid>
+
+
+
+
         <Grid x:Name="Grid" Visibility="Visible"    Background="Transparent"  Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
@@ -1288,6 +1298,12 @@
                             </Popup>
 
                         </Grid>
+
+                        
+                        <!--cmd命令行-->
+
+                       
+
 
 
                         <!--进度条-->

@@ -26,13 +26,9 @@ namespace Jvedio
             {
                 StreamWriter sr = new StreamWriter(filepath, true);
                 string content ;
-                content = "\n-----【" + DateTime.Now.ToString() + "】-----";
-                content += $"\nMessage=>{ e.Message}";
-                content += $"\nStackTrace=>\n{ GetAllFootprints(e)}";
-                //content += $"\nInnerException=>{ e.InnerException}";
-                //content += $"\nSource=>{ e.Source}";
-                //content += $"\nTargetSite=>{ e.TargetSite}";
-                //content += $"\nData=>{ e.Data}\n";
+                content =Environment.NewLine + "-----【" + DateTime.Now.ToString() + "】-----";
+                content += Environment.NewLine + $"Message=>{ e.Message}";
+                content += Environment.NewLine + $"StackTrace=>{Environment.NewLine }{ GetAllFootprints(e)}";
                 try { sr.Write(content); } catch { }
                 sr.Close();
             }
@@ -50,9 +46,9 @@ namespace Jvedio
             {
                 StreamWriter sr = new StreamWriter(filepath, true);
                 string content;
-                content = "\n-----【" + DateTime.Now.ToString() + "】-----";
-                content += $"\nMessage=>{ e.Message}";
-                content += $"\nStackTrace=>\n{ GetAllFootprints(e)}";
+                content = Environment.NewLine + "-----【" + DateTime.Now.ToString() + "】-----";
+                content += $"{Environment.NewLine }Message=>{ e.Message}";
+                content += $"{Environment.NewLine }StackTrace=>{Environment.NewLine }{ GetAllFootprints(e)}";
                 try { sr.Write(content); } catch { }
                 sr.Close();
             }
@@ -69,7 +65,7 @@ namespace Jvedio
             {
                 StreamWriter sr = new StreamWriter(filepath, true);
                 string content;
-                content = "\n【" + DateTime.Now.ToString() + $"】=>{NetWorkStatus}";
+                content = Environment.NewLine +"【" + DateTime.Now.ToString() + $"】=>{NetWorkStatus}";
                 try { sr.Write(content); } catch { }
                 sr.Close();
             }
@@ -89,13 +85,9 @@ namespace Jvedio
                 StreamWriter sr = new StreamWriter(filepath, true);
                 string content;
 
-                content = "\n-----【" + DateTime.Now.ToString() + "】-----";
-                content += $"\nMessage=>{ e.Message}";
-                content += $"\nStackTrace=>\n{ GetAllFootprints(e)}";
-                //content += $"\nInnerException=>{ e.InnerException}";
-                //content += $"\nSource=>{ e.Source}";
-                //content += $"\nTargetSite=>{ e.TargetSite}";
-                //content += $"\nData=>{ e.Data}\n";
+                content = Environment.NewLine+"-----【" + DateTime.Now.ToString() + "】-----";
+                content += $"{Environment.NewLine}Message=>{ e.Message}";
+                content += $"{Environment.NewLine}StackTrace=>{Environment.NewLine}{ GetAllFootprints(e)}";
                 try { sr.Write(content); } catch { }
                 sr.Close();
             }
@@ -113,7 +105,7 @@ namespace Jvedio
                     continue;
                 traceString.Append($"    文件: {frame.GetFileName()}" );
                 traceString.Append($" 方法: {frame.GetMethod().Name}");
-                traceString.Append($" 行数: {frame.GetFileLineNumber()}\n");
+                traceString.Append($" 行数: {frame.GetFileLineNumber()}{Environment.NewLine}");
             }
 
             return traceString.ToString();

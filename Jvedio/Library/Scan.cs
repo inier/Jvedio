@@ -287,8 +287,8 @@ namespace Jvedio
         /// <returns></returns>
         public static double DistinctMovieAndInsert(List<string> MoviePaths , CancellationToken ct, bool IsEurope = false)
         {
-            Logger.LogScanInfo("\n-----【" + DateTime.Now.ToString() + "】-----");
-            Logger.LogScanInfo($"\n扫描出 => {MoviePaths.Count}  个 \n");
+            Logger.LogScanInfo(Environment.NewLine +  "-----【" + DateTime.Now.ToString() + "】-----");
+            Logger.LogScanInfo(Environment.NewLine +  $"扫描出 => {MoviePaths.Count}  个 \n");
 
             DataBase cdb = new DataBase();
 
@@ -319,7 +319,7 @@ namespace Jvedio
                     else
                     {
                         //写日志
-                        c1 += "   " + item + "\n";
+                        c1 += "   " + item + Environment.NewLine ;
                         unidentifynum++;
                     }
                 }
@@ -362,13 +362,13 @@ namespace Jvedio
                     }
                     else
                     {
-                        c2 += $"   识别码为：{kvp.Key}\n";
+                        c2 += $"   识别码为：{kvp.Key}" + Environment.NewLine ;
                         (string maxfilepath, List<string> Excludelsist) = ExcludeMaximumSize(kvp.Value);
                         removelist.AddRange(Excludelsist);
-                        c2 += $"      导入的：{maxfilepath}，文件大小：{new FileInfo(maxfilepath).Length}\n";
+                        c2 += $"      导入的：{maxfilepath}，文件大小：{new FileInfo(maxfilepath).Length}" + Environment.NewLine;
                         Excludelsist.ForEach(arg =>
                         {
-                            c2 += $"      未导入：{arg}，文件大小：{new FileInfo(arg).Length}\n";
+                            c2 += $"      未导入：{arg}，文件大小：{new FileInfo(arg).Length}" + Environment.NewLine;
                         });
                     }
 
@@ -378,7 +378,7 @@ namespace Jvedio
 
                 }
             }
-            Logger.LogScanInfo($"\n【重复的视频：{removelist.Count + subsectionlist.Count}个】\n" + c2);
+            Logger.LogScanInfo($"\n【重复的视频：{removelist.Count + subsectionlist.Count}个】" + Environment.NewLine + c2);
             List<string> insertList = r1.Except(removelist).ToList();
 
             Console.WriteLine("removelist:" + removelist.Count);
@@ -471,7 +471,7 @@ namespace Jvedio
                 cdb.InsertScanMovie(movie); totalinsertnum += 1;
             }
             cdb.CloseDB();
-            Logger.LogScanInfo($"\n总计导入 => {totalinsertnum}个\n");
+            Logger.LogScanInfo(Environment.NewLine + $"总计导入 => {totalinsertnum}个" + Environment.NewLine);
 
 
             //从 主数据库中 复制信息

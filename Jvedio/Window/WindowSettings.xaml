@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Jvedio"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:Jvedio.Properties"
-        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+        xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
         x:Class="Jvedio.Settings"
         mc:Ignorable="d"
         Title="设置" 
@@ -558,7 +558,7 @@
                 <RadioButton Click="LabelMouseUp" Content="扫描"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
                 <RadioButton Click="LabelMouseUp" Content="同步信息"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
                 <RadioButton Click="LabelMouseUp" Content="显示"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
-                <RadioButton Click="LabelMouseUp" Content="代理"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
+                <RadioButton Visibility="Collapsed" Click="LabelMouseUp" Content="代理"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
                 <RadioButton Click="LabelMouseUp" Content="翻译"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
                 <RadioButton Click="LabelMouseUp" Content="人工智能"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
                 <RadioButton Click="LabelMouseUp" Content="视频处理"  Style="{StaticResource RadioButtonStyleSide}" Margin="5 5 5 0"/>
@@ -571,7 +571,7 @@
 
 
 
-                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Visible" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
+                    <StackPanel Margin="20 5" x:Name="BasicPanel" Background="Transparent" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="auto">
                         <WrapPanel Orientation="Horizontal" Margin="5 20">
 
 
@@ -710,7 +710,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Collapsed">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource TextBlockTitle}" Text="服务器源" HorizontalAlignment="Left"/>
@@ -722,7 +722,7 @@
 
 
 
-                        <DataGrid Background="{DynamicResource BackgroundSide}" MinHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"   PreviewMouseLeftButtonDown="Previe_Mouse_LBtnDown"  x:Name="ServersDataGrid" VerticalScrollBarVisibility="Disabled"   Foreground="{DynamicResource ForegroundSearch}" Margin="20 5" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"  BorderThickness="0" CanUserResizeRows="False" CanUserResizeColumns="True"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="True" CanUserSortColumns="True"   DataContextChanged="ServersDataGrid_DataContextChanged" Style="{DynamicResource DataGridStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}"  RowHeaderStyle="{DynamicResource DataGridRowHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" DragIndicatorStyle="{DynamicResource DataGridColumnHeaderStyle2}" DropLocationIndicatorStyle="{DynamicResource DataGridStyle2}" ItemsPanel="{DynamicResource ItemsPanelTemplate1}">
+                        <DataGrid Visibility="Visible" Background="{DynamicResource BackgroundSide}" MinHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Auto"   PreviewMouseLeftButtonDown="Previe_Mouse_LBtnDown"  x:Name="ServersDataGrid" VerticalScrollBarVisibility="Disabled"   Foreground="{DynamicResource ForegroundSearch}" Margin="20 5" HorizontalGridLinesBrush="Transparent" VerticalGridLinesBrush="Transparent"  BorderThickness="0" CanUserResizeRows="False" CanUserResizeColumns="True"  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="True" CanUserSortColumns="True"   DataContextChanged="ServersDataGrid_DataContextChanged" Style="{DynamicResource DataGridStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" CellStyle="{DynamicResource DataGridCellStyle1}"  RowHeaderStyle="{DynamicResource DataGridRowHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" DragIndicatorStyle="{DynamicResource DataGridColumnHeaderStyle2}" DropLocationIndicatorStyle="{DynamicResource DataGridStyle2}" ItemsPanel="{DynamicResource ItemsPanelTemplate1}">
                             
                             
                             
@@ -784,8 +784,8 @@
                                 </DataGridTemplateColumn>
                             </DataGrid.Columns>
 
-                            <!--<local:Server  IsEnable="True" Url="https://www.fanbus.cam/" Cookie="123" Available="0" ServerTitle="javbus" LastRefreshDate="2020-09-04" />
-                            <local:Server IsEnable="False" Url="https://javdb5.com/"  Cookie="123"  Available="0"  ServerTitle="javdb" LastRefreshDate="2020-10-05" />-->
+                            <!--<local:Server  IsEnable="True" Url="https://www.123.cam/" Cookie="123" Available="0" ServerTitle="123" LastRefreshDate="2020-09-04" />
+                            <local:Server IsEnable="False" Url="https://123.com/"  Cookie="123"  Available="0"  ServerTitle="123" LastRefreshDate="2020-10-05" />-->
 
 
 
@@ -1065,7 +1065,7 @@
 
                         </StackPanel>
 
-                        <StackPanel  Orientation="Horizontal"  IsEnabled="False">
+                        <StackPanel  Orientation="Horizontal"  IsEnabled="False" Visibility="Collapsed">
                             <CheckBox IsChecked="{Binding EnableDMM, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 10" Content="换脸技术" />
                             <TextBox IsEnabled="False" Margin="5" Width="200"  Style="{StaticResource BaseTextBox}"   Text="Default"  />
                             <Button  Click="Test"  Height="40" Width="80" Content="测试"  Style="{StaticResource ButtonStyle}"/>
@@ -1082,7 +1082,7 @@
                             <Button Style="{StaticResource ButtonStyleFill}" Content="选择文件夹" Height="25" Width="100" Click="SetFFMPEGPath" Margin="5 2"/>
                         </WrapPanel>
                         <WrapPanel Orientation="Horizontal" Margin="20 10">
-                            <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="影片数目"/>
+                            <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="截取的图片总数"/>
                             <Slider x:Name="ScreenshotNumSlider" Value="{Binding ScreenShotNum, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="5" Maximum="30" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
 
 
@@ -1092,7 +1092,7 @@
 
 
                         </WrapPanel>
-                        <WrapPanel Orientation="Horizontal" Margin="20 10">
+                        <WrapPanel Visibility="Collapsed" Orientation="Horizontal" Margin="20 10">
                             <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="线程数量"/>
                             <Slider x:Name="ThreadNumSlider" Value="{Binding ScreenShot_ThreadNum, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="1" Maximum="10" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
 
@@ -1103,7 +1103,7 @@
 
 
                         </WrapPanel>
-                        <WrapPanel Orientation="Horizontal" Margin="20 10">
+                        <WrapPanel Visibility="Collapsed" Orientation="Horizontal" Margin="20 10">
                             <TextBlock  Foreground="{DynamicResource ForegroundGlobal}" Height="auto" VerticalAlignment="Center" Style="{StaticResource TextBlockTitle}" FontSize="15"  Margin="20 2" Text="截图超时"/>
                             <Slider x:Name="ScreenShotTimeoutSlider" Value="{Binding ScreenShot_TimeOut, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="2" Maximum="60" SmallChange="1" LargeChange="2" TickFrequency="1" Width="100" VerticalAlignment="Center"/>
 
