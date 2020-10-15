@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Diagnostics;
 using static Jvedio.StaticVariable;
 using System.Windows.Input;
+using System.Drawing;
 
 namespace Jvedio.ViewModel
 {
@@ -291,11 +292,41 @@ namespace Jvedio.ViewModel
         }
 
 
+        public ObservableCollection<string> _FilePathClassification;
 
-        public ObservableCollection<string> _SearchCandidate;
+
+        public ObservableCollection<string> FilePathClassification
+        {
+            get { return _FilePathClassification; }
+            set
+            {
+                _FilePathClassification = value;
+                RaisePropertyChanged();
+
+            }
+        }
 
 
-        public ObservableCollection<string> SearchCandidate
+        public ObservableCollection<string> _CurrentSearchCandidate;
+
+
+        public ObservableCollection<string> CurrentSearchCandidate
+        {
+            get { return _CurrentSearchCandidate; }
+            set
+            {
+                _CurrentSearchCandidate = value;
+                RaisePropertyChanged();
+
+            }
+        }
+
+
+
+        public ObservableCollection<Movie> _SearchCandidate;
+
+
+        public ObservableCollection<Movie> SearchCandidate
         {
             get { return _SearchCandidate; }
             set
@@ -548,6 +579,7 @@ namespace Jvedio.ViewModel
                 if (search == "") Reset();
                 else
                 {
+                    
                     SearchTimer.Stop();
                     SearchTimer.Start();
                 }
@@ -616,6 +648,7 @@ namespace Jvedio.ViewModel
             IsSearching = true;
             bool result = await Query();
             IsSearching = false;
+            GetSearchCandidate(search);
             //Console.WriteLine("停止搜索");
         }
 
@@ -643,41 +676,51 @@ namespace Jvedio.ViewModel
         {
             if (!IsSearching)
             {
-                Console.WriteLine("开始搜索");
+                //Console.WriteLine("开始搜索");
                 BeginSearch();
             }
             SearchTimer.Stop();
         }
 
-        public void GetSearchCandidate()
+        public void GetSearchCandidate(string Search)
         {
-            SearchCandidate = new ObservableCollection<string>();
-            List<Movie> model = new List<Movie>();
-            if (SearchType == MySearchType.名称)
+            CurrentSearchCandidate = new ObservableCollection<string>();
+            if (Search == "") return;
+            List<Movie> movies = new List<Movie>();
+            if (AllSearchType == MySearchType.名称)
             {
-                model = MovieList.Where(m => m.title.ToUpper().Contains(Search.ToUpper())).ToList();
-                model.ForEach(arg => { SearchCandidate.Add(arg.title); });
+                movies = MovieList.Where(m => m.title.ToUpper().Contains(Search.ToUpper())).ToList();
+                foreach(Movie movie in movies)
+                {
+                    CurrentSearchCandidate.Add(movie.title);
+                    if (CurrentSearchCandidate.Count >= Properties.Settings.Default.SearchCandidateMaxCount) break;
+                }
             }
-            else if (SearchType == MySearchType.演员)
+            else if (AllSearchType == MySearchType.演员)
             {
-                model = MovieList.Where(m => m.actor.ToUpper().Contains(Search.ToUpper())).ToList();
-                List<string> actors = new List<string>();
-                model.ForEach(arg => {
-                    string[] actor = arg.actor.Split(new char[]{' ','/'});
+                movies = MovieList.Where(m => m.actor.ToUpper().Contains(Search.ToUpper())).ToList();
+                foreach (Movie movie in movies)
+                {
+                    string[] actor = movie.actor.Split(new char[] { ' ', '/' });
                     foreach (var item in actor)
                     {
                         if (!string.IsNullOrEmpty(item) & item.IndexOf(' ') < 0)
                         {
-                            if (!actors.Contains(item) & item.ToUpper().IndexOf(Search.ToUpper()) >= 0) actors.Add(item);
+                            if (!CurrentSearchCandidate.Contains(item) & item.ToUpper().IndexOf(Search.ToUpper()) >= 0) CurrentSearchCandidate.Add(item);
+                            if (CurrentSearchCandidate.Count >= Properties.Settings.Default.SearchCandidateMaxCount) break;
                         }
                     }
-                });
-                actors.ForEach(arg => { SearchCandidate.Add(arg); });
+                    if (CurrentSearchCandidate.Count >= Properties.Settings.Default.SearchCandidateMaxCount) break;
+                }
             }
-            else if (SearchType == MySearchType.识别码)
+            else if (AllSearchType == MySearchType.识别码)
             {
-                model = MovieList.Where(m => m.id.ToUpper().Contains(Search.ToUpper())).ToList();
-                model.ForEach(arg => { SearchCandidate.Add(arg.id); });
+                movies = MovieList.Where(m => m.id.ToUpper().Contains(Search.ToUpper())).ToList();
+                foreach (Movie movie in movies)
+                {
+                    CurrentSearchCandidate.Add(movie.id);
+                    if (CurrentSearchCandidate.Count >= Properties.Settings.Default.SearchCandidateMaxCount) break;
+                }
             }
 
 
@@ -778,9 +821,14 @@ namespace Jvedio.ViewModel
                 {
                     if (MovieList[i].id == item)
                     {
-                        MovieList[i] = null;
-                        MovieList[i] = movie;
-                        break;
+                        try
+                        {
+                            MovieList[i] = null;
+                            MovieList[i] = movie;
+                            break;
+                        }
+                        catch(ArgumentNullException ex) { continue; }
+
                     }
                 }
 
@@ -795,6 +843,9 @@ namespace Jvedio.ViewModel
                     }
                 }
             }
+
+            //0.5s后开始展示预览图
+            if (Properties.Settings.Default.ShowImageMode == "预览图") DispatcherTimer.Start();
 
 
             dataBase.CloseDB();
@@ -983,8 +1034,28 @@ namespace Jvedio.ViewModel
             {
                 cdb.CloseDB();
                 MovieList = new ObservableCollection<Movie>();
-                models?.ForEach(arg => { MovieList.Add(arg); });
-                Sort();
+
+                App.Current.Dispatcher.Invoke((Action)delegate {
+                    models?.ForEach(arg => { MovieList.Add(arg); });
+                    Sort();
+                });
+            });
+        }
+
+        public async void GetSamePathMovie(string path)
+        {
+            TextType = path;
+            cdb = new DataBase();
+            List<Movie> models = null;
+            await Task.Run(() => { models = cdb.SelectMoviesBySql($"SELECT * from movie WHERE filepath like '%{path}%'"); });
+            await Task.Run(() =>
+            {
+                cdb.CloseDB();
+                MovieList = new ObservableCollection<Movie>();
+                App.Current.Dispatcher.Invoke((Action)delegate {
+                    models?.ForEach(arg => { MovieList.Add(arg); });
+                    Sort();
+                });
             });
         }
 
@@ -999,8 +1070,11 @@ namespace Jvedio.ViewModel
             {
                 cdb.CloseDB();
                 MovieList = new ObservableCollection<Movie>();
-                models?.ForEach(arg => { MovieList.Add(arg); });
-                Sort();
+                App.Current.Dispatcher.Invoke((Action)delegate {
+                    models?.ForEach(arg => { MovieList.Add(arg); });
+                    Sort();
+                });
+                
             });
         }
 
@@ -1141,8 +1215,11 @@ namespace Jvedio.ViewModel
             await Task.Run(() => {
                 cdb.CloseDB();
                 MovieList = new ObservableCollection<Movie>();
-                models?.ForEach(arg => { MovieList.Add(arg); });
-                Sort();
+                App.Current.Dispatcher.Invoke((Action)delegate {
+                    models?.ForEach(arg => { MovieList.Add(arg); });
+                    Sort();
+                });
+
             });
         }
 
@@ -1238,15 +1315,15 @@ namespace Jvedio.ViewModel
         public async  void Reset()
         {
                 TextType = "所有视频";
-                List<Movie> models = null;
+                List<Movie> movies = null;
                cdb = new DataBase();
                 if (!cdb.IsTableExist("movie")) { cdb.CloseDB(); return; }
-                models =  await cdb.SelectMoviesById("");
+            movies =  await cdb.SelectMoviesById("");
                 cdb.CloseDB();
-                if(models.Count==0) MovieCount = $"本页有 0 个，总计 0 个";
-                if (models != null && MovieList != null && models.Count == MovieList.ToList().Count  ) { return; }
+                if(movies.Count==0) MovieCount = $"本页有 0 个，总计 0 个";
+                if (movies != null && MovieList != null && movies.Count == MovieList.ToList().Count  ) { return; }
                     MovieList = new ObservableCollection<Movie>();
-                    models?.ForEach(arg => { MovieList.Add(arg); });
+            movies?.ForEach(arg => { MovieList.Add(arg); });
                     Sort();
             cdb.CloseDB();
 
@@ -1258,10 +1335,42 @@ namespace Jvedio.ViewModel
             VedioTypeBCount = await dataBase.SelectCountBySql("where vediotype=2");
             VedioTypeCCount = await dataBase.SelectCountBySql("where vediotype=3");
 
+
+
+
+
             string date1 = DateTime.Now.AddDays(-1 * Properties.Settings.Default.RecentDays).Date.ToString("yyyy-MM-dd");
             string date2 = DateTime.Now.ToString("yyyy-MM-dd");
             RecentVedioCount  = await dataBase.SelectCountBySql($"WHERE scandate BETWEEN '{date1}' AND '{date2}'");
             dataBase.CloseDB();
+        }
+
+        public void LoadFilePathClassfication()
+        {
+            //加载路经筛选
+            FilePathClassification = new ObservableCollection<string>();
+            foreach (Movie movie in MovieList)
+            {
+                string path = GetPathByDepth(movie.filepath, Properties.Settings.Default.FilePathClassificationMaxDepth);
+                if (!FilePathClassification.Contains(path)) FilePathClassification.Add(path);
+                if (FilePathClassification.Count > Properties.Settings.Default.FilePathClassificationMaxCount) break;
+            }
+        }
+
+        private string GetPathByDepth(string path,int depth)
+        {
+            
+            string[] paths = path.Split('\\');
+            string result = "";
+            for (int i = 0; i < paths.Length-1; i++)
+            {
+                result+= paths[i] + "\\";
+                if (i >= depth-1) break;
+            }
+            return result;
+
+
+
         }
 
         public void Sort(bool IsSort=true)

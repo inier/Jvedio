@@ -16,11 +16,52 @@ using System.Windows.Media.Imaging;
 using static Jvedio.StaticVariable;
 using System.Data.SqlClient;
 using System.Collections.Specialized;
+using System.IO.Compression;
+using System.Windows.Controls.Primitives;
 
 namespace Jvedio
 {
     public static class StaticClass
     {
+        public static void InitJav321IDConverter()
+        {
+            //读取数据文件
+            var jav321 = Resource_IDData.jav321;//JavGo
+            Stream jav321_stream = new MemoryStream(jav321);
+            string str = "";
+            using (var zip = new ZipArchive(jav321_stream, ZipArchiveMode.Read))
+            {
+                ZipArchiveEntry zipArchiveEntry = zip.Entries[0];
+                using (StreamReader sr = new StreamReader(zipArchiveEntry.Open()))
+                {
+                    str = sr.ReadToEnd();
+                }
+
+            }
+            Jav321IDDict = new Dictionary<string, string>();
+            str = str.Replace("\r\n", "\n").ToUpper();
+            foreach (var item in str.Split('\n'))
+            {
+                
+                if (item.IndexOf(",") > 0)
+                {
+                    if (Jav321IDDict.ContainsKey(item.Split(',')[1]))
+                    {
+                        Jav321IDDict[item.Split(',')[1]] = item.Split(',')[0];
+                    }
+                    else
+                    {
+                        Jav321IDDict.Add(item.Split(',')[1], item.Split(',')[0]);
+                    }
+                    
+                }
+            }
+
+
+        }
+
+
+
 
         public static void SaveToNFO(DetailMovie vedio, string NfoPath)
         {

@@ -1894,5 +1894,53 @@ namespace Jvedio.Properties {
                 this["EditWindow_ShowMore"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int SearchCandidateMaxCount {
+            get {
+                return ((int)(this["SearchCandidateMaxCount"]));
+            }
+            set {
+                this["SearchCandidateMaxCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int FilePathClassificationMaxDepth {
+            get {
+                return ((int)(this["FilePathClassificationMaxDepth"]));
+            }
+            set {
+                this["FilePathClassificationMaxDepth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int FilePathClassificationMaxCount {
+            get {
+                return ((int)(this["FilePathClassificationMaxCount"]));
+            }
+            set {
+                this["FilePathClassificationMaxCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ScreenShotToExtraPicPath {
+            get {
+                return ((bool)(this["ScreenShotToExtraPicPath"]));
+            }
+            set {
+                this["ScreenShotToExtraPicPath"] = value;
+            }
+        }
     }
 }

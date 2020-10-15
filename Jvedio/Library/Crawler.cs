@@ -228,7 +228,6 @@ namespace Jvedio
 
     }
 
-
     public class LibraryCrawler : Crawler
     {
         public LibraryCrawler(string Id) : base(Id)
@@ -285,6 +284,63 @@ namespace Jvedio
             {
                 Info.Add("sourceurl", Url);
                 Info.Add("source", "javlibrary");
+                Task.Delay(TASKDELAY_MEDIUM).Wait();
+            }
+            return Info;
+        }
+
+    }
+
+
+
+    public class Jav321Crawler : Crawler
+    {
+        public Jav321Crawler(string Id) : base(Id)
+        {
+            Url = RootUrl.Jav321 + $"video/{ID.ToJav321()}";
+            webSite = WebSite.Jav321;
+        }
+
+
+
+        public override async Task<bool> Crawl()
+        {
+            (Content, StatusCode) = await Net.Http(Url, Cookie: Cookies);
+            if (StatusCode == 200 & Content != "") {
+
+
+                Dictionary<string, string> Info = GetInfo();
+
+
+
+
+            }
+            
+
+
+
+            if (MovieCode != "")
+            {
+                //解析
+                Url = RootUrl.Library + $"?v={MovieCode}";
+                return await base.Crawl();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        protected override Dictionary<string, string> GetInfo()
+        {
+            Dictionary<string, string> Info = new Dictionary<string, string>();
+            Info = new Jav321Parse(ID, Content).Parse();
+            if (Info.Count <= 0) { Console.WriteLine($"解析失败：{Url}"); resultMessage = "Parse Fail=>Library"; Logger.LogN($"URL={Url},Message-{resultMessage}"); }
+            else
+            {
+                Info.Add("sourceurl", Url);
+                Info.Add("source", "jav321");
                 Task.Delay(TASKDELAY_MEDIUM).Wait();
             }
             return Info;

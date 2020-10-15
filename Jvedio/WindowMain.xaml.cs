@@ -26,6 +26,8 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
+using System.IO.Compression;
+using System.Reflection;
 
 namespace Jvedio
 {
@@ -960,6 +962,18 @@ namespace Jvedio
             HideMargin();
 
             SideGridColumn.Width = new GridLength(Properties.Settings.Default.SideGridWidth);
+
+            if (Properties.Settings.Default.ShowImageMode == "列表模式")
+            {
+                MovieMainGrid.Visibility = Visibility.Hidden;
+                DetailGrid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MovieMainGrid.Visibility = Visibility.Visible;
+                DetailGrid.Visibility = Visibility.Hidden;
+            }
+
         }
 
 
@@ -1118,6 +1132,9 @@ namespace Jvedio
 
         private void MoveWindow(object sender, MouseEventArgs e)
         {
+            AllSearchPopup.IsOpen = false;
+
+
             //移动窗口
             if (e.LeftButton == MouseButtonState.Pressed && WinState == JvedioWindowState.Normal)
             {
@@ -1223,21 +1240,14 @@ namespace Jvedio
             vieModel.Search = SearchTextBox.Text;
         }
 
-        private void scrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta / 4);
-            e.Handled = true;
-        }
 
 
 
 
         private void SetSearchValue(object sender, MouseButtonEventArgs e)
         {
-            if (vieModel.SearchAll)
-                AllSearchTextBox.Text = ((Label)sender).Content.ToString();
-            //else
-            //    SearchTextBox.Text = ((Label)sender).Content.ToString();
+            AllSearchTextBox.Text = ((TextBlock)sender).Text;
+            AllSearchTextBox.Select(AllSearchTextBox.Text.Length, 0);
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -1262,6 +1272,7 @@ namespace Jvedio
         {
             //if ( vieModel.SearchAll) AllSearchPopup.IsOpen = false;
             //if (SearchCandidate != null & !vieModel.SearchAll) SearchCandidate.Visibility = Visibility.Hidden;
+            AllSearchPopup.IsOpen = false;
 
             DoubleAnimation doubleAnimation = new DoubleAnimation(300, 200, new Duration(TimeSpan.FromMilliseconds(200)));
             AllSearchGrid.BeginAnimation(FrameworkElement.WidthProperty, doubleAnimation);
@@ -1275,34 +1286,94 @@ namespace Jvedio
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!Properties.Settings.Default.SearchImmediately & AllSearchTextBox.Text != "") return;
-
-            //文字改变 n 秒后才执行搜索
-
             TextBox SearchTextBox = sender as TextBox;
             Grid grid = SearchTextBox.Parent as Grid;
-            if (SearchTextBox != null)
-            {
-                string searchtext = SearchTextBox.Text;
-                if (grid.Name == "AllSearchGrid") { vieModel.SearchAll = true; } else { vieModel.SearchAll = false; }
-                vieModel.Search = searchtext;
-            }
+            string searchtext = SearchTextBox.Text;
+            //文字改变 n 秒后才执行搜索
+            AllSearchPopup.IsOpen = true;
+            vieModel?.GetSearchCandidate(searchtext);
+
+            if (grid.Name == "AllSearchGrid") { vieModel.SearchAll = true; } else { vieModel.SearchAll = false; }
+            vieModel.Search = searchtext;
+            
         }
+
+
+        private int SearchSelectIdex=-1;
 
         private void SearchTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
                 TextBox SearchTextBox = sender as TextBox;
-                Grid grid = SearchTextBox.Parent as Grid;
-                if (SearchTextBox != null)
+                if (SearchSelectIdex != -1)
                 {
-                    string searchtext = SearchTextBox.Text;
-                    vieModel.Search = searchtext;
+                    ContentPresenter c = (ContentPresenter)SearchItemsControl.ItemContainerGenerator.ContainerFromItem(SearchItemsControl.Items[SearchSelectIdex]);
+                    StackPanel stackPanel = FindElementByName<StackPanel>(c, "SearchStackPanel");
+                    if (stackPanel != null)
+                    {
+                        TextBlock textBlock = stackPanel.Children[0] as TextBlock;
+                        SearchTextBox.Text= textBlock.Text;
+                        SearchTextBox.Select(textBlock.Text.Length, 0);
+                        SearchSelectIdex = -1;
+                    }
                 }
+                else
+                {
+                    
+                    Grid grid = SearchTextBox.Parent as Grid;
+                    if (SearchTextBox != null)
+                    {
+                        string searchtext = SearchTextBox.Text;
+                        vieModel.Search = searchtext;
+                    }
+                }
+                AllSearchPopup.IsOpen = false;
+
+
+            }else if (e.Key == Key.Down)
+            {
+                int count = vieModel.CurrentSearchCandidate.Count;
+
+                SearchSelectIdex += 1;
+                if (SearchSelectIdex >= count) SearchSelectIdex = 0;
+                SetSearchSelect();
+
+            }
+            else if (e.Key == Key.Up)
+            {
+                int count = vieModel.CurrentSearchCandidate.Count;
+                SearchSelectIdex -= 1;
+                if (SearchSelectIdex <0) SearchSelectIdex = count-1;
+                SetSearchSelect();
+
+
+            }else if (e.Key == Key.Escape)
+            {
+                AllSearchPopup.IsOpen = false;
+            }else if (e.Key == Key.Delete)
+            {
+                AllSearchTextBox.Text = "";
             }
         }
 
+        private void SetSearchSelect()
+        {
+            for (int i = 0; i < SearchItemsControl.Items.Count; i++)
+            {
+                ContentPresenter c = (ContentPresenter)SearchItemsControl.ItemContainerGenerator.ContainerFromItem(SearchItemsControl.Items[i]);
+                StackPanel stackPanel = FindElementByName<StackPanel>(c, "SearchStackPanel");
+                if (stackPanel != null)
+                {
+                    TextBlock textBlock = stackPanel.Children[0] as TextBlock;
+                    if(i==SearchSelectIdex)
+                        textBlock.Background = (SolidColorBrush)Application.Current.Resources["BackgroundMain"];
+                    else
+                        textBlock.Background =new SolidColorBrush(Colors.Transparent);
+                }
+            }
 
+        }
 
 
         private void ShowMovieGrid(object sender, RoutedEventArgs e)
@@ -1324,7 +1395,6 @@ namespace Jvedio
                 Grid_Label.Visibility = Visibility.Hidden;
             this.vieModel.ClickGridType = 0;
             ActorToolsStackPanel.Visibility = Visibility.Hidden;
-
         }
 
         private void ShowActorGrid(object sender, RoutedEventArgs e)
@@ -1859,15 +1929,9 @@ namespace Jvedio
         {
             RadioButton radioButton = sender as RadioButton;
             Properties.Settings.Default.AllSearchType = radioButton.Content.ToString();
-            //vieModel?.GetAllSearchCandidate();
+            vieModel?.GetSearchCandidate(AllSearchTextBox.Text);
         }
 
-        public void SaveSearchType(object sender, RoutedEventArgs e)
-        {
-            RadioButton radioButton = sender as RadioButton;
-            Properties.Settings.Default.SearchType = radioButton.Content.ToString();
-            vieModel?.GetSearchCandidate();
-        }
 
         public void SaveShowViewMode(object sender, RoutedEventArgs e)
         {
@@ -1879,11 +1943,26 @@ namespace Jvedio
 
         public void SaveShowImageMode(object sender, RoutedEventArgs e)
         {
-            vieModel.FlowNum = 0;
             RadioButton radioButton = sender as RadioButton;
-            Properties.Settings.Default.ShowImageMode = radioButton.Content.ToString();
+            string mode = radioButton.Content.ToString();
+            Properties.Settings.Default.ShowImageMode = mode;
             Properties.Settings.Default.Save();
-            vieModel.FlipOver();
+
+            if (mode=="列表模式")
+            {
+                MovieMainGrid.Visibility = Visibility.Hidden;
+                DetailGrid.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MovieMainGrid.Visibility = Visibility.Visible;
+                DetailGrid.Visibility = Visibility.Hidden;
+                vieModel.FlowNum = 0;
+                vieModel.FlipOver();
+            }
+
+
+
         }
 
 
@@ -2294,7 +2373,7 @@ namespace Jvedio
             p.StartInfo.CreateNoWindow = true;//不显示程序窗口
             p.Start();//启动程序
 
-            string str = $"{Properties.Settings.Default.FFMPEG_Path} -y -threads 1 -ss {cutoffTime} -i \"{filePath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.PadLeft(2, '0')}.png";
+            string str = $"{Properties.Settings.Default.FFMPEG_Path} -y -threads 1 -ss {cutoffTime} -i \"{filePath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.PadLeft(2, '0')}.jpg";
             Console.WriteLine(str);
 
             App.Current.Dispatcher.Invoke((Action)delegate { cmdTextBox.AppendText(str + "\n"); });
@@ -2318,8 +2397,12 @@ namespace Jvedio
             if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return ;
 
             int num = Properties.Settings.Default.ScreenShot_ThreadNum;
-            
-            string ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
+            string ScreenShotPath = "";
+            if (Properties.Settings.Default.ScreenShotToExtraPicPath)
+                ScreenShotPath = BasePicPath + "ExtraPic\\" + movie.id;
+            else
+                ScreenShotPath = BasePicPath + "ScreenShot\\" + movie.id;
+
             if (!Directory.Exists(ScreenShotPath)) Directory.CreateDirectory(ScreenShotPath);
 
 
@@ -3322,6 +3405,12 @@ namespace Jvedio
 
         }
 
+        private void ShowSameFilePath(object sender, RoutedEventArgs e )
+        {
+            FilePathPopup.IsOpen = true;
+            vieModel.LoadFilePathClassfication();
+        }
+
         public void ShowSubsection(object sender, MouseButtonEventArgs e)
         {
             Image image = sender as Image;
@@ -3915,6 +4004,35 @@ namespace Jvedio
         {
             cmdGrid.Visibility = Visibility.Collapsed;
         }
+
+        private void Border_MouseLeftButtonUp_1(object sender, MouseButtonEventArgs e)
+        {
+            var s1 = Jav321IDDict;
+            
+
+        }
+
+        private void AllSearchTextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            AllSearchPopup.IsOpen = true;
+        }
+
+        private void TextBlock_MouseEnter(object sender, MouseEventArgs e)
+        {
+            ((TextBlock)sender).Background = (SolidColorBrush)Application.Current.Resources["BackgroundMain"];
+        }
+
+        private void TextBlock_MouseLeave(object sender, MouseEventArgs e)
+        {
+            ((TextBlock)sender).Background =new SolidColorBrush( Colors.Transparent);
+        }
+
+        private void ShowSamePath(object sender, MouseButtonEventArgs e)
+        {
+            TextBlock textBlock = sender as TextBlock;
+            vieModel.GetSamePathMovie(textBlock.Text);
+            ShowMovieGrid(sender,new RoutedEventArgs());
+        }
     }
 
     public class DownLoadProgress
@@ -4104,7 +4222,7 @@ namespace Jvedio
         }
     }
 
-    public enum MyImageType { 缩略图, 海报图, 预览图 }
+    public enum MyImageType { 缩略图, 海报图, 预览图,动态图,列表模式 }
 
 
     public class StringToVisibilityConverter : IValueConverter

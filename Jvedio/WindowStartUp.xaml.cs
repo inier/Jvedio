@@ -146,12 +146,10 @@ namespace Jvedio
 
 
             SetSkin();
-            //初始化数据库
-            InitDataBase();
+            
             statusText.Text = "启动中……";
-
-
-
+            InitDataBase();//初始化数据库
+            InitJav321IDConverter();//初始化 jav321，多 30M 内存
             //初始化参数
             Identify.InitFanhaoList();
             Scan.InitSearchPattern();
@@ -164,10 +162,10 @@ namespace Jvedio
             if (!Directory.Exists(StaticVariable.BasePicPath + "BigPic\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "BigPic\\"); }
             if (!Directory.Exists(StaticVariable.BasePicPath + "ExtraPic\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "ExtraPic\\"); }
             if (!Directory.Exists(StaticVariable.BasePicPath + "Actresses\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "Actresses\\"); }
-            
+            if (!Directory.Exists(StaticVariable.BasePicPath + "Gif\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "Gif\\"); }
 
 
-            
+
             if (Properties.Settings.Default.OpenDataBaseDefault)
             {
                 OpenDefaultDatabase();//默认打开某个数据库

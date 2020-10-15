@@ -158,6 +158,11 @@
       <HintPath>..\packages\System.Data.SQLite.Linq.1.0.113.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Reactive, Version=4.4.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.4.4.1\lib\net46\System.Reactive.dll</HintPath>
     </Reference>
@@ -206,11 +211,17 @@
     </Compile>
     <Compile Include="Class\AppHotKey.cs" />
     <Compile Include="Class\MediaParse.cs" />
+    <Compile Include="Library\CustomExtension.cs" />
     <Compile Include="Library\MediaInfo.cs" />
     <Compile Include="Library\ImageProcess.cs" />
     <Compile Include="Class\Jvedio_BaseWindow.cs" />
     <Compile Include="Class\MultiDownLoader.cs" />
     <Compile Include="Library\Translate.cs" />
+    <Compile Include="Resource_IDData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource_IDData.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resource_String.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -409,6 +420,7 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <None Include="Resources\jav321.zip" />
     <Resource Include="Resources\Gif\loading.gif" />
     <Resource Include="Resources\Picture\sort_up.png" />
     <Resource Include="Resources\Picture\sort_down.png" />
@@ -447,6 +459,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource_IDData.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource_IDData.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource_String.resx">
       <Generator>ResXFileCodeGenerator</Generator>

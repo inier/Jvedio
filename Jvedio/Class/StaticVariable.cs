@@ -28,6 +28,7 @@ namespace Jvedio
 
         public static double MinHDVFileSize = 2;//多少 GB 视为高清
 
+        public static Dictionary<string, string> Jav321IDDict = new Dictionary<string, string>();
 
         //数据库
         public static string[] GenreEurope = new string[8];

@@ -663,4 +663,72 @@ namespace Jvedio
         }
 
     }
+
+
+    public class Jav321Parse : InfoParse
+    {
+        public Jav321Parse(string id, string htmlText, VedioType vedioType = 0) : base(htmlText, id, vedioType) { }
+
+
+        public override Dictionary<string, string> Parse()
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            if (HtmlText == "") { return result; }
+            string content; string id = "";
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(HtmlText);
+
+            HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//h3");
+            if (titleNode != null)
+            {
+                result.Add("title", titleNode.InnerText);
+            }
+
+            HtmlNode infoNode = doc.DocumentNode.SelectSingleNode("//div[@class='col-md-9']");
+            if (infoNode != null)
+            {
+                //强行正则
+                string info=infoNode.InnerHtml;
+                List<string> infos = info.Split(new string[] { "<br>" }, StringSplitOptions.None).ToList<string>();
+                foreach (var item in infos)
+                {
+                    Match match = Regex.Match(item, @"<b>.*?</b>");
+                    if (match != null)
+                    {
+                        string key = match.Value.ToUpper();
+                        if (key.IndexOf("女优") > 0)
+                        {
+
+                        }
+                    }
+                }
+
+
+            }
+
+
+            //缩略图
+            HtmlNode smallimageNode = doc.DocumentNode.SelectSingleNode("//div[@id='panel-body']/div/div/img");
+            if (smallimageNode != null) { result.Add("smallimageurl",  smallimageNode.Attributes["src"].Value); }
+
+            //海报图
+            HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//div[@id='col-md-3']/div/p/a/img");
+            if (imageNodes != null) {
+                result.Add("bigimageurl",  imageNodes[0].Attributes["src"].Value);
+                string extraimage = "";
+                for (int i = 1; i < imageNodes.Count; i++)
+                {
+                    HtmlNode htmlNode = imageNodes[i];
+                    try { extraimage = extraimage  + htmlNode.Attributes["src"].Value + ";"; }
+                    catch { continue; }
+                }
+                result.Add("extraimageurl", extraimage);
+            }
+
+
+            return result;
+        }
+
+    }
 }

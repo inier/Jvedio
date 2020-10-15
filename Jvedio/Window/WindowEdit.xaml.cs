@@ -288,4 +288,27 @@ namespace Jvedio
         }
     }
 
+    public class IntToVedioTypeConverter : IValueConverter
+    {
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "未识别";
+
+            if (value.ToString() == "1")
+                return Properties.Settings.Default.TypeName1;
+            else if (value.ToString() == "2")
+                return Properties.Settings.Default.TypeName2;
+            else if (value.ToString() == "3")
+                return Properties.Settings.Default.TypeName3;
+            else 
+                return "未识别";
+
+        }
+
+        public object ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
 }

@@ -590,6 +590,24 @@
                             <TextBlock Text="{Binding Value, ElementName=RecentDaysSlider, StringFormat=\{0\} 天}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
                         </StackPanel>
 
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
+                            <TextBlock Text="搜索候选词数目" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="SearchCandidateSlider" Value="{Binding SearchCandidateMaxCount, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="3" Maximum="15" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, ElementName=SearchCandidateSlider, StringFormat=\{0\} 个}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
+                            <TextBlock Text="按文件夹分类中显示的数目" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="FilePathNumSlider" Value="{Binding FilePathClassificationMaxCount, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="3" Maximum="20" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, ElementName=FilePathNumSlider, StringFormat=\{0\} 个}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
+                            <TextBlock Text="按文件夹分类中目录最大深度" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="FilePathDepthSlider" Value="{Binding FilePathClassificationMaxDepth, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="1" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, ElementName=FilePathDepthSlider, StringFormat=\{0\} 层}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
 
                         <StackPanel  Orientation="Horizontal" Visibility="Visible" IsEnabled="true">
                             <Label Width="100" HorizontalContentAlignment="Center"  Style="{StaticResource BaseLabel2}" FontSize="14" Foreground="{DynamicResource ForegroundSearch}" Margin="20 2" Content="语言"/>
@@ -710,7 +728,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Visible">
+                    <StackPanel x:Name="WebsitePanel" Background="Transparent" Visibility="Hidden">
 
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource TextBlockTitle}" Text="服务器源" HorizontalAlignment="Left"/>
@@ -1075,7 +1093,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Hidden" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Visible" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TextBlock Text="ffmpeg.exe 路径" Style="{StaticResource TextBlockTitle}" Margin="20 20"/>
                         <WrapPanel Orientation="Horizontal" Margin="20 5">
                             <TextBox HorizontalAlignment="Left"  Style="{StaticResource BaseTextBox}"  Text="{Binding FFMPEG_Path, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="400" TextAlignment="Left"  Height="auto" Margin="5 2"/>
@@ -1114,6 +1132,9 @@
 
 
                         </WrapPanel>
+
+                        <CheckBox Margin="20 5" IsChecked="{Binding ScreenShotToExtraPicPath, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Content="截图到预览图目录" Height="40" VerticalContentAlignment="Center"/>
+
 
                     </StackPanel>
 
