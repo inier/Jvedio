@@ -749,7 +749,12 @@ namespace Jvedio
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.kancloud.cn/hitchao/jvedio/1921271");
+            Process.Start("https://www.kancloud.cn/hitchao/jvedio/1921335");
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://www.kancloud.cn/hitchao/jvedio/1921336");
         }
 
         private void PathListBox_DragOver(object sender, DragEventArgs e)

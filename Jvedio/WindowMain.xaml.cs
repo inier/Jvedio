@@ -578,23 +578,16 @@ namespace Jvedio
             DownLoader.InfoUpdate += (s, e) =>
             {
                 InfoUpdateEventArgs eventArgs = e as InfoUpdateEventArgs;
-                for (int i = 0; i < vieModel.CurrentMovieList.Count; i++)
-                {
                     try
                     {
-                        if (vieModel.CurrentMovieList[i]?.id.ToUpper() == eventArgs.Movie.id.ToUpper())
-                        {
-                            try { Refresh(i, eventArgs, totalcount); }
-                            catch (TaskCanceledException ex) { Logger.LogE(ex); }
-                            break;
-                        }
+                        try { Refresh(eventArgs.Movie.id.ToUpper(), eventArgs, totalcount); }
+                        catch (TaskCanceledException ex) { Logger.LogE(ex); }
                     }
                     catch (Exception ex1)
                     {
                         Console.WriteLine(ex1.StackTrace);
                         Console.WriteLine(ex1.Message);
                     }
-                }
             };
 
 
@@ -701,7 +694,7 @@ namespace Jvedio
         }
 
 
-        public  void Refresh(int i, InfoUpdateEventArgs eventArgs, double totalcount)
+        public  void Refresh(string ID, InfoUpdateEventArgs eventArgs, double totalcount)
         {
             Dispatcher.Invoke((Action) async delegate ()
             {
@@ -726,9 +719,16 @@ namespace Jvedio
                     movie.smallimage = StaticClass.GetBitmapImage(movie.id, "SmallPic");
                     movie.bigimage = StaticClass.GetBitmapImage(movie.id, "BigPic");
                 }
+                int idx1 = vieModel.CurrentMovieList.IndexOf( vieModel.CurrentMovieList.Where(arg => arg.id.ToUpper() == ID.ToUpper()).First());
+                int idx2 = vieModel.MovieList.IndexOf(vieModel.MovieList.Where(arg => arg.id.ToUpper() == ID.ToUpper()).First());
+                try
+                {
+                    vieModel.CurrentMovieList[idx1] = null;
+                    vieModel.CurrentMovieList[idx1] = movie;
+                    vieModel.MovieList[idx2] = null;
+                    vieModel.MovieList[idx2] = movie;
+                }catch(ArgumentNullException ex) { }
 
-                vieModel.CurrentMovieList[i] = null;
-                vieModel.CurrentMovieList[i] = movie;
 
             });
         }
@@ -990,6 +990,7 @@ namespace Jvedio
             else
             {
                 StopDownLoad();
+                SaveRecentWatched();
                 ProgressBar.Visibility = Visibility.Hidden;
                 WindowTools windowTools = null;
                 foreach (Window item in App.Current.Windows)
@@ -2047,6 +2048,7 @@ namespace Jvedio
         {
             StackPanel parent = ((sender as FrameworkElement).Parent as Grid).Parent as StackPanel;
             var TB = parent.Children.OfType<TextBox>().Last();
+            var IDTb = parent.Children.OfType<TextBox>().First();
             string filepath = TB.Text;
             if (File.Exists(filepath))
             {
@@ -2056,6 +2058,7 @@ namespace Jvedio
                     try
                     {
                         Process.Start(Properties.Settings.Default.VedioPlayerPath, filepath);
+                        vieModel.AddToRecentWatch(IDTb.Text);
                     }
                     catch(Exception ex)
                     {
@@ -2067,6 +2070,7 @@ namespace Jvedio
                 else
                 {
                     Process.Start(filepath);
+                    vieModel.AddToRecentWatch(IDTb.Text);
                 }
             }
             else
@@ -2103,11 +2107,12 @@ namespace Jvedio
                         if (index == 0) { filepath = arg.filepath; }
                         else if (index == 1) { filepath = BasePicPath + $"BigPic\\{arg.id}.jpg"; }
                         else if (index == 2) { filepath = BasePicPath + $"SmallPic\\{arg.id}.jpg"; }
-                        else if (index == 3) { filepath = BasePicPath + $"ExtraPic\\{arg.id}\\"; }
-                        else if (index == 4) { filepath = BasePicPath + $"ScreenShot\\{arg.id}\\"; }
-                        else if (index == 5) { if (arg.actor.Length > 0) filepath = BasePicPath + $"Actresses\\{arg.actor.Split(new char[] { ' ', '/' })[0]}.jpg"; else filepath = ""; }
+                        else if (index == 3) { filepath = BasePicPath + $"Gif\\{arg.id}.gif"; }
+                        else if (index == 4) { filepath = BasePicPath + $"ExtraPic\\{arg.id}\\"; }
+                        else if (index == 5) { filepath = BasePicPath + $"ScreenShot\\{arg.id}\\"; }
+                        else if (index == 6) { if (arg.actor.Length > 0) filepath = BasePicPath + $"Actresses\\{arg.actor.Split(actorSplitDict[arg.vediotype])[0]}.jpg"; else filepath = ""; }
 
-                        if (index == 3 | index == 4)
+                        if (index == 4 | index == 5)
                         {
                             if (Directory.Exists(filepath)) { Process.Start("explorer.exe", "\"" + filepath + "\""); }
                             else
@@ -2219,14 +2224,19 @@ namespace Jvedio
                             dataBase.SaveYoudaoTranslateByID(movie.id, movie.title, result, "title");
 
                             //显示
-                            int index1 = vieModel.CurrentMovieList.IndexOf(movie);
-                            int index2 = vieModel.MovieList.IndexOf(movie);
+                            int index1 = vieModel.CurrentMovieList.IndexOf(vieModel.CurrentMovieList.Where(arg => arg.id.ToUpper() == movie.id.ToUpper()).First()); ;
+                            int index2 = vieModel.MovieList.IndexOf(vieModel.MovieList.Where(arg => arg.id.ToUpper() == movie.id.ToUpper()).First());
                             movie.title = result;
-                            vieModel.CurrentMovieList[index1] = null;
-                            vieModel.MovieList[index2] = null;
-                            vieModel.CurrentMovieList[index1] = movie;
-                            vieModel.MovieList[index2] = movie;
-                            successNum++;
+                            try
+                            {
+                                vieModel.CurrentMovieList[index1] = null;
+                                vieModel.MovieList[index2] = null;
+                                vieModel.CurrentMovieList[index1] = movie;
+                                vieModel.MovieList[index2] = movie;
+                                successNum++;
+                            }
+                            catch (ArgumentNullException) {  }
+
                         }
 
                     }
@@ -2291,7 +2301,7 @@ namespace Jvedio
                     if (ActorInfoGrid.Visibility == Visibility.Visible)
                         name = vieModel.Actress.name;
                     else
-                        name = movie.actor.Split(new char[] { ' ', '/' })[0];
+                        name = movie.actor.Split(actorSplitDict[movie.vediotype])[0];
 
 
                     string ActressesPicPath = Properties.Settings.Default.BasePicPath + $"Actresses\\{name}.jpg";
@@ -2318,10 +2328,45 @@ namespace Jvedio
         }
 
 
-        public  void GetScreenShot(object sender, RoutedEventArgs e)
+
+        public void GetGif(object sender, RoutedEventArgs e)
         {
 
-            if (Properties.Settings.Default.EditMode) { return; }
+            if (Properties.Settings.Default.EditMode) { new Msgbox(this, "暂不支持批量"); return; }
+
+            if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) { new PopupWindow(this, "请设置 ffmpeg.exe 的路径 ").Show(); return; }
+            if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
+            MenuItem mnu = ((MenuItem)(sender)).Parent as MenuItem;
+            StackPanel sp = null;
+
+            if (mnu != null)
+            {
+                int successNum = 0;
+                sp = ((ContextMenu)mnu.Parent).PlacementTarget as StackPanel;
+                var TB = sp.Children.OfType<TextBox>().First();
+                Movie CurrentMovie = GetMovieFromVieModel(TB.Text);
+                if (!vieModel.SelectedMovie.Select(g => g.id).ToList().Contains(CurrentMovie.id)) vieModel.SelectedMovie.Add(CurrentMovie);
+                this.Cursor = Cursors.Wait;
+                foreach (Movie movie in vieModel.SelectedMovie)
+                {
+                    if (!File.Exists(movie.filepath)) {new Msgbox(this, "视频不存在").Show(); continue; }
+                    bool result = false;
+                    try { GenerateGif(movie); } catch (Exception ex) { Logger.LogF(ex); }
+
+                    if (result) successNum++;
+                }
+                //new PopupWindow(this, $"成功截图 {successNum} / {vieModel.SelectedMovie.Count} 个影片").Show();
+            }
+            if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
+            this.Cursor = Cursors.Arrow;
+        }
+
+
+
+        public void GetScreenShot(object sender, RoutedEventArgs e)
+        {
+
+            if (Properties.Settings.Default.EditMode) { new Msgbox(this, "暂不支持批量"); return; }
 
             if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) { new PopupWindow(this, "请设置 ffmpeg.exe 的路径 ").Show(); return; }
             if (!Properties.Settings.Default.EditMode) vieModel.SelectedMovie.Clear();
@@ -2340,7 +2385,7 @@ namespace Jvedio
                 cmdGrid.Visibility = Visibility.Visible;
                 foreach (Movie movie in vieModel.SelectedMovie)
                 {
-                    if (!File.Exists(movie.filepath)) continue;
+                    if (!File.Exists(movie.filepath)) { new Msgbox(this, "视频不存在").Show(); continue; }
                     bool result = false;
                     try {  ScreenShot(movie); }catch(Exception ex) { Logger.LogF(ex); }
                    
@@ -2353,6 +2398,55 @@ namespace Jvedio
         }
 
 
+
+        public void BeginGenGif(object o)
+        {
+            List<object> list = o as List<object>;
+            string cutoffTime = list[0] as string;
+            string filePath = list[1] as string;
+            string ScreenShotPath = list[2] as string;
+            string ID = list[3] as string;
+            ScreenShotPath += ID + ".gif";
+
+            if (string.IsNullOrEmpty(cutoffTime)) return;
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.StartInfo.FileName = "cmd.exe";
+            p.StartInfo.UseShellExecute = false;    //是否使用操作系统shell启动
+            p.StartInfo.RedirectStandardInput = true;//接受来自调用程序的输入信息
+            p.StartInfo.RedirectStandardOutput = true;//由调用程序获取输出信息
+            p.StartInfo.RedirectStandardError = true;//重定向标准错误输出
+            p.StartInfo.CreateNoWindow = true;//不显示程序窗口
+            p.Start();//启动程序
+
+            string str = $"\"{Properties.Settings.Default.FFMPEG_Path}\" -y -t 5 -ss {cutoffTime} -i \"{filePath}\" -s 280x170  \"{ScreenShotPath}\"";
+            Console.WriteLine(str);
+
+
+            p.StandardInput.WriteLine(str + "&exit");
+            p.StandardInput.AutoFlush = true;
+            string output = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();//等待程序执行完退出进程
+            p.Close();
+            App.Current.Dispatcher.Invoke((Action)delegate {
+                //显示到界面上
+                Movie movie = vieModel.MovieList.Where(arg => arg.id.ToUpper() == ID.ToUpper()).First();
+                int idx1 = vieModel.CurrentMovieList.IndexOf(vieModel.CurrentMovieList.Where(arg => arg.id.ToUpper() == ID.ToUpper()).First());
+                int idx2 = vieModel.MovieList.IndexOf(vieModel.MovieList.Where(arg => arg.id.ToUpper() == ID.ToUpper()).First());
+
+                movie.gif = null;
+                movie.gif = StaticClass.GetGifStream(ID);
+
+                try
+                {
+                    vieModel.CurrentMovieList[idx1] = null;
+                    vieModel.MovieList[idx2] = null;
+                    vieModel.CurrentMovieList[idx1] = movie;
+                    vieModel.MovieList[idx2] = movie;
+                }
+                catch(ArgumentNullException ex) { }
+
+            });
+        }
 
         public void BeginScreenShot(object o)
         {
@@ -2373,10 +2467,10 @@ namespace Jvedio
             p.StartInfo.CreateNoWindow = true;//不显示程序窗口
             p.Start();//启动程序
 
-            string str = $"{Properties.Settings.Default.FFMPEG_Path} -y -threads 1 -ss {cutoffTime} -i \"{filePath}\" -f image2 -frames:v 1 {ScreenShotPath}\\ScreenShot-{i.PadLeft(2, '0')}.jpg";
+            string str = $"\"{Properties.Settings.Default.FFMPEG_Path}\" -y -threads 1 -ss {cutoffTime} -i \"{filePath}\" -f image2 -frames:v 1 \"{ScreenShotPath}\\ScreenShot-{i.PadLeft(2, '0')}.jpg\"";
             Console.WriteLine(str);
 
-            App.Current.Dispatcher.Invoke((Action)delegate { cmdTextBox.AppendText(str + "\n"); });
+            
 
             p.StandardInput.WriteLine(str + "&exit");
             //p.StandardInput.WriteLine("exit");
@@ -2386,6 +2480,7 @@ namespace Jvedio
             p.WaitForExit();//等待程序执行完退出进程
             p.Close();
             SemaphoreScreenShot.Release();
+            App.Current.Dispatcher.Invoke((Action)delegate { cmdTextBox.AppendText(str + "\n"); });
         }
 
 
@@ -2419,6 +2514,26 @@ namespace Jvedio
             cmdTextBox.AppendText($"已启用 {cutoffArray.Count()} 个线程， 3-10S 后即可截图成功\n");
         }
 
+
+        public void GenerateGif(Movie movie)
+        {
+            if (!File.Exists(Properties.Settings.Default.FFMPEG_Path)) return;
+
+
+            string GifSavePath = BasePicPath + "Gif\\";
+            if (!Directory.Exists(GifSavePath)) Directory.CreateDirectory(GifSavePath);
+
+
+
+            string[] cutoffArray = MediaParse.GetCutOffArray(movie.filepath); //获得影片长度数组
+
+            string startTime = cutoffArray[new Random().Next(cutoffArray.Length)];
+
+            List<object> list = new List<object>() { startTime, movie.filepath, GifSavePath , movie.id };
+            Thread threadObject = new Thread(BeginGenGif);
+            threadObject.Start(list);
+
+        }
 
         public async void GenerateSmallImage(object sender, RoutedEventArgs e)
         {
@@ -2744,7 +2859,7 @@ namespace Jvedio
                 movies.ForEach(arg =>
                 {
 
-                    foreach (var item in arg.actor.Split(new char[] { ' ', '/' }))
+                    foreach (var item in arg.actor.Split(actorSplitDict[arg.vediotype]))
                     {
                         if (!string.IsNullOrEmpty(item) & item.IndexOf(' ') < 0)
                             if (!list.Contains(item)) list.Add(item);
@@ -3608,7 +3723,61 @@ namespace Jvedio
             if (vieModel.DataBases.Count == 1) DatabaseComboBox.Visibility = Visibility.Hidden;
             CheckurlTimer.Start();
             BeginCheckurlThread();
+            InitRecentWatched();//显示最近播放
+        }
 
+        public void InitRecentWatched()
+        {
+            string content = "";
+            if (File.Exists("RecentWatch.ini"))
+            {
+                using (StreamReader sr = new StreamReader("RecentWatch.ini"))
+                {
+                    content = sr.ReadToEnd();
+                }
+            }
+            if (content.IndexOf('\n') > 0 && content.IndexOf(',') > 0 && content.IndexOf(':') > 0)
+            {
+                RecentWatched = new Dictionary<DateTime, List<string>>();
+                string[] dayWatches = content.Split('\n');
+                foreach (var item in dayWatches)
+                {
+                    if (item.IndexOf(',') > 0 && item.IndexOf(':') > 0)
+                    {
+                        DateTime dateTime;
+                        DateTime.TryParse(item.Split(':')[0], out dateTime);
+                        if (!RecentWatched.ContainsKey(dateTime.Date))
+                            RecentWatched.Add(dateTime.Date, item.Split(':')[1].Split(',').ToList<string>());
+                    }
+
+                }
+                vieModel.AddToRecentWatch("");
+            }
+        }
+
+        public void SaveRecentWatched()
+        {
+            string content = "";
+            foreach (var keyValuePair in RecentWatched)
+            {
+                if (keyValuePair.Key <= DateTime.Now && keyValuePair.Key >= DateTime.Now.AddDays(-1 * Properties.Settings.Default.RecentDays))
+                {
+                    if (keyValuePair.Value.Count > 0)
+                    {
+                        List<string> noNullList = keyValuePair.Value.Where(arg => !string.IsNullOrEmpty(arg)).ToList();
+                        string IDs = string.Join(",", noNullList);
+                        content += keyValuePair.Key.Date.ToString("yyyy-MM-dd") + ":" + IDs + "\n";
+                    }
+                }
+            }
+            try
+            {
+                using(StreamWriter sw=new StreamWriter("RecentWatch.ini"))
+                {
+                    sw.WriteLine(content);
+                }
+            }
+            catch { }
         }
 
         public void SetSkin()

@@ -591,6 +591,12 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Margin="10 10">
+                            <TextBlock Text="显示最近播放的天数" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                            <Slider x:Name="RecentWatchSlider" Value="{Binding RecentWatchDays, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="1" Maximum="10" Width="100" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Value, ElementName=RecentWatchSlider, StringFormat=\{0\} 天}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="10 10">
                             <TextBlock Text="搜索候选词数目" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
                             <Slider x:Name="SearchCandidateSlider" Value="{Binding SearchCandidateMaxCount, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Minimum="3" Maximum="15" Width="100" VerticalAlignment="Center"/>
                             <TextBlock Text="{Binding Value, ElementName=SearchCandidateSlider, StringFormat=\{0\} 个}" Style="{StaticResource TextBlockTitle}" VerticalAlignment="Center"/>
@@ -1018,6 +1024,7 @@
                                 <CheckBox IsChecked="{Binding Enable_TL_YOUDAO, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 10" Content="有道翻译" />
                                 <Button Click="TestTranslate" Height="40" Width="80" Content="测试"  Style="{StaticResource ButtonStyle}"  />
                                 <Image Margin="20 5" Width="32" Height="32" />
+                                <Button Style="{StaticResource ButtonStyleFill}" Content=" ？" HorizontalAlignment="Left" Width="20" Height="20" Cursor="Hand" Margin="20 5" Click="Button_Click_2"/>
                             </StackPanel>
 
                             <Grid  HorizontalAlignment="Stretch" Margin="20 5">
@@ -1063,13 +1070,15 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="AIPanel" Background="Transparent" Visibility="Hidden">
+                    <StackPanel x:Name="AIPanel" Background="Transparent" Visibility="Visible">
                         <StackPanel Orientation="Vertical" IsEnabled="True" >
 
                             <StackPanel Orientation="Horizontal">
                                 <CheckBox IsChecked="{Binding Enable_BaiduAI, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Margin="20 10" Content="百度人脸识别" />
                                 <Button Click="TestAI" Height="40" Width="80" Content="测试"  Style="{StaticResource ButtonStyle}"  />
                                 <Image Margin="20 5" Width="32" Height="32" />
+                                <Button Style="{StaticResource ButtonStyleFill}" Content=" ？" HorizontalAlignment="Left" Width="20" Height="20" Cursor="Hand" Margin="20 5" Click="Button_Click_5"/>
+
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="20 5">
@@ -1093,7 +1102,7 @@
                     </StackPanel>
 
 
-                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Visible" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <StackPanel x:Name="FFMPEGPanel" Background="Transparent" Visibility="Hidden" Width="auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TextBlock Text="ffmpeg.exe 路径" Style="{StaticResource TextBlockTitle}" Margin="20 20"/>
                         <WrapPanel Orientation="Horizontal" Margin="20 5">
                             <TextBox HorizontalAlignment="Left"  Style="{StaticResource BaseTextBox}"  Text="{Binding FFMPEG_Path, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Width="400" TextAlignment="Left"  Height="auto" Margin="5 2"/>

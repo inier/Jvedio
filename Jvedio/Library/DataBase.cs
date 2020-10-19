@@ -225,7 +225,7 @@ namespace Jvedio
             {
                 if (sr[0].ToString() != "")
                 {
-                    foreach (var actor in sr[0].ToString().Split(new char[] { ' ', '/' }))
+                    foreach (var actor in sr[0].ToString().Split(actorSplitDict[(int)vediotype]))
                     {
                         if (actor != "")
                         {
@@ -512,7 +512,6 @@ namespace Jvedio
                     {
                         while (sr.Read())
                     {
-
                             result = GetDetailMovieFromSQLiteDataReader(sr);
                         }
                         
@@ -528,16 +527,15 @@ namespace Jvedio
                 foreach (var item in result.genre.Split(' ')) { if (!string.IsNullOrEmpty(item) && item.IndexOf(' ') < 0) { result.genrelist.Add(item); } }
                 foreach (var item in result.label.Split(' ')) { if (!string.IsNullOrEmpty(item) && item.IndexOf(' ') < 0) { result.labellist.Add(item); } }
 
-                if (result.actor.Split(new char[] { ' ', '/' }).Count() == result.actorid.Split(new char[] { ' ', '/' }).Count() && result.actor.Split(new char[] { ' ', '/' }).Count() > 1)
+                if (result.actor.Split(actorSplitDict[result.vediotype]).Count() == result.actorid.Split(actorSplitDict[result.vediotype]).Count() && result.actor.Split(actorSplitDict[result.vediotype]).Count() > 1)
                 {
                     //演员数目>1
-                    string[] Name = result.actor.Split(new char[] { ' ', '/' });
-                    string[] ID = result.actorid.Split(' ');
+                    string[] Name = result.actor.Split(actorSplitDict[result.vediotype]);
                     for (int i = 0; i < Name.Count(); i++)
                     {
-                        if (!string.IsNullOrEmpty(Name[i]) & Name[i].IndexOf(' ') < 0 & !string.IsNullOrEmpty(ID[i]) & ID[i].IndexOf(' ') < 0)
+                        if (!string.IsNullOrEmpty(Name[i])  )
                         {
-                            Actress actress = new Actress() { id = ID[i], name = Name[i] };
+                            Actress actress = new Actress() { id = "", name = Name[i] };
                             result.actorlist.Add(actress);
                         }
                     }
@@ -545,9 +543,9 @@ namespace Jvedio
                 else
                 {
                     //演员数目<=1
-                    foreach (var item in result.actor.Split(new char[] { ' ', '/' }))
+                    foreach (var item in result.actor.Split(actorSplitDict[result.vediotype]))
                     {
-                        if (!string.IsNullOrEmpty(item) & item.IndexOf(' ') < 0)
+                        if (!string.IsNullOrEmpty(item) )
                         {
                             Actress actress = new Actress() { id = "", name = item };
                             result.actorlist.Add(actress);
@@ -717,6 +715,17 @@ namespace Jvedio
             else if (webSite == WebSite.Bus)
             {
                 //Bus
+                sqltext = $"update movie SET title=@title ,  releasedate=@releasedate , director=@director  ,actorid=@actorid, tag=@tag, genre=@genre  , actor=@actor , studio=@studio ,year=@year  , runtime=@runtime,bigimageurl=@bigimageurl ,smallimageurl=@smallimageurl ,extraimageurl=@extraimageurl,actressimageurl=@actressimageurl,sourceurl=@sourceurl,source=@source where id ='{info["id"] }'";
+                cmd.CommandText = sqltext;
+                cmd.Parameters.Add("actorid", DbType.String).Value = info.ContainsKey("actorid") ? info["actorid"] : "";
+                cmd.Parameters.Add("tag", DbType.String).Value = info.ContainsKey("tag") ? info["tag"] : "";
+                cmd.Parameters.Add("runtime", DbType.Int32).Value = int.Parse(info.ContainsKey("runtime") ? info["runtime"] : "0");
+                cmd.Parameters.Add("rating", DbType.Int32).Value = int.Parse(info.ContainsKey("rating") ? info["rating"] : "0");
+                cmd.Parameters.Add("actressimageurl", DbType.String).Value = info.ContainsKey("actressimageurl") ? info["actressimageurl"] : "";
+            }
+            else if (webSite == WebSite.BusEu)
+            {
+                //BusEu
                 sqltext = $"update movie SET title=@title ,  releasedate=@releasedate , director=@director  ,actorid=@actorid, tag=@tag, genre=@genre  , actor=@actor , studio=@studio ,year=@year  , runtime=@runtime,bigimageurl=@bigimageurl ,smallimageurl=@smallimageurl ,extraimageurl=@extraimageurl,actressimageurl=@actressimageurl,sourceurl=@sourceurl,source=@source where id ='{info["id"] }'";
                 cmd.CommandText = sqltext;
                 cmd.Parameters.Add("actorid", DbType.String).Value = info.ContainsKey("actorid") ? info["actorid"] : "";
@@ -944,12 +953,14 @@ namespace Jvedio
             Genre.Sort();
 
             //演员
-            cmd.CommandText = "SELECT actor FROM movie";
+            cmd.CommandText = "SELECT actor,vediotype FROM movie";
             sr = cmd.ExecuteReader();
             List<string> Actor = new List<string>();
             while (sr.Read())
             {
-                sr[0].ToString().Split(new char[] { ' ', '/' }).ToList().ForEach(arg =>
+                int vt = 0;
+                int.TryParse(sr[1].ToString(), out vt);
+                sr[0].ToString().Split(actorSplitDict[vt]).ToList().ForEach(arg =>
                 {
                     if (arg.Length > 0 & arg.IndexOf(' ') < 0)
                         if (!Actor.Contains(arg)) Actor.Add(arg);
@@ -1183,7 +1194,10 @@ namespace Jvedio
 
     public class Movie
     {
-        public string id { get; set; }
+        private string _id;
+        public string id { get { return _id; } set {
+                _id = value.ToUpper();
+            }}
         private string _title;
         public string title { get { return _title; } set { _title = value; OnPropertyChanged(); } }
         public double filesize { get; set; }
@@ -1264,12 +1278,12 @@ namespace Jvedio
 
         private BitmapSource _smallimage;
         private BitmapSource _bigimage;
-
+        private MemoryStream _gif;
 
 
         public BitmapSource smallimage { get { return _smallimage; } set { _smallimage = value; OnPropertyChanged(); } }
         public BitmapSource bigimage { get { return _bigimage; } set { _bigimage = value; OnPropertyChanged(); } }
-
+        public MemoryStream gif { get { return _gif; } set { _gif = value; OnPropertyChanged(); } }
 
 
         public event PropertyChangedEventHandler PropertyChanged;

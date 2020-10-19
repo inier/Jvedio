@@ -52,8 +52,13 @@ namespace Jvedio
 
         //禁止的文件名
         public static readonly char[] BANFILECHAR =  {'\\','#','%', '&', '*', '|', ':', '"', '<', '>', '?', '/','.' }; //https://docs.microsoft.com/zh-cn/previous-versions/s6feh8zw(v=vs.110)?redirectedfrom=MSDN
-                                                                                                                       //保留名称
 
+        //演员分隔符
+        public static Dictionary<int, char[]> actorSplitDict = new Dictionary<int, char[]>();
+
+
+
+        public static Dictionary<DateTime, List<string>> RecentWatched =new Dictionary<DateTime, List<string>>();//最近播放
 
         #region "热键"
         [DllImport("user32.dll")]
@@ -114,6 +119,13 @@ namespace Jvedio
             if (Properties.Settings.Default.DMM == "") Properties.Settings.Default.EnableDMM = false;
             if (Properties.Settings.Default.Jav321 == "") Properties.Settings.Default.Enable321 = false;
             Properties.Settings.Default.Save();
+
+            //添加演员分隔符
+            if(!actorSplitDict.ContainsKey(0)) actorSplitDict.Add(0, new char[] { ' ', '/' });
+            if (!actorSplitDict.ContainsKey(1)) actorSplitDict.Add(1, new char[] { ' ', '/' });
+            if (!actorSplitDict.ContainsKey(2)) actorSplitDict.Add(2, new char[] { ' ', '/' });
+            if (!actorSplitDict.ContainsKey(3)) actorSplitDict.Add(3, new char[] {'/' });
+
 
 
             //格式化网址

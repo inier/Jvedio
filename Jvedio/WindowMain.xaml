@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:Jvedio"
     xmlns:p="clr-namespace:Jvedio.Properties"
     xmlns:trace="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+    xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
     x:Class="Jvedio.Main"
     mc:Ignorable="d"
     Title="Jvedio" Height="600" Width="1100"
@@ -453,6 +454,10 @@
                     <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
                 </DataTrigger>
 
+                <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图">
+                    <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
+                </DataTrigger>
+
                 <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="缩略图">
                     <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
                 </DataTrigger>
@@ -559,6 +564,15 @@
 
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="gif:AnimationBehavior.SourceStream" Value="{Binding gif}"/>
+                    <Setter Property="Width" Value="{Binding BigImage_Width,Source={x:Static p:Settings.Default}}"/>
+                    <Setter Property="Height" Value="{Binding BigImage_Height,Source={x:Static p:Settings.Default}}"/>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="缩略图"/>
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Source" Value="{Binding smallimage}" />
@@ -576,12 +590,31 @@
                     <Setter Property="Height" Value="{Binding BigImage_Height,Source={x:Static p:Settings.Default}}"/>
                 </MultiDataTrigger>
 
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="gif:AnimationBehavior.SourceStream" Value="{Binding gif}"/>
+                    <Setter Property="Width" Value="{Binding BigImage_Width,Source={x:Static p:Settings.Default}}"/>
+                    <Setter Property="Height" Value="{Binding BigImage_Height,Source={x:Static p:Settings.Default}}"/>
+                </MultiDataTrigger>
+
 
                 <!--无图-->
 
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="海报图"/>
+                        <Condition Binding="{Binding bigimage}" Value="{x:Null}"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Source" Value="Resources/Picture/NoPrinting_B.jpg" />
+                    <Setter Property="Width" Value="{Binding BigImage_Width,Source={x:Static p:Settings.Default}}"/>
+                    <Setter Property="Height" Value="{Binding BigImage_Height,Source={x:Static p:Settings.Default}}"/>
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图"/>
                         <Condition Binding="{Binding bigimage}" Value="{x:Null}"/>
                     </MultiDataTrigger.Conditions>
                     <Setter Property="Source" Value="Resources/Picture/NoPrinting_B.jpg" />
@@ -1217,10 +1250,18 @@
                                 </Grid>
 
                                 <Grid>
-                                    <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=recent,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="10 0"    />
+                                    <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=create,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="10 0"    />
                                     <RadioButton Padding="20 0"   Style="{StaticResource SideRadioButtonStyle}" Command="{Binding RecentCommand}" Content="最近创建"  Click="ShowMovieGrid"  />
                                     <TextBlock Text="{Binding RecentVedioCount}" Style="{StaticResource BaseTextBlock}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10 0" Foreground="{DynamicResource ForegroundGlobal}"/>
                                 </Grid>
+
+                                <Grid>
+                                    <Image  Source="{Binding Themes, Mode=OneWay, ConverterParameter=recent,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="22" HorizontalAlignment="Left" Panel.ZIndex="2" Margin="10 0"    />
+                                    <RadioButton Padding="20 0"   Style="{StaticResource SideRadioButtonStyle}" Command="{Binding RecentWatchCommand}" Content="最近播放"  Click="ShowMovieGrid"  />
+                                    <TextBlock Text="{Binding RecentWatchedCount}" Style="{StaticResource BaseTextBlock}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10 0" Foreground="{DynamicResource ForegroundGlobal}"/>
+                                </Grid>
+                                
+                                
                                 <TreeView    BorderThickness="0" Background="Transparent" HorizontalAlignment="Stretch" Width="auto" Style="{DynamicResource TreeViewStyle1}" >
                                     <TreeViewItem  Margin="10 5 0 0"   IsExpanded="{Binding IsExpanded1, Mode=TwoWay, Source={x:Static p:Settings.Default}}"  Foreground="{DynamicResource ForegroundGlobal}" Style="{DynamicResource RootTreeViewStyle}"  >
                                         <TreeViewItem.Header>
@@ -1828,6 +1869,7 @@
                                                                         <MenuItem Header="生成缩略图" Click="GenerateSmallImage" />
                                                                         <MenuItem Header="生成演员头像" Click="GenerateActor" />
                                                                         <MenuItem Header="生成截图" Click="GetScreenShot" />
+                                                                        <MenuItem Header="生成 Gif" Click="GetGif" />
                                                                     </MenuItem>
 
                                                                     <MenuItem Header="标签管理"   Click="ShowLabelEditGrid" >
@@ -1847,6 +1889,7 @@
                                                                         <MenuItem Header="影片" Click="OpenFilePath"   ></MenuItem>
                                                                         <MenuItem Header="海报图" Click="OpenImagePath"  ></MenuItem>
                                                                         <MenuItem Header="缩略图" Click="OpenImagePath"   ></MenuItem>
+                                                                        <MenuItem Header="Gif" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="预览图" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="影片截图" Click="OpenImagePath"   ></MenuItem>
                                                                         <MenuItem Header="头像" Click="OpenImagePath"   ></MenuItem>
@@ -1885,6 +1928,7 @@
                                                                     </Image>
                                                                 </Canvas>
 
+                                                                
 
                                                                 <!--分段视频-->
                                                                 <Grid  Panel.ZIndex="3" Visibility="{Binding hassubsection,Converter={StaticResource BoolToVisibilityConverter},Mode=OneWay}"  >
@@ -1919,6 +1963,11 @@
                                                                                             <Setter Property="Height" Value="{Binding ElementName=ViewImage,Path=Height,TargetNullValue=100}" />
                                                                                         </DataTrigger>
 
+                                                                                        <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图">
+                                                                                            <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
+                                                                                            <Setter Property="Height" Value="{Binding ElementName=ViewImage,Path=Height,TargetNullValue=100}" />
+                                                                                        </DataTrigger>
+
                                                                                         <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="预览图">
                                                                                             <Setter Property="Width" Value="{Binding ElementName=ExtraImageCanvas,Path=Width}" />
                                                                                             <Setter Property="Height" Value="{Binding ElementName=ExtraImageCanvas,Path=Height}" />
@@ -1933,6 +1982,11 @@
                                                                                 <Style TargetType="StackPanel">
                                                                                     <Style.Triggers>
                                                                                         <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="海报图">
+                                                                                            <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
+                                                                                            <Setter Property="Height" Value="{Binding ElementName=ViewImage,Path=Height,TargetNullValue=100}" />
+                                                                                        </DataTrigger>
+
+                                                                                        <DataTrigger  Binding="{Binding ShowImageMode, Mode=OneWay, Source={x:Static p:Settings.Default}}"  Value="动态图">
                                                                                             <Setter Property="Width" Value="{Binding ElementName=ViewImage,Path=Width,TargetNullValue=100}" />
                                                                                             <Setter Property="Height" Value="{Binding ElementName=ViewImage,Path=Height,TargetNullValue=100}" />
                                                                                         </DataTrigger>

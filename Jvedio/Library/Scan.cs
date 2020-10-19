@@ -23,26 +23,12 @@ namespace Jvedio
         public static void InitSearchPattern()
         {
             //视频后缀来自 Everything (位置：搜索-管理筛选器-视频-编辑)
-            string SearchPatternPath = AppDomain.CurrentDomain.BaseDirectory + @"\Data\SearchPattern.txt";
-            if (File.Exists(SearchPatternPath))
-            {
-                StreamReader sr = new StreamReader(SearchPatternPath);
-                string ScanVetioType = sr.ReadToEnd().Replace("，", ",");
-                sr.Close();
-                foreach (var item in ScanVetioType.Split(','))
-                {
-                    if (!SearchPattern.Contains("." + item)) { SearchPattern.Add("." + item); }
-                }
-                    
-            }
 
             MinFileSize = Properties.Settings.Default.ScanMinFileSize * 1024 * 1024;
-            //如果文件视频类型为空，则使用默认的视频类型
-            if (SearchPattern.Count==0) {
-                string ScanVetioType = Resource_String.ScanVetioType;
-                foreach (var item in ScanVetioType.Split(','))
-                    SearchPattern.Add("." + item);
-            }
+             SearchPattern = new List<string>();
+            string ScanVetioType = Resource_String.ScanVetioType;
+            foreach (var item in ScanVetioType.Split(','))
+                SearchPattern.Add("." + item);
         }
 
 

@@ -110,7 +110,7 @@ namespace Jvedio
                             if (genreNode.ParentNode.Attributes["onmouseover"] != null)
                             {
                                 //演员
-                                actress = actress + genreNode.InnerText + " ";
+                                actress = actress + genreNode.InnerText + "/";
                                 string link = genreNode.Attributes["href"]?.Value;
 
                                 actressid = actressid + link.Split('/')[link.Split('/').Count() - 1] + " ";
@@ -364,7 +364,7 @@ namespace Jvedio
                                     string actress = "";
                                     foreach (HtmlNode actressNode in actressNodes)
                                     {
-                                        actress = actress + actressNode.InnerText + " ";
+                                        actress = actress + actressNode.InnerText + "/";
                                     }
                                     result.Add("actor", actress);
                                 }
@@ -494,7 +494,7 @@ namespace Jvedio
                                 string actress = "";
                                 foreach (HtmlNode actressNode in actressNodes)
                                 {
-                                    actress = actress + actressNode.InnerText + " ";
+                                    actress = actress + actressNode.InnerText + "/";
                                 }
                                 result.Add("actor", actress);
                             }

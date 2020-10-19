@@ -97,7 +97,7 @@ namespace Jvedio
             }
 
             // 演员
-            foreach (var item in vedio.actor.Split(new char[] { ' ', '/' }))
+            foreach (var item in vedio.actor.Split(actorSplitDict[vedio.vediotype]))
             {
                 if (!string.IsNullOrEmpty(item))
                 {
@@ -494,6 +494,33 @@ namespace Jvedio
                 }
             }
         }
+        /// <summary>
+        /// 加载 Gif
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <param name="rotate"></param>
+        /// <returns></returns>
+        public static BitmapImage GifFromFile(string filepath, bool rotate = false)
+        {
+            try
+            {
+                using (var fs = new FileStream(filepath, System.IO.FileMode.Open))
+                {
+                    var ms = new MemoryStream();
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.StreamSource = ms;
+                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap.EndInit();
+                    bitmap.Freeze();
+                    return bitmap;
+                }
+            }
+            catch (Exception e) { Console.WriteLine(e.Message); }
+            return null;
+        }
 
         /// <summary>
         /// 防止图片被占用
@@ -518,13 +545,31 @@ namespace Jvedio
 
         }
 
+        public static MemoryStream GetGifStream(string ID)
+        {
+            try
+            {
+                using (var fs = new FileStream(BasePicPath + $"Gif\\{ID}.gif", System.IO.FileMode.Open))
+                {
+                    var ms = new MemoryStream();
+                    fs.CopyTo(ms);
+                    ms.Position = 0;
+                    return ms;
+                }
+            }
+            catch (Exception e) { Console.WriteLine(e.Message); }
+            return null;
+        }
+
+
+
         public static BitmapImage GetBitmapImage(string filename, string imagetype, bool rotate = false)
         {
-            filename = BasePicPath + $"{imagetype}\\{filename}.jpg";
-            if (File.Exists(filename))
-                return BitmapImageFromFile(filename, rotate);
-            else
-                return null;
+                filename = BasePicPath + $"{imagetype}\\{filename}.jpg";
+                if (File.Exists(filename))
+                    return BitmapImageFromFile(filename);
+                else
+                    return null;
         }
 
         public static BitmapImage GetExtraImage(string filepath)

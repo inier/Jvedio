@@ -1942,5 +1942,17 @@ namespace Jvedio.Properties {
                 this["ScreenShotToExtraPicPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int RecentWatchDays {
+            get {
+                return ((int)(this["RecentWatchDays"]));
+            }
+            set {
+                this["RecentWatchDays"] = value;
+            }
+        }
     }
 }

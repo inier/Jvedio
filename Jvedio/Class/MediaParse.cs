@@ -25,6 +25,7 @@ namespace Jvedio
             return result;
         }
 
+
         public static string[] GetCutOffArray(string path)
         {
             if (Properties.Settings.Default.ScreenShotNum <= 0 || Properties.Settings.Default.ScreenShotNum > 30) Properties.Settings.Default.ScreenShotNum = 10;

@@ -410,6 +410,7 @@ namespace Jvedio
 
         public void PlayVedio(object sender, MouseEventArgs e)
         {
+
             if (vieModel.DetailMovie.hassubsection)
             {
                 ShowSubsection(this, new MouseButtonEventArgs(InputManager.Current.PrimaryMouseDevice, 0, MouseButton.Left));
@@ -419,12 +420,14 @@ namespace Jvedio
                 string filepath = vieModel.DetailMovie.filepath;
                 if (File.Exists(filepath))
                 {
+                    Main main = App.Current.Windows[0] as Main;
                     //使用默认播放器
                     if (!string.IsNullOrEmpty(Properties.Settings.Default.VedioPlayerPath) && File.Exists(Properties.Settings.Default.VedioPlayerPath))
                     {
                         try
                         {
                             Process.Start(Properties.Settings.Default.VedioPlayerPath, filepath);
+                            main.vieModel.AddToRecentWatch(vieModel.DetailMovie.id);
                         }
                         catch (Exception ex)
                         {
@@ -436,6 +439,7 @@ namespace Jvedio
                     else
                     {
                         Process.Start(filepath);
+                        main.vieModel.AddToRecentWatch(vieModel.DetailMovie.id);
                     }
                 }
                 else
@@ -523,7 +527,7 @@ namespace Jvedio
                 else if (index == 1) { filepath = BasePicPath + $"BigPic\\{vieModel.DetailMovie.id}.jpg"; }
                 else if (index == 2) { filepath = BasePicPath + $"SmallPic\\{vieModel.DetailMovie.id}.jpg"; }
                 else if (index == 3) { filepath = BasePicPath + $"ScreenShot\\{vieModel.DetailMovie.id}\\"; }
-                else if (index == 4) { if (vieModel.DetailMovie.actor.Length > 0) filepath = BasePicPath + $"Actresses\\{vieModel.DetailMovie.actor.Split(new char[] { ' ', '/' })[0]}.jpg"; else filepath = ""; }
+                else if (index == 4) { if (vieModel.DetailMovie.actor.Length > 0) filepath = BasePicPath + $"Actresses\\{vieModel.DetailMovie.actor.Split(actorSplitDict[vieModel.DetailMovie.vediotype])[0]}.jpg"; else filepath = ""; }
 
 
 

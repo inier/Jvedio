@@ -10,6 +10,23 @@ namespace Jvedio
     public static class Identify
     {
 
+        public static void InitFanhaoList()
+        {
+            Qibing = new List<string>();
+            Bubing = new List<string>();
+
+                foreach (var item in Resource_String.Qibing.Split(','))
+                {
+                    if (!string.IsNullOrEmpty(item) && item.Length > 0) { Qibing.Add(item.ToUpper()); }
+                }
+
+            foreach (var item in Resource_String.Bubing.Split(','))
+            {
+                if (!string.IsNullOrEmpty(item) && item.Length > 0) { Bubing.Add(item.ToUpper()); }
+            }
+
+        }
+
         public static bool IsFlowOut(string filepath)
         {
             bool result = false;
@@ -179,52 +196,7 @@ namespace Jvedio
 
 
 
-        public static void InitFanhaoList()
-        {
-            string QBPath = AppDomain.CurrentDomain.BaseDirectory + @"\Data\Qibing.txt";
-            string BBPath = AppDomain.CurrentDomain.BaseDirectory + @"\Data\Bubing.txt";
 
-            if (File.Exists(QBPath))
-            {
-                using (StreamReader sr = new StreamReader(QBPath))
-                {
-                    foreach (var item in sr.ReadToEnd().Replace("，", ",").Split(','))
-                    {
-                        if (!string.IsNullOrEmpty(item) && item.Length > 0) { Qibing.Add(item.ToUpper()); }
-                    }
-                }
-            }
-
-            if (File.Exists(BBPath))
-            {
-                using (StreamReader sr = new StreamReader(BBPath))
-                {
-                    foreach (var item in sr.ReadToEnd().Replace("，", ",").Split(','))
-                    {
-                        if (!string.IsNullOrEmpty(item) && item.Length > 0) { Bubing.Add(item.ToUpper()); }
-                    }
-                }
-            }
-
-
-
-            //如果为空，则载入默认
-            if (Qibing.Count == 0)
-            {
-                foreach (var item in Resource_String.Qibing.Split(','))
-                {
-                    if (!string.IsNullOrEmpty(item) && item.Length > 0) { Qibing.Add(item.ToUpper()); }
-                }
-            }
-
-            if (Bubing.Count == 0)
-            {
-                foreach (var item in Resource_String.Bubing.Split(','))
-                {
-                    if (!string.IsNullOrEmpty(item) && item.Length > 0) { Bubing.Add(item.ToUpper()); }
-                }
-            }
-        }
 
         /// <summary>
         /// 获得视频类型

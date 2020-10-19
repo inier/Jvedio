@@ -45,6 +45,7 @@ namespace Jvedio.ViewModel
 
 
             FavoritesCommand = new RelayCommand(GetFavoritesMovie);
+            RecentWatchCommand = new RelayCommand(GetRecentWatch);
             RecentCommand = new RelayCommand(GetRecentMovie);
             UncensoredCommand = new RelayCommand<int>(t => Getmoviebysql(1));
             CensoredCommand = new RelayCommand<int>(t => Getmoviebysql(2));
@@ -79,8 +80,8 @@ namespace Jvedio.ViewModel
 
         public RelayCommand FavoritesCommand { get; set; }
         public RelayCommand RecentCommand { get; set; }
-
         
+        public RelayCommand RecentWatchCommand { get; set; }
         public RelayCommand<int> CensoredCommand { get; set; }
         public RelayCommand<int> UncensoredCommand { get; set; }
         public RelayCommand<int> EuropeCommand { get; set; }
@@ -407,6 +408,17 @@ namespace Jvedio.ViewModel
             }
         }
 
+        private double _RecentWatchedCount = 0;
+        public double RecentWatchedCount
+        {
+            get { return _RecentWatchedCount; }
+            set
+            {
+                _RecentWatchedCount = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         private double _AllVedioCount = 0;
         public double AllVedioCount
@@ -701,7 +713,7 @@ namespace Jvedio.ViewModel
                 movies = MovieList.Where(m => m.actor.ToUpper().Contains(Search.ToUpper())).ToList();
                 foreach (Movie movie in movies)
                 {
-                    string[] actor = movie.actor.Split(new char[] { ' ', '/' });
+                    string[] actor = movie.actor.Split(actorSplitDict[movie.vediotype]);
                     foreach (var item in actor)
                     {
                         if (!string.IsNullOrEmpty(item) & item.IndexOf(' ') < 0)
@@ -758,6 +770,19 @@ namespace Jvedio.ViewModel
                             {
                                 movie.smallimage = StaticClass.GetBitmapImage(movie.id, "SmallPic");
                             }
+                            else if (Properties.Settings.Default.ShowImageMode == "动态图")
+                            {
+                                movie.gif = StaticClass.GetGifStream(movie.id);
+                            }
+
+                            //显示翻译结果
+                            if (Properties.Settings.Default.TitleShowTranslate)
+                            {
+                                DataBase cdb = new DataBase("Translate");
+                                string translate_title = cdb.GetInfoBySql($"select translate_title from youdao where id='{movie.id}'");
+                                cdb.CloseDB();
+                                if (translate_title != "") movie.title = translate_title;
+                            }
                             CurrentMovieList.Add(movie);
                         }
                         else { break; }
@@ -805,6 +830,8 @@ namespace Jvedio.ViewModel
                     movie.bigimage = StaticClass.GetBitmapImage(movie.id, "BigPic");
                 else if (Properties.Settings.Default.ShowImageMode == "缩略图")
                     movie.smallimage = StaticClass.GetBitmapImage(movie.id, "SmallPic");
+                else if (Properties.Settings.Default.ShowImageMode == "动态图")
+                    movie.gif = StaticClass.GetGifStream(movie.id);
 
                 //显示翻译结果
                 if (Properties.Settings.Default.TitleShowTranslate)
@@ -926,6 +953,8 @@ namespace Jvedio.ViewModel
                             movie.bigimage = StaticClass.GetBitmapImage(movie.id, "BigPic");
                         else if (Properties.Settings.Default.ShowImageMode == "缩略图")
                             movie.smallimage = StaticClass.GetBitmapImage(movie.id, "SmallPic");
+                        else if (Properties.Settings.Default.ShowImageMode == "动态图")
+                            movie.gif = StaticClass.GetGifStream(movie.id);
 
                         //显示翻译结果
                         if (Properties.Settings.Default.TitleShowTranslate)
@@ -1020,6 +1049,61 @@ namespace Jvedio.ViewModel
 
         }
 
+
+        public void AddToRecentWatch(string ID)
+        {
+            DateTime dateTime = DateTime.Now.Date;
+            if (!string.IsNullOrEmpty(ID))
+            {
+                if (RecentWatched.ContainsKey(dateTime))
+                {
+                    if (!RecentWatched[dateTime].Contains(ID))
+                        RecentWatched[dateTime].Add(ID);
+
+                }
+                else
+                {
+                    RecentWatched.Add(dateTime, new List<string>() { ID });
+                }
+            }
+
+
+
+            List<string> total = new List<string>();
+
+            foreach (var keyvalue in RecentWatched)
+            {
+                total=total.Union(keyvalue.Value).ToList();
+            }
+
+
+            RecentWatchedCount = total.Count;
+
+        }
+
+
+        public async void GetRecentWatch()
+        {
+            TextType = "最近播放";
+            cdb = new DataBase();
+            List<Movie> movies = new List<Movie>();
+            MovieList = new ObservableCollection<Movie>();
+            foreach (var keyValuePair in RecentWatched)
+            {
+                if(keyValuePair.Key<=DateTime.Now && keyValuePair.Key>=DateTime.Now.AddDays(-1 * Properties.Settings.Default.RecentDays))
+                {
+                    foreach (var item in keyValuePair.Value)
+                    {
+                        Movie movie = await cdb.SelectMovieByID(item);
+                        movies.Add(movie);
+                    }
+                }
+            }
+            cdb.CloseDB();
+            MovieList = new ObservableCollection<Movie>();
+            movies?.ForEach(arg => { MovieList.Add(arg); });
+            Sort();
+        }
 
         public async void GetRecentMovie()
         {
@@ -1139,7 +1223,7 @@ namespace Jvedio.ViewModel
             MovieList = new ObservableCollection<Movie>();
             models?.ForEach(arg =>
             {
-                if (arg.actor.Split(new char[] { ' ', '/' }).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);
+                if (arg.actor.Split(actorSplitDict[arg.vediotype]).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);
             });
             Sort();
             
@@ -1168,7 +1252,7 @@ namespace Jvedio.ViewModel
             {
                 movies.ForEach(arg =>
                 {
-                    try {if (arg.actor.Split(new char[] { ' ', '/' }).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);  }catch(Exception e)
+                    try {if (arg.actor.Split(actorSplitDict[arg.vediotype]).Any(m => m.ToUpper() == actress.name.ToUpper())) MovieList.Add(arg);  }catch(Exception e)
                     {
                         Logger.LogE(e);
                     }  
@@ -1323,7 +1407,12 @@ namespace Jvedio.ViewModel
                 if(movies.Count==0) MovieCount = $"本页有 0 个，总计 0 个";
                 if (movies != null && MovieList != null && movies.Count == MovieList.ToList().Count  ) { return; }
                     MovieList = new ObservableCollection<Movie>();
-            movies?.ForEach(arg => { MovieList.Add(arg); });
+            movies?.ForEach(arg => { 
+                MovieList.Add(arg); 
+                //最近播放
+            
+            
+            });
                     Sort();
             cdb.CloseDB();
 
@@ -1334,7 +1423,6 @@ namespace Jvedio.ViewModel
             VedioTypeACount=await dataBase.SelectCountBySql("where vediotype=1");
             VedioTypeBCount = await dataBase.SelectCountBySql("where vediotype=2");
             VedioTypeCCount = await dataBase.SelectCountBySql("where vediotype=3");
-
 
 
 
@@ -1410,7 +1498,7 @@ namespace Jvedio.ViewModel
                         if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.runtime).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.runtime).ToList(); }
                         break;
                     case "演员":
-                        if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.actor.Split(new char[] { ' ', '/' })[0]).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.actor.Split(new char[] { ' ', '/' })[0]).ToList(); }
+                        if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.actor.Split(actorSplitDict[o.vediotype])[0]).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.actor.Split(actorSplitDict[o.vediotype])[0]).ToList(); }
                         break;
                     default:
                         if (SortDescending) { sortMovieList = MovieList.OrderByDescending(o => o.id).ToList(); } else { sortMovieList = MovieList.OrderBy(o => o.id).ToList(); }
@@ -1437,6 +1525,8 @@ namespace Jvedio.ViewModel
                             if (!File.Exists(StaticVariable.BasePicPath + $"SmallPic\\{arg.id}.jpg")) { MovieList.Remove(arg); }
                         else if (Properties.Settings.Default.ShowImageMode == "海报图")
                             if (!File.Exists(StaticVariable.BasePicPath + $"BigPic\\{arg.id}.jpg")) { MovieList.Remove(arg); }
+                        else if (Properties.Settings.Default.ShowImageMode == "动态图")
+                                    if (!File.Exists(StaticVariable.BasePicPath + $"Gif\\{arg.id}.gif")) { MovieList.Remove(arg); }
                         else if (Properties.Settings.Default.ShowImageMode == "预览图")
                         {
                             if (!Directory.Exists(StaticVariable.BasePicPath + $"ExtraPic\\{arg.id}\\")) { MovieList.Remove(arg); }
@@ -1455,6 +1545,8 @@ namespace Jvedio.ViewModel
                             if (File.Exists(StaticVariable.BasePicPath + $"SmallPic\\{arg.id}.jpg")) { MovieList.Remove(arg); }
                         else if (Properties.Settings.Default.ShowImageMode == "海报图")
                             if (File.Exists(StaticVariable.BasePicPath + $"BigPic\\{arg.id}.jpg")) { MovieList.Remove(arg); }
+                        else if (Properties.Settings.Default.ShowImageMode == "动态图")
+                            if (File.Exists(StaticVariable.BasePicPath + $"Gif\\{arg.id}.gif")) { MovieList.Remove(arg); }
                         else if (Properties.Settings.Default.ShowImageMode == "预览图")
                         {
                             if (Directory.Exists(StaticVariable.BasePicPath + $"ExtraPic\\{arg.id}\\"))

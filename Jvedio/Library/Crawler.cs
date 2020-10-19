@@ -97,9 +97,9 @@ namespace Jvedio
 
         public BusCrawler(string Id,VedioType vedioType) :base(Id) {
             VedioType = vedioType;
-            if (vedioType == VedioType.欧美) { Url = RootUrl.BusEu + ID.Replace(".", "-"); }
-            else { Url = RootUrl.Bus + ID.ToUpper(); }
-            webSite = WebSite.Bus;
+            if (vedioType == VedioType.欧美) { Url = RootUrl.BusEu + ID.Replace(".", "-"); webSite = WebSite.BusEu; }
+            else { Url = RootUrl.Bus + ID.ToUpper(); webSite = WebSite.Bus; }
+            
             }
 
 

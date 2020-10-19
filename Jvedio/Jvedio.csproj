@@ -198,6 +198,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="XamlAnimatedGif, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\XamlAnimatedGif.1.2.3\lib\net45\XamlAnimatedGif.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -420,6 +423,8 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <Resource Include="Resources\Skin\white\create.png" />
+    <Resource Include="Resources\Skin\black\create.png" />
     <None Include="Resources\jav321.zip" />
     <Resource Include="Resources\Gif\loading.gif" />
     <Resource Include="Resources\Picture\sort_up.png" />
@@ -714,11 +719,6 @@
     <Resource Include="Resources\Jvedio.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Data\Data\Bubing.txt" />
-    <Resource Include="Data\Data\Qibing.txt" />
-    <Resource Include="Data\Data\SearchPattern.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Lib\MediaInfo.dll" />
     <Content Include="Lib\MediaInfoNET.dll" />
   </ItemGroup>
@@ -734,8 +734,7 @@
   <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.113.1\build\net46\System.Data.SQLite.Core.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>XCOPY "$(ProjectDir)Data\Data" "$(TargetDir)\Data" /E /Y /i
-XCOPY "$(ProjectDir)Data\x86" "$(TargetDir)\x86" /E /Y /i
+    <PreBuildEvent>XCOPY "$(ProjectDir)Data\x86" "$(TargetDir)\x86" /E /Y /i
 XCOPY "$(ProjectDir)Data\x64" "$(TargetDir)\x64" /E /Y /i
 XCOPY "$(ProjectDir)Lib\MediaInfo.dll" "$(TargetDir)" /E /Y /i
 XCOPY "$(ProjectDir)Lib\MediaInfoNET.dll" "$(TargetDir)" /E /Y /i
