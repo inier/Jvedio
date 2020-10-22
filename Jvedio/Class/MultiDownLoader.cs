@@ -96,9 +96,8 @@ namespace Jvedio
 
                 this.State = DownLoadState.DownLoading;
 
-                DataBase cdb = new DataBase("");
-                Movie movie = await cdb.SelectMovieByID(downLoadInfo.id);
-                cdb.CloseDB();
+                Movie movie =  DataBase.SelectMovieByID(downLoadInfo.id);
+                
                 
                 string[] url = new string[] { Properties.Settings.Default.Bus, Properties.Settings.Default.BusEurope, Properties.Settings.Default.DB, Properties.Settings.Default.Library };
                 bool[] enableurl = new bool[] { Properties.Settings.Default.EnableBus, Properties.Settings.Default.EnableBusEu, Properties.Settings.Default.EnableDB, Properties.Settings.Default.EnableLibrary, Properties.Settings.Default.EnableFC2 };
@@ -109,10 +108,8 @@ namespace Jvedio
 
 
 
-
-                cdb = new DataBase("");
-                movie = await cdb.SelectMovieByID(downLoadInfo.id);
-                cdb.CloseDB();
+                movie =  DataBase.SelectMovieByID(downLoadInfo.id);
+                
 
 
                 //更新总进度

@@ -123,7 +123,7 @@ namespace Jvedio
 				StboardFadeIn.Children.Add(FadeInAnimation);
 				StboardFadeIn.Begin(imgFadeIn);
 			}
-			catch  { }
+			catch(Exception ex)  { Console.WriteLine(ex.Message); }
 		}
 
 

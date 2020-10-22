@@ -31,7 +31,6 @@ namespace Jvedio.ViewModel
             }
         }
 
-        DataBase cdb;
 
 
         public ObservableCollection<string> movieIDList;
@@ -73,9 +72,9 @@ namespace Jvedio.ViewModel
 
         public void Query(string movieid)
         {
-            cdb = new DataBase();
-            DetailMovie models = cdb.SelectDetailMovieById(movieid);
-            cdb.CloseDB();
+            
+            DetailMovie models = DataBase.SelectDetailMovieById(movieid);
+            
             DetailMovie = new DetailMovie();
             if (models != null) { DetailMovie = models; }
         }
@@ -97,15 +96,15 @@ namespace Jvedio.ViewModel
             
             if (DetailMovie != null)
             {
-                cdb = new DataBase();
+                
                 if (DetailMovie.id.ToUpper() != id.ToUpper())
                 {
                     //先删除原来的
-                    cdb.DelInfoByType("movie", "id",id);
-                    cdb.InsertFullMovie(DetailMovie);
+                    DataBase.DelInfoByType("movie", "id",id);
+                    DataBase.InsertFullMovie(DetailMovie);
                 }
-                else { cdb.InsertFullMovie(DetailMovie); }
-                cdb.CloseDB();
+                else { DataBase.InsertFullMovie(DetailMovie); }
+                
             }
            
         }

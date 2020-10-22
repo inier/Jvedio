@@ -136,9 +136,8 @@ namespace Jvedio
 
 
             sql = sql.Substring(0, sql.Length - 5);
-            DataBase cdb = new DataBase();
-            var movies = cdb.SelectMoviesBySql(sql);
-            cdb.CloseDB();
+            var movies = DataBase.SelectMoviesBySql(sql);
+            
 
             Console.WriteLine(sql);
 
@@ -151,9 +150,9 @@ namespace Jvedio
                 if (filtermovies.Count == 0) { new PopupWindow(this, "无结果").Show(); } else
                 {
                     //更新主界面
-                    main.vieModel.MovieList = new System.Collections.ObjectModel.ObservableCollection<Movie>();
+                    main.vieModel.MovieList = new List<Movie>();
                     filtermovies.ForEach(arg => { main.vieModel.MovieList.Add(arg); });
-                    main.vieModel.Sort();
+                    //main.vieModel.Sort();
                 }
 
 

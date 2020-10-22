@@ -320,9 +320,8 @@ namespace Jvedio
                     {
                         await Task.Run(() =>
                     {
-                        DataBase cdb = new DataBase();
-                        cdb.InsertFromAccess(AccessPath);
-                        cdb.CloseDB();
+                        DataBase.InsertFromAccess(AccessPath);
+                        
                     });
                         LoadingStackPanel.Visibility = Visibility.Hidden;
                         if (!cts.IsCancellationRequested) new PopupWindow(this, "成功！").Show();
@@ -380,7 +379,6 @@ namespace Jvedio
                         double total = 0;
                         await Task.Run(() =>
                         {
-                            DataBase cdb = new DataBase();
                             
                             nfoFiles.ForEach(item =>
                             {
@@ -390,7 +388,7 @@ namespace Jvedio
                                     if (movie != null)
                                     {
 
-                                        cdb.InsertFullMovie(movie);
+                                        DataBase.InsertFullMovie(movie);
                                         //复制并覆盖所有图片
                                         CopyPicToPath(movie.id, item);
                                         total += 1;
@@ -399,7 +397,7 @@ namespace Jvedio
 
                                 }
                             });
-                            cdb.CloseDB();
+                            
 
                         });
                         LoadingStackPanel.Visibility = Visibility.Hidden;
@@ -464,10 +462,10 @@ namespace Jvedio
                     //    if ((bool)cb[0].IsChecked)
                     //    {
                     //        //重置信息
-                    //        DataBase cdb = new DataBase();
+                    //        DataBase 
                     //        cdb.DeleteTable("movie");
                     //        cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                    //        cdb.CloseDB();
+                    //        
                     //    }
 
                     //    if ((bool)cb[1].IsChecked)
@@ -482,7 +480,7 @@ namespace Jvedio
                     //                cdb.DelInfoByType("movie", "id", movie.id);
                     //            }
                     //        });
-                    //        cdb.CloseDB();
+                    //        
 
 
 
@@ -491,12 +489,12 @@ namespace Jvedio
                     //    if ((bool)cb[2].IsChecked)
                     //    {
                     //        //Vaccum
-                    //        DataBase cdb = new DataBase();
+                    //        DataBase 
                     //        cdb.Vaccum();
-                    //        cdb.CloseDB();
+                    //        
                     //        cdb = new DataBase("Image");
                     //        cdb.Vaccum();
-                    //        cdb.CloseDB();
+                    //        
                     //    }
 
                     //    if (!cts.IsCancellationRequested) new PopupWindow(this, "成功！").Show();

@@ -362,10 +362,10 @@
     <Setting Name="SmallImage_Width" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">180</Value>
     </Setting>
-    <Setting Name="BigImage_Height" Type="System.String" Scope="User">
+    <Setting Name="BigImage_Height" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="BigImage_Width" Type="System.String" Scope="User">
+    <Setting Name="BigImage_Width" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">250</Value>
     </Setting>
     <Setting Name="ExtraImage_Height" Type="System.Int32" Scope="User">
@@ -484,6 +484,15 @@
     </Setting>
     <Setting Name="RecentWatchDays" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="GlobalImageWidth" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="MainImageAutoMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="AsyncShowImage" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

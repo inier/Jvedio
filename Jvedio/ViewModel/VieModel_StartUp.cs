@@ -16,7 +16,6 @@ namespace Jvedio.ViewModel
 {
     public class VieModel_StartUp : ViewModelBase
     {
-        protected DataBase cdb;
         protected List<Movie> Movies;
 
         public VieModel_StartUp()

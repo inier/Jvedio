@@ -19,8 +19,7 @@ namespace Jvedio.ViewModel
 
         public VieModel_ImageViewer(string movieid)
         {
-            DataBase cdb = new DataBase();
-            DetailMovie models = cdb.SelectDetailMovieById(movieid);
+            DetailMovie models = DataBase.SelectDetailMovieById(movieid);
 
             //扫描目录
             List<string> imagePathList = new List<string>();

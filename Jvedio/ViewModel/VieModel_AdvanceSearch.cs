@@ -30,9 +30,8 @@ namespace Jvedio.ViewModel
             Rating = new ObservableCollection<string>();
 
 
-            DataBase cdb = new DataBase("");
-            var models = cdb.GetAllFilter();
-            cdb.CloseDB();
+            var models = DataBase.GetAllFilter();
+            
 
             models[0].ForEach(arg => { Year.Add(arg); });
             models[1].ForEach(arg => { Genre.Add(arg); });

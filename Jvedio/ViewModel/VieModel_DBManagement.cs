@@ -17,7 +17,6 @@ namespace Jvedio.ViewModel
 {
     public class VieModel_DBManagement : ViewModelBase
     {
-        protected DataBase cdb;
         protected List<Movie> Movies;
 
         public VieModel_DBManagement()
@@ -84,9 +83,9 @@ namespace Jvedio.ViewModel
             Movies = new List<Movie>();
             string name = Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First().ToLower();
             if (name != "info") name = "DataBase\\" + name;
-            cdb = new DataBase(name);
-            Movies = await cdb.SelectMoviesById("");
-            cdb.CloseDB();
+            DB db = new DB(name);
+            Movies = await db.SelectMoviesById("");
+            
 
             AllCount = Movies.Count;
             UncensoredCount = Movies.Where(arg => arg.vediotype == 1).Count();

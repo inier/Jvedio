@@ -134,9 +134,8 @@ namespace Jvedio
                 {
                     if (main.vieModel.CurrentMovieList[i]?.id.ToUpper() == vieModel.id.ToUpper())
                     {
-                        DataBase cdb = new DataBase();
-                        Movie movie = await cdb.SelectMovieByID(vieModel.DetailMovie.id);
-                        cdb.CloseDB();
+                        Movie movie =  DataBase.SelectMovieByID(vieModel.DetailMovie.id);
+                        
                         if (Properties.Settings.Default.ShowImageMode == "预览图")
                         {
 

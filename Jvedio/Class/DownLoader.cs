@@ -83,8 +83,8 @@ namespace Jvedio
                 }
 
 
-                DetailMovie dm = new DetailMovie(); DataBase cdb = new DataBase("");
-                dm = cdb.SelectDetailMovieById(movie.id); cdb.CloseDB();
+                DetailMovie dm = new DetailMovie(); 
+                dm = DataBase.SelectDetailMovieById(movie.id); 
                 //下载小图
                 await DownLoadSmallPic(dm);
                 dm.smallimage = StaticClass.GetBitmapImage(dm.id, "SmallPic");

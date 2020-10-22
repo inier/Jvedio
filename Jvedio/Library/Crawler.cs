@@ -43,10 +43,9 @@ namespace Jvedio
             catch { return; }
             if (id == "") return;
             //保存信息
-            DataBase cdb = new DataBase();
-            cdb.UpdateInfoFromNet(Info, webSite);
-            DetailMovie detailMovie = cdb.SelectDetailMovieById(id);
-            cdb.CloseDB();
+            DataBase.UpdateInfoFromNet(Info, webSite);
+            DetailMovie detailMovie = DataBase.SelectDetailMovieById(id);
+            
 
             //nfo 信息保存到视频同目录
             if (Properties.Settings.Default.SaveInfoToNFO)
@@ -154,8 +153,7 @@ namespace Jvedio
         {
             string result = "";
             //先从数据库获取
-            DataBase cdb = new DataBase();
-            result = cdb.SelectInfoByID("code", "javdb", ID);
+            result = DataBase.SelectInfoByID("code", "javdb", ID);
             if (result == "")
             {
                 //从网络获取
@@ -167,8 +165,8 @@ namespace Jvedio
             }
 
             //存入数据库
-            if (result != "") { cdb.SaveMovieCodeByID(ID, "javdb", result); }
-            cdb.CloseDB();
+            if (result != "") { DataBase.SaveMovieCodeByID(ID, "javdb", result); }
+            
             return result;
         }
 
@@ -240,8 +238,7 @@ namespace Jvedio
         {
             string result;
             //先从数据库获取
-            DataBase cdb = new DataBase();
-            result = cdb.SelectInfoByID("code", "library", ID);
+            result = DataBase.SelectInfoByID("code", "library", ID);
             if (result == "" || result.IndexOf("zh-cn")>=0)
             {
                 Console.WriteLine(Url);
@@ -253,7 +250,7 @@ namespace Jvedio
             }
 
             //存入数据库
-            if (result != "" && result.IndexOf("zh-cn") < 0) { cdb.SaveMovieCodeByID(ID, "library", result); cdb.CloseDB(); } else { result = ""; }
+            if (result != "" && result.IndexOf("zh-cn") < 0) { DataBase.SaveMovieCodeByID(ID, "library", result);  } else { result = ""; }
             
             return result;
         }

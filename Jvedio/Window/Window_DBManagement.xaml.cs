@@ -236,12 +236,12 @@ namespace Jvedio
 
 
 
-                DataBase cdb = new DataBase("DataBase\\" + name);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
-                cdb.CloseDB();
+                DB db = new DB("DataBase\\" + name);
+                db.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                db.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
+                db.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
+                db.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
+                
 
                 vieModel_DBManagement.DataBases.Add(name);
 
@@ -350,25 +350,25 @@ namespace Jvedio
                 if ((bool)cb[0].IsChecked)
                 {
                     //重置信息
-                    DataBase cdb = new DataBase(path);
-                    cdb.DeleteTable("movie");
-                    cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                    cdb.CloseDB();
+                    DB db = new DB(path);
+                    db.DeleteTable("movie");
+                    db.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                    
                 }
 
                 if ((bool)cb[1].IsChecked)
                 {
                     //删除不存在影片
-                    DataBase cdb = new DataBase(path);
-                    var movies = cdb.SelectMoviesBySql("select * from movie");
+                    DB db = new DB(path);
+                    var movies = db.SelectMoviesBySql("select * from movie");
                     movies.ForEach(movie =>
                     {
                         if (!File.Exists(movie.filepath))
                         {
-                            cdb.DelInfoByType("movie", "id", movie.id);
+                            db.DelInfoByType("movie", "id", movie.id);
                         }
                     });
-                    cdb.CloseDB();
+                    
 
 
 
@@ -377,12 +377,11 @@ namespace Jvedio
                 if ((bool)cb[2].IsChecked)
                 {
                     //Vaccum
-                    DataBase cdb = new DataBase();
-                    cdb.Vacuum();
-                    cdb.CloseDB();
-                    cdb = new DataBase(path);
-                    cdb.Vacuum();
-                    cdb.CloseDB();
+                    DB db = new DB(path);
+                    db.Vacuum();
+                    db.CloseDB();
+
+
                 }
                 new PopupWindow(this, "成功！").Show();
             }

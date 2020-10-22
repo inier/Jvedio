@@ -1466,9 +1466,9 @@ namespace Jvedio.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public string BigImage_Height {
+        public int BigImage_Height {
             get {
-                return ((string)(this["BigImage_Height"]));
+                return ((int)(this["BigImage_Height"]));
             }
             set {
                 this["BigImage_Height"] = value;
@@ -1478,9 +1478,9 @@ namespace Jvedio.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("250")]
-        public string BigImage_Width {
+        public int BigImage_Width {
             get {
-                return ((string)(this["BigImage_Width"]));
+                return ((int)(this["BigImage_Width"]));
             }
             set {
                 this["BigImage_Width"] = value;
@@ -1952,6 +1952,42 @@ namespace Jvedio.Properties {
             }
             set {
                 this["RecentWatchDays"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int GlobalImageWidth {
+            get {
+                return ((int)(this["GlobalImageWidth"]));
+            }
+            set {
+                this["GlobalImageWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MainImageAutoMode {
+            get {
+                return ((bool)(this["MainImageAutoMode"]));
+            }
+            set {
+                this["MainImageAutoMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AsyncShowImage {
+            get {
+                return ((bool)(this["AsyncShowImage"]));
+            }
+            set {
+                this["AsyncShowImage"] = value;
             }
         }
     }

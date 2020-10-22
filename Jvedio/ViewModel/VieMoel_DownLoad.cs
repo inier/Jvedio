@@ -88,8 +88,6 @@ namespace Jvedio.ViewModel
             }
         }
 
-
-        DataBase cdb;
         public RelayCommand ResetCommand { get; set; }
 
         public VieMoel_DownLoad(){
@@ -131,10 +129,10 @@ namespace Jvedio.ViewModel
 
 
 
-        public async void Reset()
+        public  void Reset()
         {
-            cdb = new DataBase();
-            var models = await cdb.SelectMoviesById("");
+            
+            var models =  DataBase.SelectMoviesById("");
             TotalDownloadList = new ObservableCollection<DownLoadInfo>();
             var filterlist = new List<string>();
             if (Properties.Settings.Default.DLLoadUnCensored) filterlist = filterlist.Union(models.Where(arg => arg.vediotype == 1).Select(g => g.id)).ToList();
@@ -150,7 +148,7 @@ namespace Jvedio.ViewModel
 
 
             filterlist?.ForEach(arg => { TotalDownloadList.Add(new DownLoadInfo() { id = arg ,progress=0,speed=0,progressbarvalue=0,maximum=1}); });
-            cdb.CloseDB();
+            
             TotalProgressMaximum = TotalDownloadList.Count;
             TotalProgress = 0;
             TotalPage = (int)Math.Ceiling((double)TotalDownloadList.Count / (double)Properties.Settings.Default.DLNum);

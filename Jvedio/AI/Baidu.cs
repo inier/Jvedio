@@ -27,6 +27,7 @@ namespace Jvedio
 
 
 
+
         public static string getAccessToken()
         {
             Init();
@@ -89,7 +90,31 @@ namespace Jvedio
             return result;
         }
 
-        
+        public static Task<Int32Rect> GetAIResult(Movie movie, string path)
+        {
+            return Task.Run(() =>
+            {
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(path);
+                string token = AccessToken.getAccessToken();
+                string FaceJson = FaceDetect.faceDetect(token, bitmap);
+
+                Dictionary<string, string> result;
+                Int32Rect int32Rect;
+                (result, int32Rect) = FaceParse.Parse(FaceJson);
+                if (result != null && int32Rect != Int32Rect.Empty)
+                {
+                    DB dataBase = new DB("AI");
+                    dataBase.SaveBaiduAIByID(movie.id, result);
+                    dataBase.CloseDB();
+                    return int32Rect;
+                }
+                else
+                    return Int32Rect.Empty;
+            });
+
+        }
+
+
 
     }
 

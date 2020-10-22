@@ -85,9 +85,8 @@ namespace Jvedio
                     {
                         this.Dispatcher.BeginInvoke(new Action(() => { statusText.Text = $"扫描指定文件夹"; }), System.Windows.Threading.DispatcherPriority.Render);
                         List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), ct);
-                        DataBase cdb = new DataBase();
                         Scan.DistinctMovieAndInsert(filepaths, ct);
-                        cdb.CloseDB();
+                        
                     }
                     catch(Exception ex)
                     {
@@ -165,10 +164,10 @@ namespace Jvedio
             if (!Directory.Exists(StaticVariable.BasePicPath + "Gif\\")) { Directory.CreateDirectory(StaticVariable.BasePicPath + "Gif\\"); }
 
 
-
-            if (Properties.Settings.Default.OpenDataBaseDefault)
+            //默认打开某个数据库
+            if (Properties.Settings.Default.OpenDataBaseDefault && File.Exists(Properties.Settings.Default.DataBasePath))
             {
-                OpenDefaultDatabase();//默认打开某个数据库
+                OpenDefaultDatabase();
                 //启动主窗口
                 Main main = new Main();
                 statusText.Text = "初始化影片";
@@ -195,7 +194,6 @@ namespace Jvedio
                 {
                     this.Dispatcher.BeginInvoke(new Action(() => { statusText.Text = $"扫描指定文件夹"; }), System.Windows.Threading.DispatcherPriority.Render);
                     List<string> filepaths = Scan.ScanPaths(ReadScanPathFromConfig(Properties.Settings.Default.DataBasePath.Split('\\').Last().Split('.').First()), ct);
-                    DataBase cdb = new DataBase();
                     Scan.DistinctMovieAndInsert(filepaths, ct);
                 }, cts.Token);
 
@@ -243,57 +241,57 @@ namespace Jvedio
 
             if (!File.Exists(InfoDataBasePath))
             {
-                DataBase cdb = new DataBase("Info");
-                cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
-                cdb.CloseDB();
+                DB db = new DB("Info");
+                db.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                db.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
+                db.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
+                db.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
+                
             }
             else
             {
                 //是否具有表结构
-                DataBase cdb = new DataBase("Info");
-                if (!cdb.IsTableExist("movie") | !cdb.IsTableExist("actress") | !cdb.IsTableExist("library") | !cdb.IsTableExist("javdb"))
+                DB db = new DB("Info");
+                if (!db.IsTableExist("movie") | !db.IsTableExist("actress") | !db.IsTableExist("library") | !db.IsTableExist("javdb"))
                 {
-                    cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                    cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
-                    cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
-                    cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
+                    db.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                    db.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
+                    db.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
+                    db.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
                 }
-                cdb.CloseDB();
+                
             }
 
 
             if (!File.Exists(AIDataBasePath))
             {
-                DataBase cdb = new DataBase("AI");
-                cdb.CreateTable(StaticVariable.SQLITETABLE_BAIDUAI);
-                cdb.CloseDB();
+                DB db = new DB("AI");
+                db.CreateTable(StaticVariable.SQLITETABLE_BAIDUAI);
+                
             }
             else
             {
                 //是否具有表结构
-                DataBase cdb = new DataBase("AI");
-                if (!cdb.IsTableExist("baidu")) cdb.CreateTable(StaticVariable.SQLITETABLE_BAIDUAI);
-                cdb.CloseDB();
+                DB db = new DB("AI");
+                if (!db.IsTableExist("baidu")) db.CreateTable(StaticVariable.SQLITETABLE_BAIDUAI);
+                
             }
 
 
             if (!File.Exists(TranslateDataBasePath))
             {
-                DataBase cdb = new DataBase("Translate");
-                cdb.CreateTable(StaticVariable.SQLITETABLE_YOUDAO);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_BAIDUTRANSLATE);
-                cdb.CloseDB();
+                DB db = new DB("Translate");
+                db.CreateTable(StaticVariable.SQLITETABLE_YOUDAO);
+                db.CreateTable(StaticVariable.SQLITETABLE_BAIDUTRANSLATE);
+                
             }
             else
             {
                 //是否具有表结构
-                DataBase cdb = new DataBase("Translate");
-                if (!cdb.IsTableExist("youdao")) cdb.CreateTable(StaticVariable.SQLITETABLE_YOUDAO);
-                if (!cdb.IsTableExist("baidu")) cdb.CreateTable(StaticVariable.SQLITETABLE_BAIDUTRANSLATE);
-                cdb.CloseDB();
+                DB db = new DB("Translate");
+                if (!db.IsTableExist("youdao")) db.CreateTable(StaticVariable.SQLITETABLE_YOUDAO);
+                if (!db.IsTableExist("baidu")) db.CreateTable(StaticVariable.SQLITETABLE_BAIDUTRANSLATE);
+                
             }
 
             
@@ -488,12 +486,12 @@ namespace Jvedio
                 if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrEmpty(name) && !vieModel_StartUp.DataBases.Contains(name) && name.IndexOfAny(Path.GetInvalidFileNameChars()) ==-1 )
                 {
                 //新建
-                DataBase cdb = new DataBase("DataBase\\" + name);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
-                cdb.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
-                cdb.CloseDB();
+                DB db = new DB("DataBase\\" + name);
+                db.CreateTable(StaticVariable.SQLITETABLE_MOVIE);
+                db.CreateTable(StaticVariable.SQLITETABLE_ACTRESS);
+                db.CreateTable(StaticVariable.SQLITETABLE_LIBRARY);
+                db.CreateTable(StaticVariable.SQLITETABLE_JAVDB);
+                
                 if (vieModel_StartUp.DataBases.Contains("新建视频库")) vieModel_StartUp.DataBases.Remove("新建视频库");
 
                 textBox.IsEnabled = false;

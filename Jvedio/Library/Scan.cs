@@ -276,7 +276,6 @@ namespace Jvedio
             Logger.LogScanInfo(Environment.NewLine +  "-----【" + DateTime.Now.ToString() + "】-----");
             Logger.LogScanInfo(Environment.NewLine +  $"扫描出 => {MoviePaths.Count}  个 \n");
 
-            DataBase cdb = new DataBase();
 
             //检查未识别出番号的视频
             List<string> r1 = new List<string>();
@@ -416,7 +415,7 @@ namespace Jvedio
                     subsection = subsection.Substring(0, subsection.Length - 1),
                     scandate = createDate
                 };
-                cdb.InsertScanMovie(movie); totalinsertnum += 1;
+                DataBase.InsertScanMovie(movie); totalinsertnum += 1;
             }
 
             Console.WriteLine("insertList:" + insertList.Count);
@@ -454,9 +453,9 @@ namespace Jvedio
                     vediotype = (int)vt,
                     scandate = createDate
                 };
-                cdb.InsertScanMovie(movie); totalinsertnum += 1;
+                DataBase.InsertScanMovie(movie); totalinsertnum += 1;
             }
-            cdb.CloseDB();
+            
             Logger.LogScanInfo(Environment.NewLine + $"总计导入 => {totalinsertnum}个" + Environment.NewLine);
 
 

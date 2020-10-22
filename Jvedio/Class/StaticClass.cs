@@ -23,6 +23,20 @@ namespace Jvedio
 {
     public static class StaticClass
     {
+
+
+        public static bool CheckBeforeDownload()
+        {
+            bool result = false;
+            result = (Properties.Settings.Default.Enable321 && !string.IsNullOrEmpty(Properties.Settings.Default.Jav321))
+                || (Properties.Settings.Default.EnableBus && !string.IsNullOrEmpty(Properties.Settings.Default.Bus))
+                || (Properties.Settings.Default.EnableBusEu && !string.IsNullOrEmpty(Properties.Settings.Default.BusEurope))
+                || (Properties.Settings.Default.EnableLibrary && !string.IsNullOrEmpty(Properties.Settings.Default.Library))
+                || (Properties.Settings.Default.EnableDB && !string.IsNullOrEmpty(Properties.Settings.Default.DB))
+                || (Properties.Settings.Default.EnableDMM && !string.IsNullOrEmpty(Properties.Settings.Default.DMM));
+
+            return result;
+        }
         public static void InitJav321IDConverter()
         {
             //读取数据文件
@@ -394,10 +408,10 @@ namespace Jvedio
         {
             if (!File.Exists(path)) return false;
             //是否具有表结构
-            DataBase cdb = new DataBase(path, true);
-            if (!cdb.IsTableExist("movie") || !cdb.IsTableExist("actress") || !cdb.IsTableExist("library") || !cdb.IsTableExist("javdb"))
+            DB db = new DB(path, true);
+            if (!db.IsTableExist("movie") || !db.IsTableExist("actress") || !db.IsTableExist("library") || !db.IsTableExist("javdb"))
                 return false;
-            cdb.CloseDB();
+            
             return true;
         }
 
@@ -545,21 +559,23 @@ namespace Jvedio
 
         }
 
-        public static MemoryStream GetGifStream(string ID)
-        {
-            try
-            {
-                using (var fs = new FileStream(BasePicPath + $"Gif\\{ID}.gif", System.IO.FileMode.Open))
-                {
-                    var ms = new MemoryStream();
-                    fs.CopyTo(ms);
-                    ms.Position = 0;
-                    return ms;
-                }
-            }
-            catch (Exception e) { Console.WriteLine(e.Message); }
-            return null;
-        }
+        //public static MemoryStream GetGifStream(string ID)
+        //{
+        //    try
+        //    {
+        //        using (var fs = new FileStream(BasePicPath + $"Gif\\{ID}.gif", System.IO.FileMode.Open))
+        //        {
+        //            var ms = new MemoryStream();
+        //            fs.CopyTo(ms);
+        //            ms.Position = 0;
+        //            return ms;
+        //        }
+        //    }
+        //    catch (Exception e) { Console.WriteLine(e.Message); }
+        //    return null;
+        //}
+
+
 
 
 

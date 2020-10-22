@@ -112,6 +112,9 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="HandyControl, Version=2.5.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HandyControl.2.5.0.2\lib\net47\HandyControl.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.24.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.24\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -198,9 +201,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="XamlAnimatedGif, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\XamlAnimatedGif.1.2.3\lib\net45\XamlAnimatedGif.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -213,8 +213,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Class\AppHotKey.cs" />
+    <Compile Include="Class\JvedioClass.cs" />
     <Compile Include="Class\MediaParse.cs" />
     <Compile Include="Library\CustomExtension.cs" />
+    <Compile Include="Library\DB.cs" />
     <Compile Include="Library\MediaInfo.cs" />
     <Compile Include="Library\ImageProcess.cs" />
     <Compile Include="Class\Jvedio_BaseWindow.cs" />
@@ -423,6 +425,12 @@
     <Content Include="Lib\PInvoke.dll" />
     <Content Include="Lib\QueryEngine.dll" />
     <Content Include="Lib\UsnOperation.dll" />
+    <Resource Include="Resources\Skin\white\_score.png" />
+    <Resource Include="Resources\Skin\black\_score.png" />
+    <Resource Include="Resources\Picture\score.png" />
+    <Resource Include="Resources\Skin\white\runtime.png" />
+    <Resource Include="Resources\Skin\black\runtime.png" />
+    <Resource Include="Resources\Picture\NoPrinting_B.gif" />
     <Resource Include="Resources\Skin\white\create.png" />
     <Resource Include="Resources\Skin\black\create.png" />
     <None Include="Resources\jav321.zip" />

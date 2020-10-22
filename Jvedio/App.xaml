@@ -9,7 +9,11 @@
             <ResourceDictionary.MergedDictionaries>
 
 
-            <!--Main-->
+                <!--HandyControl-->
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
+
+                <!--Main-->
                 <ResourceDictionary Source="XAML/Main/SideRadioButtonStyle.xaml"/>
                 <ResourceDictionary Source="XAML/Main/SideComboBoxStyle.xaml"/>
 

@@ -54,13 +54,12 @@ namespace Jvedio
 
 
             Console.WriteLine(sqlText);
-            DataBase cdb = new DataBase();
             List<Movie> movies = null;
 
-            try { movies = cdb.SelectMoviesBySql(sqlText); }
+            try { movies = DataBase.SelectMoviesBySql(sqlText); }
             catch { }
              
-            cdb.CloseDB();
+            
             if (movies != null) { SearchResult.Text = $"计数：{movies.Count} 次匹配"; SearchResult.Foreground = Brushes.LightBlue; }
             else { SearchResult.Text = $"查找：无法找到文本 {searchContent}";SearchResult.Foreground = Brushes.OrangeRed; }
         }
@@ -87,21 +86,20 @@ namespace Jvedio
             }
 
             Console.WriteLine(sqlText);
-            DataBase cdb = new DataBase();
             List<Movie> movies = null;
 
-            try { movies = cdb.SelectMoviesBySql(sqlText); }
+            try { movies = DataBase.SelectMoviesBySql(sqlText); }
             catch(Exception ex) { Logger.LogD(ex); }
 
-            cdb.CloseDB();
+            
             if (movies != null) { 
                 SearchResult.Text = $"计数：{movies.Count} 次匹配"; SearchResult.Foreground = Brushes.LightBlue;
 
                 Main main = App.Current.Windows[0] as Main;
-                main.vieModel.MovieList = new System.Collections.ObjectModel.ObservableCollection<Movie>();
+                main.vieModel.MovieList = new List<Movie>();
                 main.vieModel.CurrentMovieList = new System.Collections.ObjectModel.ObservableCollection<Movie>();
                 movies.ForEach(arg => main.vieModel.MovieList.Add(arg));
-                main.vieModel.Sort();
+                //main.vieModel.Sort();
             }
             else { 
                 SearchResult.Text = $"查找无结果： {searchContent}"; SearchResult.Foreground = Brushes.OrangeRed; 

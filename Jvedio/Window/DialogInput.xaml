@@ -47,7 +47,7 @@
         </Border>
 
         <TextBlock x:Name="TitleTextBlock" FontSize="20" Foreground="{DynamicResource ForegroundGlobal}" TextAlignment="Center" HorizontalAlignment="Left" Text="请输入内容" Margin="20" Height="auto" Width="auto" VerticalAlignment="Top"></TextBlock>
-        <TextBox PreviewKeyUp="ContentTextBox_PreviewKeyUp" x:Name="ContentTextBox" FontSize="25" Foreground="{DynamicResource ForegroundSearch}" Background="{DynamicResource BackgroundTitle}" BorderThickness="0" Text="内容" Margin="20 70 10 0" Height="auto" Width="360" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBox>
+            <TextBox PreviewKeyUp="ContentTextBox_PreviewKeyUp" x:Name="ContentTextBox" FontSize="25" CaretBrush="{DynamicResource ForegroundSearch}" Foreground="{DynamicResource ForegroundSearch}" Background="{DynamicResource BackgroundTitle}" BorderThickness="0" Text="内容" Margin="20 70 10 0" Height="auto" Width="360" VerticalAlignment="Top" HorizontalAlignment="Left"></TextBox>
 
         <Button Style="{StaticResource ButtonTrigger}" FontSize="20"  Background="Transparent" Margin="0 0 100 20" BorderThickness="0" Content="取 消" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Button_Click_1"/>
         <Button Style="{StaticResource ButtonTrigger}" FontSize="20"  Background="Transparent" Margin="0 0 30 20" BorderThickness="0" Content="确 定" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Bottom" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Button_Click"/>

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
-
+using static Jvedio.StaticVariable;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.IO;
@@ -22,6 +22,20 @@ namespace Jvedio.ViewModel
         {
             QueryCommand = new RelayCommand<string>(Query);
         }
+
+        private int _SelectImageIndex = 0;
+
+        public int SelectImageIndex
+        {
+            get { return _SelectImageIndex; }
+            set
+            {
+                _SelectImageIndex = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
 
 
         public DetailMovie detailmovie;
@@ -41,28 +55,36 @@ namespace Jvedio.ViewModel
             MessengerInstance.Unregister(this);
         }
 
-        DataBase cdb;
 
         public RelayCommand<string> QueryCommand { get; set; }
 
 
         public void SaveLove()
         {
-            cdb = new DataBase();
-            cdb.UpdateMovieByID(DetailMovie.id, "favorites",DetailMovie.favorites, "string");
-            cdb.CloseDB();
+
+            DataBase.UpdateMovieByID(DetailMovie.id, "favorites",DetailMovie.favorites, "string");
+            
+        }
+
+        public void SaveLabel()
+        {
+            List<string> labels = DetailMovie.labellist;
+            labels.Remove("+");
+
+            DataBase.UpdateMovieByID(DetailMovie.id, "label", string.Join(" ",labels), "string");
+            
         }
 
 
         public void Query(string movieid)
         {
 
-            cdb = new DataBase();
-            DetailMovie detailMovie = cdb.SelectDetailMovieById(movieid);
+            
+            DetailMovie detailMovie = DataBase.SelectDetailMovieById(movieid);
             //访问次数+1
             detailMovie.visits += 1;
-            cdb.UpdateMovieByID(movieid, "visits", detailMovie.visits);
-            cdb.CloseDB();
+            DataBase.UpdateMovieByID(movieid, "visits", detailMovie.visits);
+            
 
             //扫描目录
             List<string> imagePathList = new List<string>();
@@ -95,28 +117,49 @@ namespace Jvedio.ViewModel
             DetailMovie = new DetailMovie();
             if (detailMovie != null)
             {
+                detailMovie.bigimage = StaticClass.GetBitmapImage(detailMovie.id, "BigPic");
+
+                //if (File.Exists(BasePicPath + $"SmallPic\\{detailMovie.id}.jpg"))
+                //{
+                //    detailMovie.extraimagelist.Add(StaticClass.GetBitmapImage(detailMovie.id, "SmallPic"));
+                //    detailMovie.extraimagePath.Add(BasePicPath + $"SmallPic\\{detailMovie.id}.jpg");
+                //}
+
+                if (File.Exists(BasePicPath + $"BigPic\\{detailMovie.id}.jpg"))
+                {
+                    detailMovie.extraimagelist.Add(detailMovie.bigimage);
+                    detailMovie.extraimagePath.Add(BasePicPath + $"BigPic\\{detailMovie.id}.jpg");
+                }
+
+
+
+
                 foreach (var path in imagePathList) { 
                     detailMovie.extraimagelist.Add(StaticClass.GetExtraImage(path));
                     detailMovie.extraimagePath.Add(path);
                 }//加载预览图
-                detailMovie.bigimage = StaticClass.GetBitmapImage(detailMovie.id, "BigPic");
+                
 
-                DataBase dataBase = new DataBase("Translate");
+                DB db = new DB("Translate");
                 //加载翻译结果
                 if (Properties.Settings.Default.TitleShowTranslate)
                 {
-                    string translate_title = dataBase.GetInfoBySql($"select translate_title from youdao where id='{detailMovie.id}'");
+                    string translate_title = db.GetInfoBySql($"select translate_title from youdao where id='{detailMovie.id}'");
                     if (translate_title != "") detailMovie.title = translate_title;
                 }
 
                 if (Properties.Settings.Default.PlotShowTranslate)
                 {
-                    string translate_plot = dataBase.GetInfoBySql($"select translate_plot from youdao where id='{detailMovie.id}'");
+                    string translate_plot = db.GetInfoBySql($"select translate_plot from youdao where id='{detailMovie.id}'");
                     if (translate_plot != "") detailMovie.plot = translate_plot;
                 }
-                dataBase.CloseDB();
+                db.CloseDB();
 
-
+                //显示新增按钮
+                List<string> labels = detailMovie.labellist;
+                detailMovie.labellist = new List<string>();
+                detailMovie.labellist.Add("+");
+                detailMovie.labellist.AddRange(labels);
 
                 DetailMovie = detailMovie;
                 //QueryCompletedHandler?.Invoke(null, EventArgs.Empty);

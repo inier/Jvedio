@@ -68,8 +68,8 @@
     
     <!--皮肤-->
     <SolidColorBrush x:Key="BackgroundTitle"  Color="#22252A"/>
-    <SolidColorBrush x:Key="BackgroundMain" Color="#393D40" />
-    <SolidColorBrush x:Key="BackgroundSide"  Color="#323639" />
+    <SolidColorBrush x:Key="BackgroundMain" Color="#1B1B1F" />
+    <SolidColorBrush x:Key="BackgroundSide"  Color="#101013" />
     <SolidColorBrush x:Key="BackgroundTab"  Color="#383838" />
     <SolidColorBrush x:Key="BackgroundSearch"  Color="#18191B" />
     <SolidColorBrush x:Key="BackgroundMenu"  Color="Black"/>
