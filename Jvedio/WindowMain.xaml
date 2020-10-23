@@ -2549,14 +2549,14 @@
                 <!--公告-->
 
                 <Grid x:Name="NoticeGrid" Background="Transparent" VerticalAlignment="Center" HorizontalAlignment="Center" Height="360" Width="500" Visibility="Hidden" >
-                    <Image Source="Resources/Picture/hankuke.jpg" Stretch="Fill"/>
-                    <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5" Opacity="0.9"/>
+                    <Image Source="Resources/Picture/hankuke.jpg" Stretch="Fill" Margin="2"/>
+                    <Border Background="{DynamicResource BackgroundTitle}" CornerRadius="5" Opacity="0.9"></Border>
                     <Border Height="30" Width="30" HorizontalAlignment="Right"  VerticalAlignment="Top" PreviewMouseLeftButtonUp="HideGrid"   CornerRadius="3" Style="{StaticResource CloseBorderStyle}" >
                         <Image Source="{Binding Themes, Mode=OneWay, ConverterParameter=close,Converter={StaticResource StringToUriStringConverterMain}, Source={x:Static p:Settings.Default}}" Height="20" Width="20"   />
                     </Border>
                     <StackPanel Orientation="Vertical" Margin="0 50">
                         <TextBlock FontSize="20"  Text="公告" TextAlignment="Center" Foreground="{DynamicResource ForegroundSearch}" Margin="10" FontWeight="Bold"/>
-                        <TextBlock x:Name="NoticeTextBlock" TextWrapping="Wrap" FontSize="20"    TextAlignment="Left" Foreground="{DynamicResource ForegroundSearch}" Margin="40 5" Text="新版本已上线"></TextBlock>
+                        <TextBox Height="200" VerticalContentAlignment="Top" Padding="10" Style="{StaticResource BaseTextBox}" Background="Transparent" IsReadOnly="True" x:Name="NoticeTextBlock" TextWrapping="Wrap" FontSize="20"    TextAlignment="Left" Foreground="{DynamicResource ForegroundSearch}" Margin="40 5" Text="新版本已上线"/>
                     </StackPanel>
 
                 </Grid>
